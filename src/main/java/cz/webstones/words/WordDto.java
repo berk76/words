@@ -11,6 +11,7 @@ package cz.webstones.words;
 public class WordDto {
     private String cz;
     private String en;
+    private int order;
 
     /**
      * @return the cz
@@ -38,5 +39,19 @@ public class WordDto {
      */
     public void setEn(String en) {
         this.en = en;
+    }
+
+    /**
+     * @return the order
+     */
+    public int getOrder() {
+        return order;
+    }
+
+    /**
+     * @param order the order to set
+     */
+    public void setOrder(int order) {
+        this.order = order;
     }
 }
