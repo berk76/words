@@ -154,11 +154,7 @@ public class Main extends javax.swing.JFrame {
         for (WordDto w: dictionary) {
             int p = 0; // lower number means higher priority
             
-            if ((w.getGoodHits() == 0) && (w.getWrongHits() == 0)) {
-                p += 1000000;
-            } else {
-                p += (w.getGoodHits() - w.getWrongHits()) * 10000;
-            }
+            p += (w.getGoodHits() - w.getWrongHits()) * 10000;
             /*
             p += (365 * 24 * 60) - w.getLastWrongHitInMinutes() * 100;
             p += (365 * 24 * 60) - w.getLastGoodHitInMinutes() * 10;
