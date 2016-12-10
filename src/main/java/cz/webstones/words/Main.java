@@ -95,7 +95,7 @@ public class Main extends javax.swing.JFrame {
     }
     
     private void play() {
-        String fName = "Data\\" + dictionary.get(this.dictCurrnt).getEn() + ".mp3";
+        String fName = "Data\\MP3\\" + dictionary.get(this.dictCurrnt).getEn() + ".mp3";
         File f = new File(fName);
         if (f.exists()) {
             AudioFilePlayer.playFile(fName);
