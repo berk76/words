@@ -68,6 +68,16 @@ public class WordDto {
     public Date getLastWrongHit() {
         return lastWrongHit;
     }
+    
+    public int getLastWrongHitInMinutes() {
+        int result;
+        if (lastWrongHit == null) {
+            result = 365 * 24 * 60;
+        } else {
+            result = (int) ((new Date().getTime() - lastWrongHit.getTime()) / 60);
+        }
+        return result;
+    }
 
     /**
      * @param lastWrongHit the lastWrongHit to set
@@ -102,6 +112,16 @@ public class WordDto {
      */
     public Date getLastGoodHit() {
         return lastGoodHit;
+    }
+    
+    public int getLastGoodHitInMinutes() {
+        int result;
+        if (lastGoodHit == null) {
+            result = 365 * 24 * 60;
+        } else {
+            result = (int) ((new Date().getTime() - lastGoodHit.getTime()) / 60);
+        }
+        return result;
     }
 
     /**

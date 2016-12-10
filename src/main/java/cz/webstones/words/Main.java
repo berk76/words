@@ -34,7 +34,7 @@ public class Main extends javax.swing.JFrame {
     private int dictCurrnt;
     private Random rand = new Random();
     private SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy HH:mm");
-    private String dictionaryFileName = "C:\\Users\\jaroslav_b\\Documents\\Projekty\\Projects_Private\\Java\\Words\\Data\\Dictionary.txt";
+    private String dictionaryFileName = "Data\\Dictionary.txt";
     private String dictionarySeparator = ";";
 
     /**
@@ -67,14 +67,18 @@ public class Main extends javax.swing.JFrame {
             w.setOriginalOrder(order++);
             w.setEn(arr[0]);
             w.setCz(arr[1]);
-            if (arr.length == 6) {
+            if (arr.length > 2)
                 w.setGoodHits(Integer.valueOf(arr[2]));
+            if (arr.length > 3) {
                 try {
                     w.setLastGoodHit(sdf.parse(arr[3]));
                 } catch (ParseException ex) {
                     w.setLastGoodHit(null);
                 }
+            }
+            if (arr.length > 4)
                 w.setWrongHits(Integer.valueOf(arr[4]));
+            if (arr.length > 5) {
                 try {
                     w.setLastWrongHit(sdf.parse(arr[5]));
                 } catch (ParseException ex) {
@@ -148,7 +152,19 @@ public class Main extends javax.swing.JFrame {
     
     private void reorder() {
         for (WordDto w: dictionary) {
-            w.setOrder(rand.nextInt(1000));
+            int p = 0; // lower number means higher priority
+            
+            if ((w.getGoodHits() == 0) && (w.getWrongHits() == 0)) {
+                p += 1000000;
+            } else {
+                p += (w.getGoodHits() - w.getWrongHits()) * 10000;
+            }
+            /*
+            p += (365 * 24 * 60) - w.getLastWrongHitInMinutes() * 100;
+            p += (365 * 24 * 60) - w.getLastGoodHitInMinutes() * 10;
+            */
+            p += rand.nextInt(10);
+            w.setOrder(p);
         }
         
         Collections.sort(dictionary, new Comparator<WordDto>() {
