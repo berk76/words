@@ -18,7 +18,7 @@ public class WordDto {
     private Date lastWrongHit;
     private int goodHits;
     private Date lastGoodHit;
-    private int originalOrder;
+    private String category;
 
     /**
      * @return the cz
@@ -139,16 +139,16 @@ public class WordDto {
     }
 
     /**
-     * @return the originalOrder
+     * @return the category
      */
-    public int getOriginalOrder() {
-        return originalOrder;
+    public String getCategory() {
+        return category;
     }
 
     /**
-     * @param originalOrder the originalOrder to set
+     * @param category the category to set
      */
-    public void setOriginalOrder(int originalOrder) {
-        this.originalOrder = originalOrder;
+    public void setCategory(String category) {
+        this.category = category;
     }
 }

@@ -29,7 +29,8 @@ import java.util.Random;
  */
 public class Main extends javax.swing.JFrame {
     
-    private ArrayList<WordDto> dictionary = new ArrayList<WordDto>();
+    private ArrayList<WordDto> allDictionary = new ArrayList<WordDto>();
+    private ArrayList<WordDto> filteredDictionary = new ArrayList<WordDto>();
     private int dictSize;
     private int dictCurrnt;
     private Random rand = new Random();
@@ -52,7 +53,9 @@ public class Main extends javax.swing.JFrame {
     }
     
     private void loadDictionary() throws FileNotFoundException, UnsupportedEncodingException, IOException {
-        dictionary = new ArrayList<WordDto>();
+        allDictionary = new ArrayList<WordDto>();
+        jComboBox1.removeAll();
+        jComboBox1.addItem("All");
         
         InputStream is = new FileInputStream(dictionaryFileName);
         BufferedReader reader = new BufferedReader(new InputStreamReader(is, "UTF-8"));
@@ -64,34 +67,42 @@ public class Main extends javax.swing.JFrame {
             if (arr.length < 2)
                 continue;
             WordDto w = new WordDto();
-            w.setOriginalOrder(order++);
             w.setEn(arr[0]);
             w.setCz(arr[1]);
-            if (arr.length > 2)
-                w.setGoodHits(Integer.valueOf(arr[2]));
+            w.setCategory(arr[2]);
             if (arr.length > 3) {
+                w.setGoodHits(Integer.valueOf(arr[3]));
+                boolean alreadyExists = false;
+                for (int i = 0; i < jComboBox1.getItemCount(); i++) {
+                    if (jComboBox1.getItemAt(i).equals(w.getCategory())) {
+                        alreadyExists = true;
+                        break;
+                    }
+                }
+                if (!alreadyExists)
+                    jComboBox1.addItem(w.getCategory());
+            }
+            if (arr.length > 4) {
                 try {
-                    w.setLastGoodHit(sdf.parse(arr[3]));
+                    w.setLastGoodHit(sdf.parse(arr[4]));
                 } catch (ParseException ex) {
                     w.setLastGoodHit(null);
                 }
             }
-            if (arr.length > 4)
-                w.setWrongHits(Integer.valueOf(arr[4]));
-            if (arr.length > 5) {
+            if (arr.length > 5)
+                w.setWrongHits(Integer.valueOf(arr[5]));
+            if (arr.length > 6) {
                 try {
-                    w.setLastWrongHit(sdf.parse(arr[5]));
+                    w.setLastWrongHit(sdf.parse(arr[6]));
                 } catch (ParseException ex) {
                     w.setLastWrongHit(null);
                 }
             }
-            dictionary.add(w);
+            allDictionary.add(w);
         }
         reader.close();
         is.close();
         
-        this.dictCurrnt = -1;
-        this.dictSize = dictionary.size();
         reorder();
     }
     
@@ -105,24 +116,11 @@ public class Main extends javax.swing.JFrame {
             osw = new OutputStreamWriter(fos, "UTF-8");
             bw = new BufferedWriter(osw);
             
-            // copy dictionary
-            ArrayList<WordDto> d = new ArrayList<WordDto>();
-            for (WordDto w: dictionary) {
-                d.add(w);
-            }
-            
-            // reorder dictionary for write
-            Collections.sort(d, new Comparator<WordDto>() {
-                @Override
-                public int compare(WordDto a, WordDto b) {
-                    return a.getOriginalOrder() < b.getOriginalOrder() ? -1 : (a.getOriginalOrder() > b.getOriginalOrder()) ? 1 : 0;
-                }
-            });
-            
             // write file
-            for (WordDto w: d) {
+            for (WordDto w: allDictionary) {
                 bw.write(w.getEn() + dictionarySeparator);
                 bw.write(w.getCz() + dictionarySeparator);
+                bw.write(w.getCategory() + dictionarySeparator);
                 bw.write(w.getGoodHits() + dictionarySeparator);
                 bw.write(((w.getLastGoodHit() != null) ? sdf.format(w.getLastGoodHit()) : "") + dictionarySeparator);
                 bw.write(w.getWrongHits() + dictionarySeparator);
@@ -146,12 +144,22 @@ public class Main extends javax.swing.JFrame {
             this.dictCurrnt = 0;
             reorder();
         }
-        this.jLabel1.setText(dictionary.get(this.dictCurrnt).getCz());
+        this.jLabel1.setText(filteredDictionary.get(this.dictCurrnt).getCz());
+        this.jTextField1.setText("");
         updateStatus();
     }
     
     private void reorder() {
-        for (WordDto w: dictionary) {
+        filteredDictionary = new ArrayList<WordDto>();
+        
+        for (WordDto w: allDictionary) {
+            if (jComboBox1.getSelectedItem().equals("All") || jComboBox1.getSelectedItem().equals(w.getCategory()))
+                filteredDictionary.add(w);
+        }
+        this.dictCurrnt = -1;
+        this.dictSize = filteredDictionary.size();
+        
+        for (WordDto w: filteredDictionary) {
             int p = 0; // lower number means higher priority
             
             p += (w.getGoodHits() - w.getWrongHits()) * 10000;
@@ -163,7 +171,7 @@ public class Main extends javax.swing.JFrame {
             w.setOrder(p);
         }
         
-        Collections.sort(dictionary, new Comparator<WordDto>() {
+        Collections.sort(filteredDictionary, new Comparator<WordDto>() {
             @Override
             public int compare(WordDto a, WordDto b) {
                 return a.getOrder() < b.getOrder() ? -1 : (a.getOrder() > b.getOrder()) ? 1 : 0;
@@ -172,7 +180,7 @@ public class Main extends javax.swing.JFrame {
     }
     
     private void play() {
-        String fName = "Data\\MP3\\" + dictionary.get(this.dictCurrnt).getEn() + ".mp3";
+        String fName = "Data\\MP3\\" + filteredDictionary.get(this.dictCurrnt).getEn() + ".mp3";
         File f = new File(fName);
         if (f.exists()) {
             AudioFilePlayer.playFile(fName);
@@ -180,7 +188,7 @@ public class Main extends javax.swing.JFrame {
     }
     
     private void updateStatus() {
-        this.jLabel2.setText(String.valueOf(this.dictCurrnt + 1) + " / " + String.valueOf(dictionary.size()) + " words");
+        this.jLabel2.setText(String.valueOf(this.dictCurrnt + 1) + " / " + String.valueOf(filteredDictionary.size()) + " words");
     }
 
     /**
@@ -199,6 +207,7 @@ public class Main extends javax.swing.JFrame {
         jButton1 = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
         jButton3 = new javax.swing.JButton();
+        jComboBox1 = new javax.swing.JComboBox();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         addWindowListener(new java.awt.event.WindowAdapter() {
@@ -239,6 +248,13 @@ public class Main extends javax.swing.JFrame {
             }
         });
 
+        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "All" }));
+        jComboBox1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jComboBox1ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -252,9 +268,12 @@ public class Main extends javax.swing.JFrame {
                         .addComponent(jLabel2)
                         .addGap(0, 0, Short.MAX_VALUE))
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(jButton1)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButton2)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                            .addComponent(jComboBox1, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel1Layout.createSequentialGroup()
+                                .addComponent(jButton1)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jButton2)))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(jButton3)))
                 .addContainerGap())
@@ -269,6 +288,8 @@ public class Main extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jLabel2)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButton1)
                     .addComponent(jButton2)
@@ -288,30 +309,28 @@ public class Main extends javax.swing.JFrame {
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        dictionary.get(this.dictCurrnt).setGoodHits(dictionary.get(this.dictCurrnt).getGoodHits() + 1);
-        dictionary.get(this.dictCurrnt).setLastGoodHit(new Date());
+        filteredDictionary.get(this.dictCurrnt).setGoodHits(filteredDictionary.get(this.dictCurrnt).getGoodHits() + 1);
+        filteredDictionary.get(this.dictCurrnt).setLastGoodHit(new Date());
         this.jTextField1.setText("");
         next();
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-        dictionary.get(this.dictCurrnt).setWrongHits(dictionary.get(this.dictCurrnt).getWrongHits() + 1);
-        dictionary.get(this.dictCurrnt).setLastWrongHit(new Date());
-        this.jTextField1.setText("");
+        filteredDictionary.get(this.dictCurrnt).setWrongHits(filteredDictionary.get(this.dictCurrnt).getWrongHits() + 1);
+        filteredDictionary.get(this.dictCurrnt).setLastWrongHit(new Date());
         next();
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
-        this.jTextField1.setText(dictionary.get(this.dictCurrnt).getEn());
+        this.jTextField1.setText(filteredDictionary.get(this.dictCurrnt).getEn());
         play();
     }//GEN-LAST:event_jButton3ActionPerformed
 
@@ -326,6 +345,11 @@ public class Main extends javax.swing.JFrame {
             ex.printStackTrace();
         }
     }//GEN-LAST:event_formWindowClosing
+
+    private void jComboBox1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBox1ActionPerformed
+        reorder();
+        next();
+    }//GEN-LAST:event_jComboBox1ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -365,6 +389,7 @@ public class Main extends javax.swing.JFrame {
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
+    private javax.swing.JComboBox jComboBox1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JPanel jPanel1;
