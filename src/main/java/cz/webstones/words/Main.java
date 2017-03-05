@@ -15,12 +15,14 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
+import java.text.Collator;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.Locale;
 import java.util.Random;
 
 /**
@@ -29,8 +31,9 @@ import java.util.Random;
  */
 public class Main extends javax.swing.JFrame {
     
-    private ArrayList<WordDto> allDictionary = new ArrayList<WordDto>();
-    private ArrayList<WordDto> filteredDictionary = new ArrayList<WordDto>();
+    private ArrayList<WordDto> allDictionary;
+    private ArrayList<WordDto> filteredDictionary;
+    private ArrayList<String> categoryList;
     private int dictSize;
     private int dictCurrnt;
     private Random rand = new Random();
@@ -54,8 +57,7 @@ public class Main extends javax.swing.JFrame {
     
     private void loadDictionary() throws FileNotFoundException, UnsupportedEncodingException, IOException {
         allDictionary = new ArrayList<WordDto>();
-        jComboBox1.removeAll();
-        jComboBox1.addItem("All");
+        categoryList = new ArrayList<String>();
         
         InputStream is = new FileInputStream(dictionaryFileName);
         BufferedReader reader = new BufferedReader(new InputStreamReader(is, "UTF-8"));
@@ -72,15 +74,6 @@ public class Main extends javax.swing.JFrame {
             w.setCategory(arr[2]);
             if (arr.length > 3) {
                 w.setGoodHits(Integer.valueOf(arr[3]));
-                boolean alreadyExists = false;
-                for (int i = 0; i < jComboBox1.getItemCount(); i++) {
-                    if (jComboBox1.getItemAt(i).equals(w.getCategory())) {
-                        alreadyExists = true;
-                        break;
-                    }
-                }
-                if (!alreadyExists)
-                    jComboBox1.addItem(w.getCategory());
             }
             if (arr.length > 4) {
                 try {
@@ -99,11 +92,29 @@ public class Main extends javax.swing.JFrame {
                 }
             }
             allDictionary.add(w);
+            
+            boolean alreadyExists = false;
+            for (String s: categoryList) {
+                if (s.equals(w.getCategory())) {
+                    alreadyExists = true;
+                    break;
+                }
+            }
+            
+            if (!alreadyExists)
+                categoryList.add(w.getCategory());
         }
         reader.close();
         is.close();
         
         reorder();
+        
+        jComboBox1.removeAll();
+        Collections.sort(categoryList, Collator.getInstance(new Locale("cs", "CS"))); 
+        for (String s: categoryList) {
+            jComboBox1.addItem(s);
+        }
+        
     }
     
     private void saveDirectory() throws IOException {
