@@ -210,15 +210,31 @@ public class Main extends javax.swing.JFrame {
     }
     
     private void play() {
-        String fName = "Data\\MP3\\" + filteredDictionary.get(this.dictCurrnt).getEn() + ".mp3";
-        File f = new File(fName);
-        if (f.exists()) {
-            AudioFilePlayer.playFile(fName);
-        }
+        disableControls(true);
+        
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                String fName = "Data\\MP3\\" + filteredDictionary.get(dictCurrnt).getEn() + ".mp3";
+                File f = new File(fName);
+                if (f.exists()) {
+                    AudioFilePlayer.playFile(fName);
+                }
+                disableControls(false);
+            }
+        }).start();
     }
     
     private void updateStatus() {
         this.jLabel2.setText(String.valueOf(this.dictCurrnt + 1) + " / " + String.valueOf(filteredDictionary.size()) + " words");
+    }
+    
+    private void disableControls(boolean b) {
+        jButton1.setEnabled(!b);
+        jButton2.setEnabled(!b);
+        jButton3.setEnabled(!b);
+        jComboBox1.setEnabled(!b);
+        this.revalidate();
     }
 
     /**
