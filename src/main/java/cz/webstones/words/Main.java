@@ -215,7 +215,7 @@ public class Main extends javax.swing.JFrame {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                String fName = "Data\\MP3\\" + filteredDictionary.get(dictCurrnt).getEn() + ".mp3";
+                String fName = "Data\\MP3\\" + removeBadChars(filteredDictionary.get(dictCurrnt).getEn()) + ".mp3";
                 File f = new File(fName);
                 if (f.exists()) {
                     AudioFilePlayer.playFile(fName);
@@ -224,6 +224,11 @@ public class Main extends javax.swing.JFrame {
             }
         }).start();
     }
+    
+    private String removeBadChars(String w) {
+        return w.replaceAll("\\?", "").replaceAll("\\.", "");
+    }
+    
     
     private void updateStatus() {
         this.jLabel2.setText(String.valueOf(this.dictCurrnt + 1) + " / " + String.valueOf(filteredDictionary.size()) + " words");
