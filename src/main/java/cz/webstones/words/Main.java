@@ -226,7 +226,7 @@ public class Main extends javax.swing.JFrame {
     }
     
     private String removeBadChars(String w) {
-        return w.replaceAll("\\?", "").replaceAll("\\.", "");
+        return w.replaceAll("\\?", "").replaceAll("\\.", "").replaceAll("'", "").replaceAll(",", "");
     }
     
     
