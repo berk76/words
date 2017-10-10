@@ -1,0 +1,6 @@
+glob:.settings/**
+glob:target/**
+glob:.project
+glob:.classpath
+
+/target/
