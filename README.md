@@ -4,9 +4,9 @@ Small application for teching and repeating words.
 
 ## Files
 
-`./Words.jar`                 Binary file
-`./Data/Dictionary.txt`       Dictionary file
-`./Data/MP3/*.mp3`            MP3 files with pronunciation
+* `./Words.jar`                 Binary file
+* `./Data/Dictionary.txt`       Dictionary file
+* `./Data/MP3/*.mp3`            MP3 files with pronunciation
 
 ## Dictionary file structure
 
