@@ -38,9 +38,7 @@ public class Main extends javax.swing.JFrame {
     private int dictCurrnt;
     private Random rand = new Random();
     private SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy HH:mm");
-    private String dictionaryFileName = "Data\\Dictionary.txt";
-    private String categoriesFileName = "Data\\Categories.txt";
-    private String dictionarySeparator = ";";
+    private Setup setup;
 
     /**
      * Creates new form Main
@@ -49,6 +47,7 @@ public class Main extends javax.swing.JFrame {
         initComponents();
         this.setTitle("Words");
         try {
+            setup = Service.loadSetup();
             loadDictionary();
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -60,13 +59,13 @@ public class Main extends javax.swing.JFrame {
         allDictionary = new ArrayList<WordDto>();
         categoryList = new ArrayList<String>();
         
-        InputStream is = new FileInputStream(dictionaryFileName);
+        InputStream is = new FileInputStream(setup.getFullDictionaryFilePath());
         BufferedReader reader = new BufferedReader(new InputStreamReader(is, "UTF-8"));
 
         String line;
         int order = 0;
         while ((is != null) && ((line = reader.readLine()) != null)) {
-            String arr[] = line.split(dictionarySeparator);
+            String arr[] = line.split(setup.getDictionarySeparator());
             if (arr.length < 2)
                 continue;
             WordDto w = new WordDto();
@@ -125,19 +124,19 @@ public class Main extends javax.swing.JFrame {
         
         /* Dictionary */
         try {
-            fos = new FileOutputStream(dictionaryFileName);
+            fos = new FileOutputStream(setup.getFullDictionaryFilePath());
             osw = new OutputStreamWriter(fos, "UTF-8");
             bw = new BufferedWriter(osw);
             
             // write file
             for (WordDto w: allDictionary) {
-                bw.write(w.getEn() + dictionarySeparator);
-                bw.write(w.getCz() + dictionarySeparator);
-                bw.write(w.getCategory() + dictionarySeparator);
-                bw.write(w.getGoodHits() + dictionarySeparator);
-                bw.write(((w.getLastGoodHit() != null) ? sdf.format(w.getLastGoodHit()) : "") + dictionarySeparator);
-                bw.write(w.getWrongHits() + dictionarySeparator);
-                bw.write(((w.getLastWrongHit() != null) ? sdf.format(w.getLastWrongHit()) : "") + dictionarySeparator);
+                bw.write(w.getEn() + setup.getDictionarySeparator());
+                bw.write(w.getCz() + setup.getDictionarySeparator());
+                bw.write(w.getCategory() + setup.getDictionarySeparator());
+                bw.write(w.getGoodHits() + setup.getDictionarySeparator());
+                bw.write(((w.getLastGoodHit() != null) ? sdf.format(w.getLastGoodHit()) : "") + setup.getDictionarySeparator());
+                bw.write(w.getWrongHits() + setup.getDictionarySeparator());
+                bw.write(((w.getLastWrongHit() != null) ? sdf.format(w.getLastWrongHit()) : "") + setup.getDictionarySeparator());
                 bw.newLine();
             }
         } finally {
@@ -148,7 +147,7 @@ public class Main extends javax.swing.JFrame {
         
         /* Categories */
         try {
-            fos = new FileOutputStream(categoriesFileName);
+            fos = new FileOutputStream(setup.getFullCategoryFilePath());
             osw = new OutputStreamWriter(fos, "UTF-8");
             bw = new BufferedWriter(osw);
             
@@ -215,7 +214,7 @@ public class Main extends javax.swing.JFrame {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                String fName = "Data\\MP3\\" + removeBadChars(filteredDictionary.get(dictCurrnt).getEn()) + ".mp3";
+                String fName = String.format("%s/%s.mp3", setup.getFullMp3Path(), removeBadChars(filteredDictionary.get(dictCurrnt).getEn()));
                 File f = new File(fName);
                 if (f.exists()) {
                     AudioFilePlayer.playFile(fName);
