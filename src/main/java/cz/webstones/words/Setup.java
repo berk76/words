@@ -14,6 +14,7 @@ public class Setup {
     private String directoryFile;
     private String categoryFile;
     private String dictionarySeparator;
+    private String dictionaryDateFormat;
 
     /**
      * @return the dataDir
@@ -116,6 +117,20 @@ public class Setup {
             e.printStackTrace();
         }
         return result;
+    }
+
+    /**
+     * @return the dictionaryDateFormat
+     */
+    public String getDictionaryDateFormat() {
+        return dictionaryDateFormat;
+    }
+
+    /**
+     * @param dictionaryDateFormat the dictionaryDateFormat to set
+     */
+    public void setDictionaryDateFormat(String dictionaryDateFormat) {
+        this.dictionaryDateFormat = dictionaryDateFormat;
     }
     
 }

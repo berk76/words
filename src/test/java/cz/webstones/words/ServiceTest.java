@@ -22,6 +22,7 @@ public class ServiceTest {
         assertEquals("Dictionary file:", "Dictionary.txt", s.getDirectoryFile());
         assertEquals("Category file:", "Categories.txt", s.getCategoryFile());
         assertEquals("Dictionary separator:", ";", s.getDictionarySeparator());
+        assertEquals("Dictionary date format:", "dd.MM.yyyy HH:mm", s.getDictionaryDateFormat());
         assertEquals("Full dictionary path:", "Data/Dictionary.txt", s.getFullDictionaryFilePath());
         assertEquals("Full category path:", "Data/Categories.txt", s.getFullCategoryFilePath());
         assertEquals("Full MP3 dir path:", "Data/MP3", s.getFullMp3Path());

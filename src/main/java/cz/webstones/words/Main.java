@@ -4,26 +4,15 @@
  */
 package cz.webstones.words;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
 import java.text.Collator;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.Date;
 import java.util.Locale;
-import java.util.Random;
 
 /**
  *
@@ -36,8 +25,6 @@ public class Main extends javax.swing.JFrame {
     private ArrayList<String> categoryList;
     private int dictSize;
     private int dictCurrnt;
-    private Random rand = new Random();
-    private SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy HH:mm");
     private Setup setup;
 
     /**
@@ -56,57 +43,12 @@ public class Main extends javax.swing.JFrame {
     }
     
     private void loadDictionary() throws FileNotFoundException, UnsupportedEncodingException, IOException {
-        allDictionary = new ArrayList<WordDto>();
-        categoryList = new ArrayList<String>();
+        allDictionary = Service.loadDictionary(
+                setup.getFullDictionaryFilePath(), 
+                setup.getDictionarySeparator(), 
+                setup.getDictionaryDateFormat());
         
-        InputStream is = new FileInputStream(setup.getFullDictionaryFilePath());
-        BufferedReader reader = new BufferedReader(new InputStreamReader(is, "UTF-8"));
-
-        String line;
-        int order = 0;
-        while ((is != null) && ((line = reader.readLine()) != null)) {
-            String arr[] = line.split(setup.getDictionarySeparator());
-            if (arr.length < 2)
-                continue;
-            WordDto w = new WordDto();
-            w.setEn(arr[0]);
-            w.setCz(arr[1]);
-            w.setCategory(arr[2]);
-            if (arr.length > 3) {
-                w.setGoodHits(Integer.valueOf(arr[3]));
-            }
-            if (arr.length > 4) {
-                try {
-                    w.setLastGoodHit(sdf.parse(arr[4]));
-                } catch (ParseException ex) {
-                    w.setLastGoodHit(null);
-                }
-            }
-            if (arr.length > 5)
-                w.setWrongHits(Integer.valueOf(arr[5]));
-            if (arr.length > 6) {
-                try {
-                    w.setLastWrongHit(sdf.parse(arr[6]));
-                } catch (ParseException ex) {
-                    w.setLastWrongHit(null);
-                }
-            }
-            allDictionary.add(w);
-            
-            boolean alreadyExists = false;
-            for (String s: categoryList) {
-                if (s.equals(w.getCategory())) {
-                    alreadyExists = true;
-                    break;
-                }
-            }
-            
-            if (!alreadyExists)
-                categoryList.add(w.getCategory());
-        }
-        reader.close();
-        is.close();
-        
+        categoryList = Service.loadCategoryList(allDictionary);
         reorder();
         
         jComboBox1.removeAll();
@@ -118,49 +60,11 @@ public class Main extends javax.swing.JFrame {
     }
     
     private void saveDirectory() throws IOException {
-        FileOutputStream fos = null;
-        OutputStreamWriter osw = null;
-        BufferedWriter bw = null;
         
-        /* Dictionary */
-        try {
-            fos = new FileOutputStream(setup.getFullDictionaryFilePath());
-            osw = new OutputStreamWriter(fos, "UTF-8");
-            bw = new BufferedWriter(osw);
-            
-            // write file
-            for (WordDto w: allDictionary) {
-                bw.write(w.getEn() + setup.getDictionarySeparator());
-                bw.write(w.getCz() + setup.getDictionarySeparator());
-                bw.write(w.getCategory() + setup.getDictionarySeparator());
-                bw.write(w.getGoodHits() + setup.getDictionarySeparator());
-                bw.write(((w.getLastGoodHit() != null) ? sdf.format(w.getLastGoodHit()) : "") + setup.getDictionarySeparator());
-                bw.write(w.getWrongHits() + setup.getDictionarySeparator());
-                bw.write(((w.getLastWrongHit() != null) ? sdf.format(w.getLastWrongHit()) : "") + setup.getDictionarySeparator());
-                bw.newLine();
-            }
-        } finally {
-            bw.close();
-            osw.close();
-            fos.close();
-        }
+        Service.saveDictionary(allDictionary, setup.getFullDictionaryFilePath(), 
+            setup.getDictionarySeparator(), setup.getDictionaryDateFormat());
         
-        /* Categories */
-        try {
-            fos = new FileOutputStream(setup.getFullCategoryFilePath());
-            osw = new OutputStreamWriter(fos, "UTF-8");
-            bw = new BufferedWriter(osw);
-            
-            // write file
-            for (String s: categoryList) {
-                bw.write(s);
-                bw.newLine();
-            }
-        } finally {
-            bw.close();
-            osw.close();
-            fos.close();
-        }
+        Service.saveCategoryList(categoryList, setup.getFullCategoryFilePath());
     }
     
     private void next() {
@@ -179,33 +83,11 @@ public class Main extends javax.swing.JFrame {
     }
     
     private void reorder() {
-        filteredDictionary = new ArrayList<WordDto>();
+        filteredDictionary = Service.createReorderedList(
+                allDictionary, jComboBox1.getSelectedItem().toString());
         
-        for (WordDto w: allDictionary) {
-            if (jComboBox1.getSelectedItem().equals("All") || jComboBox1.getSelectedItem().equals(w.getCategory()))
-                filteredDictionary.add(w);
-        }
         this.dictCurrnt = -1;
         this.dictSize = filteredDictionary.size();
-        
-        for (WordDto w: filteredDictionary) {
-            int p = 0; // lower number means higher priority
-            
-            p += (w.getGoodHits() - w.getWrongHits()) * 10000;
-            /*
-            p += (365 * 24 * 60) - w.getLastWrongHitInMinutes() * 100;
-            p += (365 * 24 * 60) - w.getLastGoodHitInMinutes() * 10;
-            */
-            p += rand.nextInt(10);
-            w.setOrder(p);
-        }
-        
-        Collections.sort(filteredDictionary, new Comparator<WordDto>() {
-            @Override
-            public int compare(WordDto a, WordDto b) {
-                return a.getOrder() < b.getOrder() ? -1 : (a.getOrder() > b.getOrder()) ? 1 : 0;
-            }
-        });
     }
     
     private void play() {
