@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.Locale;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -128,6 +129,17 @@ public class Main extends javax.swing.JFrame {
         jButton3.setEnabled(!b);
         jComboBox1.setEnabled(!b);
         this.revalidate();
+    }
+    
+    private boolean compareTexts() {
+        if (jTextField1.getText().isEmpty()) {
+            return true;
+        }
+        if (jTextField1.getText().equals(jLabel3.getText())) {
+            return true;
+        }
+        JOptionPane.showMessageDialog(null, "Texts doesn't match. Correct it or delete it.");
+        return false;
     }
 
     /**
@@ -273,15 +285,19 @@ public class Main extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        filteredDictionary.get(this.dictCurrnt).setGoodHits(filteredDictionary.get(this.dictCurrnt).getGoodHits() + 1);
-        filteredDictionary.get(this.dictCurrnt).setLastGoodHit(new Date());
-        next();
+        if (compareTexts()) {
+            filteredDictionary.get(this.dictCurrnt).setGoodHits(filteredDictionary.get(this.dictCurrnt).getGoodHits() + 1);
+            filteredDictionary.get(this.dictCurrnt).setLastGoodHit(new Date());
+            next();
+        }
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-        filteredDictionary.get(this.dictCurrnt).setWrongHits(filteredDictionary.get(this.dictCurrnt).getWrongHits() + 1);
-        filteredDictionary.get(this.dictCurrnt).setLastWrongHit(new Date());
-        next();
+        if (compareTexts()) {
+            filteredDictionary.get(this.dictCurrnt).setWrongHits(filteredDictionary.get(this.dictCurrnt).getWrongHits() + 1);
+            filteredDictionary.get(this.dictCurrnt).setLastWrongHit(new Date());
+            next();
+        }
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
