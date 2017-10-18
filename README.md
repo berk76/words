@@ -22,3 +22,12 @@ MP3 file should have the same name as foreign word in `Dictionary.txt`. You can 
 
 * http://forvo.com
 * http://soundoftext.com
+
+## How to build
+
+ 1. download project `git clone https://github.com/berk76/words Words`
+ 1. change directory `cd Words`
+ 1. build project `mvn assembly:assembly`
+ 1. change directory `cd target`
+ 1. find and run Words.jar `java -jar Words-x.y.z-SNAPSHOT-jar-with-dependencies.jar`
+ 
