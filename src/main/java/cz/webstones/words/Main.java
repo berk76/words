@@ -136,10 +136,10 @@ public class Main extends javax.swing.JFrame {
     }
     
     private boolean compareTexts() {
-        if (jTextField1.getText().isEmpty()) {
+        if (jTextField1.getText().trim().isEmpty()) {
             return true;
         }
-        if (jTextField1.getText().equals(jLabel3.getText())) {
+        if (jTextField1.getText().trim().equals(jLabel3.getText().trim())) {
             return true;
         }
         JOptionPane.showMessageDialog(null, "Texts doesn't match. Correct it or delete it.");
