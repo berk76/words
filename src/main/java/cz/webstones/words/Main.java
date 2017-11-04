@@ -372,6 +372,7 @@ public class Main extends javax.swing.JFrame {
     private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
         wordDialog.setWord(filteredDictionary.get(dictCurrnt), categoryList);
         wordDialog.setVisible(true);
+        this.jLabel1.setText(filteredDictionary.get(this.dictCurrnt).getCz());
     }//GEN-LAST:event_jButton6ActionPerformed
 
     /**
