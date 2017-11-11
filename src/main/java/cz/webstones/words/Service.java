@@ -78,8 +78,18 @@ public class Service {
         InputStream is = new FileInputStream(file);
         BufferedReader reader = new BufferedReader(new InputStreamReader(is, "UTF-8"));
         
+        boolean first = true;
         String line;
         while ((is != null) && ((line = reader.readLine()) != null)) {
+            
+            if (first) {
+                bomPresent = false;
+                if (isUTF8BOMPresent(line)) {
+                    line = removeUTF8BOM(line);
+                    bomPresent = true;
+                }
+                first = false;
+            }
             
             String arr[] = line.split(separator);
             
@@ -137,6 +147,10 @@ public class Service {
             fos = new FileOutputStream(file);
             osw = new OutputStreamWriter(fos, "UTF-8");
             bw = new BufferedWriter(osw);
+            
+            if (bomPresent) {
+                bw.write(UTF8_BOM);
+            }
             
             for (WordDto w: dict) {
                 bw.write(w.getEn() + separator);
@@ -239,4 +253,26 @@ public class Service {
         bd = bd.setScale(places, RoundingMode.HALF_UP);
         return bd.doubleValue();
     }
+    
+    // http://www.rgagnon.com/javadetails/java-handle-utf8-file-with-bom.html
+    
+    // FEFF because this is the Unicode char represented by the UTF-8 byte order mark (EF BB BF).
+    public static final String UTF8_BOM = "\uFEFF";
+    public static boolean bomPresent = false;
+    
+    private static boolean isUTF8BOMPresent(String s) {
+        boolean result = false;
+        if (s.startsWith(UTF8_BOM)) {
+            result = true;
+        }
+        return result;
+    }
+    
+    private static String removeUTF8BOM(String s) {
+        if (s.startsWith(UTF8_BOM)) {
+            s = s.substring(1);
+        }
+        return s;
+    }
+    
 }
