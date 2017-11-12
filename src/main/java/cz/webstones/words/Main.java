@@ -132,6 +132,7 @@ public class Main extends javax.swing.JFrame {
         jButton3.setEnabled(!b);
         jButton4.setEnabled(!b);
         jButton5.setEnabled(!b);
+        jButton6.setEnabled(!b);
         jComboBox1.setEnabled(!b);
         this.revalidate();
     }
