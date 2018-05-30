@@ -87,14 +87,14 @@ public class WordDialog extends javax.swing.JDialog {
         jLabel1.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
         jLabel1.setText("Native word");
 
-        jTextField1.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
+        jTextField1.setFont(new java.awt.Font("Arial Unicode MS", 0, 18)); // NOI18N
         jTextField1.setText("jTextField1");
 
         jLabel2.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
         jLabel2.setText("Foreign word");
 
         jTextField2.setEditable(false);
-        jTextField2.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
+        jTextField2.setFont(new java.awt.Font("Arial Unicode MS", 0, 18)); // NOI18N
         jTextField2.setText("jTextField2");
         jTextField2.setEnabled(false);
         jTextField2.setFocusable(false);
