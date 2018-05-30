@@ -275,4 +275,23 @@ public class Service {
         return s;
     }
     
+    /*
+    public static Font findFont(String text) {
+        Font result = null;
+        Font[] fonts = GraphicsEnvironment.getLocalGraphicsEnvironment().getAllFonts();
+        
+        if (text == null)
+            return null;
+        
+        for (Font font: fonts) {
+            if (font.canDisplay(text.charAt(0))) {
+                result = font;
+                System.out.println(font);
+                break;
+            }
+        }
+        
+        return result;
+    }
+    */ 
 }
