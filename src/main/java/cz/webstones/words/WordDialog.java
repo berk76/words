@@ -4,6 +4,7 @@
  */
 package cz.webstones.words;
 
+import java.awt.Font;
 import java.text.Collator;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -36,6 +37,12 @@ public class WordDialog extends javax.swing.JDialog {
         setCommited(false);
         this.categoryList = categoryList;
         this.word = w;
+    
+        Font f;
+        f = Service.findFont(this.word.getCz(), jTextField1.getFont());
+        jTextField1.setFont(f);
+        f = Service.findFont(this.word.getEn(), jTextField2.getFont());
+        jTextField2.setFont(f);
         
         jTextField1.setText(this.word.getCz());
         jTextField2.setText(this.word.getEn());
@@ -87,14 +94,14 @@ public class WordDialog extends javax.swing.JDialog {
         jLabel1.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
         jLabel1.setText("Native word");
 
-        jTextField1.setFont(new java.awt.Font("Arial Unicode MS", 0, 18)); // NOI18N
+        jTextField1.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
         jTextField1.setText("jTextField1");
 
         jLabel2.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
         jLabel2.setText("Foreign word");
 
         jTextField2.setEditable(false);
-        jTextField2.setFont(new java.awt.Font("Arial Unicode MS", 0, 18)); // NOI18N
+        jTextField2.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
         jTextField2.setText("jTextField2");
         jTextField2.setEnabled(false);
         jTextField2.setFocusable(false);
@@ -218,7 +225,7 @@ public class WordDialog extends javax.swing.JDialog {
                         .addComponent(jLabel7)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jTextField6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 12, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButton1)
                     .addComponent(jButton2))

@@ -4,6 +4,8 @@
  */
 package cz.webstones.words;
 
+import java.awt.Font;
+import java.awt.GraphicsEnvironment;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -275,23 +277,42 @@ public class Service {
         return s;
     }
     
-    /*
-    public static Font findFont(String text) {
-        Font result = null;
-        Font[] fonts = GraphicsEnvironment.getLocalGraphicsEnvironment().getAllFonts();
+    
+    public static Font findFont(String text, Font currentFont) {
+        Font result = currentFont;
+        boolean ok = true;
         
         if (text == null)
-            return null;
+            return result;
         
-        for (Font font: fonts) {
-            if (font.canDisplay(text.charAt(0))) {
-                result = font;
-                System.out.println(font);
+        for (int n = 0; n < text.length(); n++) {
+            if (!currentFont.canDisplay(text.charAt(n))) {
+                ok = false;
                 break;
+            }    
+        }
+        
+        if (!ok) {
+        
+            Font[] fonts = GraphicsEnvironment.getLocalGraphicsEnvironment().getAllFonts();
+            for (Font font: fonts) {
+                
+                for (int n = 0; n < text.length(); n++) {
+                    if (!font.canDisplay(text.charAt(n))) {
+                        ok = false;
+                        break;
+                    }
+                    ok = true;
+                }
+                
+                if (ok) {
+                    result = new Font(font.getName(), Font.PLAIN, currentFont.getSize());
+                    break;
+                }
             }
         }
         
         return result;
     }
-    */ 
+     
 }

@@ -4,6 +4,7 @@
  */
 package cz.webstones.words;
 
+import java.awt.Font;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -86,6 +87,15 @@ public class Main extends javax.swing.JFrame {
         if (this.dictCurrnt < 0) {
             this.dictCurrnt = 0;
         }
+        
+        Font f;
+        f = Service.findFont(filteredDictionary.get(this.dictCurrnt).getCz(), this.jLabel1.getFont());
+        this.jLabel1.setFont(f);
+        f = Service.findFont(filteredDictionary.get(this.dictCurrnt).getEn(), this.jLabel3.getFont());
+        this.jLabel3.setFont(f);
+        f = Service.findFont(filteredDictionary.get(this.dictCurrnt).getEn(), this.jTextField1.getFont());
+        this.jTextField1.setFont(f);
+        
         this.jLabel1.setText(filteredDictionary.get(this.dictCurrnt).getCz());
         this.jLabel3.setText("");
         this.jTextField1.setText("");
@@ -180,12 +190,12 @@ public class Main extends javax.swing.JFrame {
             }
         });
 
-        jLabel1.setFont(new java.awt.Font("Arial Unicode MS", 0, 24)); // NOI18N
+        jLabel1.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
         jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel1.setText("jLabel1");
         jLabel1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
 
-        jTextField1.setFont(new java.awt.Font("Arial Unicode MS", 0, 24)); // NOI18N
+        jTextField1.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
         jTextField1.setHorizontalAlignment(javax.swing.JTextField.CENTER);
         jTextField1.setText("jTextField1");
 
@@ -224,7 +234,7 @@ public class Main extends javax.swing.JFrame {
             }
         });
 
-        jLabel3.setFont(new java.awt.Font("Arial Unicode MS", 0, 24)); // NOI18N
+        jLabel3.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
         jLabel3.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel3.setText("jLabel3");
         jLabel3.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
