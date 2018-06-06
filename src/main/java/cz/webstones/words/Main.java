@@ -5,6 +5,9 @@
 package cz.webstones.words;
 
 import java.awt.Font;
+import java.awt.KeyEventDispatcher;
+import java.awt.KeyboardFocusManager;
+import java.awt.event.KeyEvent;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -20,7 +23,7 @@ import javax.swing.JOptionPane;
  *
  * @author jaroslav_b
  */
-public class Main extends javax.swing.JFrame {
+public class Main extends javax.swing.JFrame implements IDictionary {
     
     private ArrayList<WordDto> allDictionary;
     private ArrayList<WordDto> filteredDictionary;
@@ -30,6 +33,7 @@ public class Main extends javax.swing.JFrame {
     private Setup setup;
     private WordDialog wordDialog = new WordDialog(this, true);
     private AboutDialog aboutDialog = new AboutDialog(this, true);
+    private FindDialog findDialog = new FindDialog(this, true);
 
     /**
      * Creates new form Main
@@ -42,12 +46,30 @@ public class Main extends javax.swing.JFrame {
         jLabel3.setText("");
         jTextField1.setText("");
         
+        findDialog.setText("");
+        findDialog.setDictionary(this);
+        
         try {
             setup = Service.loadSetup();
             loadDictionary();
         } catch (Exception ex) {
             ex.printStackTrace();
         }
+        
+        KeyboardFocusManager ky = KeyboardFocusManager.getCurrentKeyboardFocusManager();
+        ky.addKeyEventDispatcher(new KeyEventDispatcher() {
+            @Override
+            public boolean dispatchKeyEvent(KeyEvent evt) {
+
+                if (evt.isControlDown() && (evt.getKeyCode() == KeyEvent.VK_F)) {
+                    findDialog.setDict(filteredDictionary);
+                    findDialog.setVisible(true);
+                    return true;
+                }
+                return false;
+            }
+        });
+        
         next(1);
     }
     
@@ -74,6 +96,15 @@ public class Main extends javax.swing.JFrame {
             setup.getDictionarySeparator(), setup.getDictionaryDateFormat());
         
         Service.saveCategoryList(categoryList, setup.getFullCategoryFilePath());
+    }
+
+    public void setDictCurrnet(int i) {
+        this.dictCurrnt = i;
+        next(0);
+    }
+    
+    public int getDictCurrnet() {
+        return this.dictCurrnt;
     }
     
     private void next(int i) {
