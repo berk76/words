@@ -35,6 +35,41 @@ public class FindDialog extends javax.swing.JDialog {
     public void setDictionary(IDictionary d) {
         dictionary = d;
     }
+    
+    private void search() {
+        String what = jTextField1.getText();
+        
+        if (what.equals("")) {
+            return;
+        }
+                
+        if (dict == null) {
+            JOptionPane.showMessageDialog(null, "No dictionary provided!");
+            return;
+        }
+        
+        int c = dictionary.getDictCurrnet();
+        
+        for (int i = 0; i < dict.size(); i++) {
+            c++;
+                    
+            if (c >= dict.size()) {
+                c = 0;
+            }
+            
+            if (c == dictionary.getDictCurrnet()) {
+                break;
+            }
+            
+            WordDto w = dict.get(c);
+            if (w.getCz().contains(what) || w.getEn().contains(what)) {
+                dictionary.setDictCurrnet(c);
+                return;
+            }
+        }
+        
+        JOptionPane.showMessageDialog(null, "Nothing found");
+    }
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -54,6 +89,11 @@ public class FindDialog extends javax.swing.JDialog {
 
         jTextField1.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
         jTextField1.setText("jTextField1");
+        jTextField1.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                jTextField1KeyPressed(evt);
+            }
+        });
 
         jButton1.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
         jButton1.setText("Close");
@@ -106,39 +146,14 @@ public class FindDialog extends javax.swing.JDialog {
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-        String what = jTextField1.getText();
-        
-        if (what.equals("")) {
-            return;
-        }
-                
-        if (dict == null) {
-            JOptionPane.showMessageDialog(null, "No dictionary provided!");
-            return;
-        }
-        
-        int c = dictionary.getDictCurrnet();
-        
-        for (int i = 0; i < dict.size(); i++) {
-            c++;
-                    
-            if (c >= dict.size()) {
-                c = 0;
-            }
-            
-            if (c == dictionary.getDictCurrnet()) {
-                break;
-            }
-            
-            WordDto w = dict.get(c);
-            if (w.getCz().contains(what) || w.getEn().contains(what)) {
-                dictionary.setDictCurrnet(c);
-                return;
-            }
-        }
-        
-        JOptionPane.showMessageDialog(null, "Nothing found");
+        search();
     }//GEN-LAST:event_jButton2ActionPerformed
+
+    private void jTextField1KeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTextField1KeyPressed
+        if(evt.getKeyCode() == java.awt.event.KeyEvent.VK_ENTER) {
+            search();
+        }
+    }//GEN-LAST:event_jTextField1KeyPressed
 
     /**
      * @param args the command line arguments
