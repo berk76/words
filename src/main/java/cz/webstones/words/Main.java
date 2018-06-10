@@ -62,8 +62,7 @@ public class Main extends javax.swing.JFrame implements IDictionary {
             public boolean dispatchKeyEvent(KeyEvent evt) {
 
                 if (evt.isControlDown() && (evt.getKeyCode() == KeyEvent.VK_F)) {
-                    findDialog.setDict(filteredDictionary);
-                    findDialog.setVisible(true);
+                    showFindDialog();
                     return true;
                 }
                 return false;
@@ -157,6 +156,12 @@ public class Main extends javax.swing.JFrame implements IDictionary {
                 disableControls(false);
             }
         }).start();
+    }
+    
+    private void showFindDialog() {
+        findDialog.setDict(filteredDictionary);
+        findDialog.setLabel("Searching in categoty " + jComboBox1.getSelectedItem());
+        findDialog.setVisible(true);
     }
     
     private String removeBadChars(String w) {
@@ -447,8 +452,7 @@ public class Main extends javax.swing.JFrame implements IDictionary {
     }//GEN-LAST:event_jButton7ActionPerformed
 
     private void jButton8ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton8ActionPerformed
-        findDialog.setDict(filteredDictionary);
-        findDialog.setVisible(true);
+        showFindDialog();
     }//GEN-LAST:event_jButton8ActionPerformed
 
     /**
