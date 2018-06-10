@@ -160,7 +160,7 @@ public class Main extends javax.swing.JFrame implements IDictionary {
     
     private void showFindDialog() {
         findDialog.setDict(filteredDictionary);
-        findDialog.setLabel("Searching in categoty " + jComboBox1.getSelectedItem());
+        findDialog.setLabel("Searching in category " + jComboBox1.getSelectedItem());
         findDialog.setVisible(true);
     }
     
