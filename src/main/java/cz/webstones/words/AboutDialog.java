@@ -37,7 +37,7 @@ public class AboutDialog extends javax.swing.JDialog {
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
         jLabel1.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
-        jLabel1.setText("Words 1.1.0 snapshot");
+        jLabel1.setText("Words 1.2.0 snapshot");
 
         jTextArea1.setEditable(false);
         jTextArea1.setColumns(20);
