@@ -181,6 +181,7 @@ public class Main extends javax.swing.JFrame implements IDictionary {
         jButton5.setEnabled(!b);
         jButton6.setEnabled(!b);
         jButton7.setEnabled(!b);
+        jButton8.setEnabled(!b);
         jComboBox1.setEnabled(!b);
         this.revalidate();
     }
