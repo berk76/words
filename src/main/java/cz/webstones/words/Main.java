@@ -23,7 +23,7 @@ import javax.swing.JOptionPane;
  *
  * @author jaroslav_b
  */
-public class Main extends javax.swing.JFrame implements IDictionary {
+public class Main extends javax.swing.JFrame implements IDictionary, ICategory {
     
     private ArrayList<WordDto> allDictionary;
     private ArrayList<WordDto> filteredDictionary;
@@ -31,7 +31,8 @@ public class Main extends javax.swing.JFrame implements IDictionary {
     private int dictSize;
     private int dictCurrnt;
     private Setup setup;
-    private WordDialog wordDialog = new WordDialog(this, true);
+    private AddCategoryDialog addCatDialog = new AddCategoryDialog(this, true);
+    private WordDialog wordDialog = new WordDialog(this, true, addCatDialog, this);
     private AboutDialog aboutDialog = new AboutDialog(this, true);
     private FindDialog findDialog = new FindDialog(this, false);
 
@@ -79,14 +80,41 @@ public class Main extends javax.swing.JFrame implements IDictionary {
                 setup.getDictionaryDateFormat());
         
         categoryList = Service.loadCategoryList(allDictionary);
-        reorder();
+        updateCategoryCombo();
         
-        jComboBox1.removeAll();
+        reorder();
+    }
+    
+    public void addCategory(String category) {
+        for (String c: categoryList) {
+            if (c.equals(category)) {
+                JOptionPane.showMessageDialog(null, "Category " + category + " already exists.");
+                return;
+            }
+        }
+        
+        categoryList.add(category);
+        updateCategoryCombo();
+
+        wordDialog.setCategoryList(categoryList, category);
+    }
+    
+    private void updateCategoryCombo() {
+        String selected = jComboBox1.getSelectedItem().toString();
+        
+        int n = jComboBox1.getItemCount();
+        for (int i = 1; i < n; i++) {
+            jComboBox1.removeItemAt(n - i);
+        }
+        
+        //jComboBox1.removeAllItems();
+        //jComboBox1.addItem("All");
+        
         Collections.sort(categoryList, Collator.getInstance(new Locale("cs", "CS"))); 
         for (String s: categoryList) {
             jComboBox1.addItem(s);
         }
-        
+        jComboBox1.setSelectedItem(selected);
     }
     
     private void saveDirectory() throws IOException {

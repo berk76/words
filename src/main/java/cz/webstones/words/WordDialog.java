@@ -20,13 +20,17 @@ public class WordDialog extends javax.swing.JDialog {
     private boolean commited;
     private ArrayList<String> categoryList;
     private WordDto word;
+    private AddCategoryDialog addCatDialog;
+    private ICategory category;
 
     /**
      * Creates new form WordDialog
      */
-    public WordDialog(java.awt.Frame parent, boolean modal) {
+    public WordDialog(java.awt.Frame parent, boolean modal, AddCategoryDialog d, ICategory cat) {
         super(parent, modal);
         initComponents();
+        addCatDialog = d;
+        category = cat;
     }
     
     public void setWord(WordDto w, ArrayList<String> categoryList) {
@@ -35,7 +39,6 @@ public class WordDialog extends javax.swing.JDialog {
         double rate = 0;
         
         setCommited(false);
-        this.categoryList = categoryList;
         this.word = w;
     
         Font f;
@@ -46,12 +49,9 @@ public class WordDialog extends javax.swing.JDialog {
         
         jTextField1.setText(this.word.getCz());
         jTextField2.setText(this.word.getEn());
-        
-        jComboBox1.removeAllItems();
-        Collections.sort(categoryList, Collator.getInstance(new Locale("cs", "CS"))); 
-        for (String s: categoryList) {
-            jComboBox1.addItem(s);
-        }
+
+        this.categoryList = categoryList;
+        updateCategoryCombo();
         jComboBox1.setSelectedItem(this.word.getCategory());
         
         jTextField3.setText((this.word.getLastGoodHit() == null) ? "" : sdf.format(this.word.getLastGoodHit()));
@@ -60,6 +60,20 @@ public class WordDialog extends javax.swing.JDialog {
         rate = (total == 0) ? 0 : Service.round((double) this.word.getGoodHits() / total, 2);
         jTextField5.setText(String.valueOf(total));
         jTextField6.setText(String.valueOf(rate));
+    }
+    
+    public void setCategoryList(ArrayList<String> categoryList, String selected) {
+        this.categoryList = categoryList;
+        updateCategoryCombo();
+        jComboBox1.setSelectedItem(selected);
+    }
+    
+    private void updateCategoryCombo() {
+        jComboBox1.removeAllItems();
+        Collections.sort(categoryList, Collator.getInstance(new Locale("cs", "CS"))); 
+        for (String s: categoryList) {
+            jComboBox1.addItem(s);
+        }
     }
 
     /**
@@ -87,6 +101,7 @@ public class WordDialog extends javax.swing.JDialog {
         jTextField5 = new javax.swing.JTextField();
         jLabel7 = new javax.swing.JLabel();
         jTextField6 = new javax.swing.JTextField();
+        jButton3 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Edit word");
@@ -157,6 +172,14 @@ public class WordDialog extends javax.swing.JDialog {
             }
         });
 
+        jButton3.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
+        jButton3.setText("Add Category...");
+        jButton3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton3ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -176,7 +199,10 @@ public class WordDialog extends javax.swing.JDialog {
                             .addComponent(jLabel1)
                             .addComponent(jLabel2)
                             .addComponent(jLabel3)
-                            .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jButton3))
                             .addGroup(layout.createSequentialGroup()
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                                     .addComponent(jLabel5)
@@ -206,7 +232,9 @@ public class WordDialog extends javax.swing.JDialog {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jLabel3)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jButton3))
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(layout.createSequentialGroup()
@@ -225,7 +253,7 @@ public class WordDialog extends javax.swing.JDialog {
                         .addComponent(jLabel7)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jTextField6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 12, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButton1)
                     .addComponent(jButton2))
@@ -252,10 +280,19 @@ public class WordDialog extends javax.swing.JDialog {
         // TODO add your handling code here:
     }//GEN-LAST:event_jTextField6ActionPerformed
 
+    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
+        addCatDialog.setCategoryText("");
+        addCatDialog.setVisible(true);
+        if (addCatDialog.isCommited()) {
+            category.addCategory(addCatDialog.getCategoryText());
+        }
+    }//GEN-LAST:event_jButton3ActionPerformed
+
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
+    private javax.swing.JButton jButton3;
     private javax.swing.JComboBox jComboBox1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
