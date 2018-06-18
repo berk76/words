@@ -86,6 +86,11 @@ public class Main extends javax.swing.JFrame implements IDictionary, ICategory {
     }
     
     public void addCategory(String category) {
+        
+        if (category.equals("")) {
+            return;
+        }
+        
         for (String c: categoryList) {
             if (c.equals(category)) {
                 JOptionPane.showMessageDialog(null, "Category " + category + " already exists.");
