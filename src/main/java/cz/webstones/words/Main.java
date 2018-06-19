@@ -87,7 +87,7 @@ public class Main extends javax.swing.JFrame implements IDictionary, ICategory {
     
     public void addCategory(String category) {
         
-        if (category.equals("")) {
+        if ((category == null) || category.trim().equals("")) {
             return;
         }
         
