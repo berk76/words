@@ -462,9 +462,12 @@ public class Main extends javax.swing.JFrame implements IDictionary, ICategory {
     }//GEN-LAST:event_formWindowClosing
 
     private void jComboBox1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBox1ActionPerformed
-        findDialog.setVisible(false);
-        reorder();
-        next(1);
+        // Do not reorder if category has been added
+        if (!wordDialog.isVisible()) {
+            findDialog.setVisible(false);
+            reorder();
+            next(1);
+        }
     }//GEN-LAST:event_jComboBox1ActionPerformed
 
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
