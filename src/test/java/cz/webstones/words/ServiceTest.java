@@ -27,4 +27,10 @@ public class ServiceTest {
         assertEquals("Full category path:", "Data/Categories.txt", s.getFullCategoryFilePath());
         assertEquals("Full MP3 dir path:", "Data/MP3", s.getFullMp3Path());
     }
+    
+    @Test
+    public void testCleanAndAddSeparator() throws IOException {
+        assertEquals("Bad string 1", "Ahoj;", Service.cleanAndAddSeparator(";Ah;;o;j; ; ", ";"));
+        assertEquals("Bad string 2", "Ahoj;", Service.cleanAndAddSeparator(";Ah;;o;j; ; ", ";"));
+    }
 }

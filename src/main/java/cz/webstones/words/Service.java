@@ -155,13 +155,13 @@ public class Service {
             }
             
             for (WordDto w: dict) {
-                bw.write(w.getEn() + separator);
-                bw.write(w.getCz() + separator);
-                bw.write(w.getCategory() + separator);
-                bw.write(w.getGoodHits() + separator);
-                bw.write(((w.getLastGoodHit() != null) ? sdf.format(w.getLastGoodHit()) : "") + separator);
-                bw.write(w.getWrongHits() + separator);
-                bw.write(((w.getLastWrongHit() != null) ? sdf.format(w.getLastWrongHit()) : "") + separator);
+                bw.write(cleanAndAddSeparator(w.getEn(), separator));
+                bw.write(cleanAndAddSeparator(w.getCz(), separator));
+                bw.write(cleanAndAddSeparator(w.getCategory(), separator));
+                bw.write(cleanAndAddSeparator(String.valueOf(w.getGoodHits()), separator));
+                bw.write(cleanAndAddSeparator(((w.getLastGoodHit() != null) ? sdf.format(w.getLastGoodHit()) : ""), separator));
+                bw.write(cleanAndAddSeparator(String.valueOf(w.getWrongHits()), separator));
+                bw.write(cleanAndAddSeparator(((w.getLastWrongHit() != null) ? sdf.format(w.getLastWrongHit()) : ""), separator));
                 bw.newLine();
             }
         } finally {
@@ -169,6 +169,19 @@ public class Service {
             osw.close();
             fos.close();
         }
+    }
+    
+    public static String cleanAndAddSeparator(String s, String separator) {
+        String result;
+        
+        if (s == null) {
+            result = "";
+        } else {
+            result = s.replaceAll(separator, "").trim();
+        }
+        result += separator;
+        
+        return result;
     }
 
             
