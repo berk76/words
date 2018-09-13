@@ -30,7 +30,9 @@ public class ServiceTest {
     
     @Test
     public void testCleanAndAddSeparator() throws IOException {
-        assertEquals("Bad string 1", "Ahoj;", Service.cleanAndAddSeparator(";Ah;;o;j; ; ", ";"));
-        assertEquals("Bad string 2", "Ahoj;", Service.cleanAndAddSeparator(";Ah;;o;j; ; ", ";"));
+        assertEquals("Bad string 1", "Ahoj;", Service.cleanAndAddSeparator(" Ah;oj ", ";"));
+        assertEquals("Bad string 2", "Ahoj;", Service.cleanAndAddSeparator("Ahoj ;", ";"));
+        assertEquals("Bad string 3", "Ahoj;", Service.cleanAndAddSeparator(" ;Ahoj", ";"));
+        assertEquals("Bad string 4", "Ahoj;", Service.cleanAndAddSeparator(";Ah;;o;j; ; ", ";"));
     }
 }
