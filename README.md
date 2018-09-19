@@ -2,6 +2,8 @@
 
 Small application for learning and repeating foreign words. I made this small application for my little school girl.
 
+![Words.png](doc/Words.png)
+
 ## Files and directories
 
 Create following directory structure:
