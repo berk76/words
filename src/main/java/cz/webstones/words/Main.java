@@ -29,6 +29,7 @@ public class Main extends javax.swing.JFrame implements IDictionary, ICategory {
     private int dictCurrnt;
     private Setup setup;
     private AddCategoryDialog addCatDialog = new AddCategoryDialog(this, true);
+    private RenameCategoryDialog renameCatDialog = new RenameCategoryDialog(this, true);
     private WordDialog wordDialog = new WordDialog(this, true, addCatDialog, this);
     private AboutDialog aboutDialog = new AboutDialog(this, true);
     private FindDialog findDialog = new FindDialog(this, false);
@@ -54,20 +55,6 @@ public class Main extends javax.swing.JFrame implements IDictionary, ICategory {
             ex.printStackTrace();
         }
         
-        /*
-        KeyboardFocusManager ky = KeyboardFocusManager.getCurrentKeyboardFocusManager();
-        ky.addKeyEventDispatcher(new KeyEventDispatcher() {
-            @Override
-            public boolean dispatchKeyEvent(KeyEvent evt) {
-
-                if (evt.isControlDown() && (evt.getKeyCode() == KeyEvent.VK_F)) {
-                    showFindDialog();
-                    return true;
-                }
-                return false;
-            }
-        });
-        */
         next(1);
     }
     
@@ -100,6 +87,24 @@ public class Main extends javax.swing.JFrame implements IDictionary, ICategory {
         updateCategoryCombo();
 
         wordDialog.setCategoryList(categoryList, category);
+    }
+    
+    public void renameCategory(String oldCat, String newCat) {
+        
+        if ((newCat == null) || newCat.trim().equals("")) {
+            return;
+        }
+        
+        for (WordDto w: allDictionary) {
+            if (w.getCategory().equals(oldCat)) {
+                w.setCategory(newCat);
+            }
+        }
+        
+        categoryList = Service.loadCategoryList(allDictionary);
+        updateCategoryCombo();
+        
+        reorder();
     }
     
     private void updateCategoryCombo() {
@@ -422,6 +427,11 @@ public class Main extends javax.swing.JFrame implements IDictionary, ICategory {
 
         jMenuItem5.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
         jMenuItem5.setText("Rename...");
+        jMenuItem5.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem5ActionPerformed(evt);
+            }
+        });
         jMenu2.add(jMenuItem5);
 
         jMenuBar1.add(jMenu2);
@@ -533,6 +543,15 @@ public class Main extends javax.swing.JFrame implements IDictionary, ICategory {
             addCategory(addCatDialog.getCategoryText());
         }
     }//GEN-LAST:event_jMenuItem4ActionPerformed
+
+    private void jMenuItem5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem5ActionPerformed
+        renameCatDialog.setNewCategoryText("");
+        renameCatDialog.setCategoryList(categoryList, jComboBox1.getSelectedItem().toString());
+        renameCatDialog.setVisible(true);
+        if (renameCatDialog.isCommited()) {
+            renameCategory(renameCatDialog.getOldCategoryText(), renameCatDialog.getNewCategoryText());
+        }
+    }//GEN-LAST:event_jMenuItem5ActionPerformed
 
     /**
      * @param args the command line arguments
