@@ -29,6 +29,7 @@ public class WordDialog extends javax.swing.JDialog {
     public WordDialog(java.awt.Frame parent, boolean modal, AddCategoryDialog d, ICategory cat) {
         super(parent, modal);
         initComponents();
+        this.setLocationRelativeTo(null);
         addCatDialog = d;
         category = cat;
     }

@@ -22,6 +22,7 @@ public class FindDialog extends javax.swing.JDialog {
     public FindDialog(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        this.setLocationRelativeTo(null);
     }
     
     public void setLabel(String s) {
