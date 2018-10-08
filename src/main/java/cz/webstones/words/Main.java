@@ -70,6 +70,33 @@ public class Main extends javax.swing.JFrame implements IDictionary, ICategory {
         reorder();
     }
     
+    public void addWord(WordDto w) {
+        if ((w.getEn() == null) || w.getEn().trim().equals("")) {
+            JOptionPane.showMessageDialog(null, "Word cannot be empty.");
+            return;
+        }
+        
+        if ((w.getCz() == null) || w.getCz().trim().equals("")) {
+            JOptionPane.showMessageDialog(null, "Word cannot be empty.");
+            return;
+        }
+        
+        if ((w.getCategory() == null) || w.getCategory().trim().equals("")) {
+            JOptionPane.showMessageDialog(null, "Category cannot be empty.");
+            return;
+        }
+        
+        for (WordDto t : allDictionary) {
+            w.setCz(w.getCz().trim());
+            w.setEn(w.getEn().trim());
+            if (t.getEn().equals(w.getEn())) {
+                JOptionPane.showMessageDialog(null, "Word " + w.getEn() + " already exists.");
+                return;
+            }
+        }
+        allDictionary.add(w);
+    }
+    
     public void addCategory(String category) {
         
         if ((category == null) || category.trim().equals("")) {
@@ -266,6 +293,7 @@ public class Main extends javax.swing.JFrame implements IDictionary, ICategory {
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
         jMenuItem1 = new javax.swing.JMenuItem();
+        jMenuItem7 = new javax.swing.JMenuItem();
         jMenuItem3 = new javax.swing.JMenuItem();
         jMenu2 = new javax.swing.JMenu();
         jMenuItem4 = new javax.swing.JMenuItem();
@@ -436,6 +464,16 @@ public class Main extends javax.swing.JFrame implements IDictionary, ICategory {
         });
         jMenu1.add(jMenuItem1);
 
+        jMenuItem7.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_D, java.awt.event.InputEvent.CTRL_MASK));
+        jMenuItem7.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        jMenuItem7.setText("Add...");
+        jMenuItem7.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem7ActionPerformed(evt);
+            }
+        });
+        jMenu1.add(jMenuItem7);
+
         jMenuItem3.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_E, java.awt.event.InputEvent.CTRL_MASK));
         jMenuItem3.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
         jMenuItem3.setText("Edit...");
@@ -562,7 +600,9 @@ public class Main extends javax.swing.JFrame implements IDictionary, ICategory {
     }//GEN-LAST:event_jMenuItem6ActionPerformed
 
     private void jMenuItem3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem3ActionPerformed
+        // Edit Word
         wordDialog.setWord(filteredDictionary.get(dictCurrnt), categoryList);
+        wordDialog.setForeignWordEditable(false);
         wordDialog.setVisible(true);
         this.jLabel1.setText(filteredDictionary.get(this.dictCurrnt).getCz());
     }//GEN-LAST:event_jMenuItem3ActionPerformed
@@ -583,6 +623,20 @@ public class Main extends javax.swing.JFrame implements IDictionary, ICategory {
             renameCategory(renameCatDialog.getOldCategoryText(), renameCatDialog.getNewCategoryText());
         }
     }//GEN-LAST:event_jMenuItem5ActionPerformed
+
+    private void jMenuItem7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem7ActionPerformed
+        // Add Word
+        WordDto w = new WordDto();
+        w.setCategory(jComboBox1.getSelectedItem().toString());
+        wordDialog.setWord(w, categoryList);
+        wordDialog.setForeignWordEditable(true);
+        wordDialog.setVisible(true);
+        if (wordDialog.isCommited()) {
+            wordDialog.setVisible(false);
+            addWord(w);
+        }
+        
+    }//GEN-LAST:event_jMenuItem7ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -642,6 +696,7 @@ public class Main extends javax.swing.JFrame implements IDictionary, ICategory {
     private javax.swing.JMenuItem jMenuItem4;
     private javax.swing.JMenuItem jMenuItem5;
     private javax.swing.JMenuItem jMenuItem6;
+    private javax.swing.JMenuItem jMenuItem7;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JTextField jTextField1;
     // End of variables declaration//GEN-END:variables

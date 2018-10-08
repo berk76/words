@@ -63,6 +63,12 @@ public class WordDialog extends javax.swing.JDialog {
         jTextField6.setText(String.valueOf(rate));
     }
     
+    public void setForeignWordEditable(boolean b) {
+        jTextField2.setEditable(b);
+        jTextField2.setEnabled(b);
+        jTextField2.setFocusable(b);
+    }
+    
     public void setCategoryList(ArrayList<String> categoryList, String selected) {
         this.categoryList = categoryList;
         updateCategoryCombo();
@@ -116,11 +122,8 @@ public class WordDialog extends javax.swing.JDialog {
         jLabel2.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
         jLabel2.setText("Foreign word");
 
-        jTextField2.setEditable(false);
         jTextField2.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
         jTextField2.setText("jTextField2");
-        jTextField2.setEnabled(false);
-        jTextField2.setFocusable(false);
 
         jLabel3.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
         jLabel3.setText("Category");
