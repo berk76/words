@@ -16,7 +16,7 @@ public class ServiceTest {
     
     @Test
     public void testSetup() throws IOException {
-        Setup s = Service.loadSetup();
+        Setup s = Service.loadSetup(null);
         assertEquals("Data dir:", "Data", s.getDataDir());
         assertEquals("MP3 dir:", "MP3", s.getMp3Dir());
         assertEquals("Dictionary file:", "Dictionary.txt", s.getDirectoryFile());

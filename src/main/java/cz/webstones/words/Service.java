@@ -33,14 +33,19 @@ import java.util.Random;
  */
 public class Service {
     
-    public static Setup loadSetup() throws IOException {
+    public static Setup loadSetup(File f) throws IOException {
         Setup result = new Setup();
         InputStream is = null;
         Properties props = new Properties();
-        Class cls = Setup.class;
-        ClassLoader cLoader = cls.getClassLoader();
         
-        is = cLoader.getResourceAsStream("setup.properties");
+        if (f != null) {
+            is = new FileInputStream(f);
+        } else {
+            Class cls = Setup.class;
+            ClassLoader cLoader = cls.getClassLoader();
+            is = cLoader.getResourceAsStream("setup.properties");
+        }
+        
         props.load(is);
         is.close();
         

@@ -49,7 +49,11 @@ public class Main extends javax.swing.JFrame implements IDictionary, ICategory {
         findDialog.setDictionary(this);
         
         try {
-            setup = Service.loadSetup();
+            File s = new File(System.getProperty("user.dir") + File.separator + "setup.properties");
+            if (!s.canRead()) {
+                s = null;
+            }
+            setup = Service.loadSetup(s);
             loadDictionary();
         } catch (Exception ex) {
             ex.printStackTrace();
