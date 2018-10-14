@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.Locale;
+import java.util.prefs.Preferences;
 import javax.swing.JOptionPane;
 
 /**
@@ -38,6 +39,14 @@ public class Main extends javax.swing.JFrame implements IDictionary, ICategory {
      * Creates new form Main
      */
     public Main() {
+        
+        if (isRunning()){
+            JOptionPane.showMessageDialog(this, "Two instances of this program cannot be running at the same time. \n Exiting now");
+            System.exit(0);
+        } else {
+            onStart();
+        }
+        
         initComponents();
         this.setTitle("Words");
         jLabel1.setText("");
@@ -60,6 +69,24 @@ public class Main extends javax.swing.JFrame implements IDictionary, ICategory {
         }
         
         next(1);
+    }
+    
+    private void onStart(){
+        Preferences prefs;
+        prefs = Preferences.userRoot().node(this.getClass().getName());
+        prefs.put("RUNNING", "true");
+    }
+
+    private void onFinish(){
+        Preferences prefs;
+        prefs = Preferences.userRoot().node(this.getClass().getName());
+        prefs.put("RUNNING", "false");
+    }
+
+    private boolean isRunning(){
+        Preferences prefs;
+        prefs = Preferences.userRoot().node(this.getClass().getName());
+        return prefs.get("RUNNING", null) != null ? Boolean.valueOf(prefs.get("RUNNING", null)) : false;
     }
     
     private void loadDictionary() throws FileNotFoundException, UnsupportedEncodingException, IOException {
@@ -575,6 +602,8 @@ public class Main extends javax.swing.JFrame implements IDictionary, ICategory {
             saveDirectory();
         } catch (IOException ex) {
             ex.printStackTrace();
+        } finally {
+            onFinish();
         }
     }//GEN-LAST:event_formWindowClosing
 
