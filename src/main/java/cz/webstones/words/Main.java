@@ -106,17 +106,17 @@ public class Main extends javax.swing.JFrame implements IDictionary, ICategory {
     
     public void addWord(WordDto w) {
         if ((w.getEn() == null) || w.getEn().trim().equals("")) {
-            JOptionPane.showMessageDialog(null, "Word cannot be empty.");
+            JOptionPane.showMessageDialog(this, "Word cannot be empty.");
             return;
         }
         
         if ((w.getCz() == null) || w.getCz().trim().equals("")) {
-            JOptionPane.showMessageDialog(null, "Word cannot be empty.");
+            JOptionPane.showMessageDialog(this, "Word cannot be empty.");
             return;
         }
         
         if ((w.getCategory() == null) || w.getCategory().trim().equals("")) {
-            JOptionPane.showMessageDialog(null, "Category cannot be empty.");
+            JOptionPane.showMessageDialog(this, "Category cannot be empty.");
             return;
         }
         
@@ -124,25 +124,28 @@ public class Main extends javax.swing.JFrame implements IDictionary, ICategory {
             w.setCz(w.getCz().trim());
             w.setEn(w.getEn().trim());
             if (t.getEn().equals(w.getEn())) {
-                JOptionPane.showMessageDialog(null, "Word " + w.getEn() + " already exists.");
+                JOptionPane.showMessageDialog(this, "Word " + w.getEn() + " already exists.");
                 return;
             }
         }
         allDictionary.add(w);
         
         /* Get MP3 */
-        try {
-            String fName = String.format("%s/%s.mp3", setup.getFullMp3Path(), removeBadChars(w.getEn()));
-            File f = new File(fName);
-            if (!f.exists()) {
-                Mp3Creator.createMp3(w.getEn(), setup.getLanguage(), fName);
+        int dialogResult = JOptionPane.showConfirmDialog (this, "Do you want create MP3?","Question", JOptionPane.YES_NO_OPTION);
+        if(dialogResult == JOptionPane.YES_OPTION){
+            try {
+                String fName = String.format("%s/%s.mp3", setup.getFullMp3Path(), removeBadChars(w.getEn()));
+                File f = new File(fName);
+                if (!f.exists()) {
+                    Mp3Creator.createMp3(w.getEn(), setup.getLanguage(), fName);
+                }
+            } catch (Mp3CreatorException ex) {
+                JOptionPane.showMessageDialog(this, ex.getMessage());
             }
-        } catch (Mp3CreatorException ex) {
-            JOptionPane.showMessageDialog(null, ex.getMessage());
+
+            wordToPlay = w;
+            play();
         }
-        
-        wordToPlay = w;
-        play();
     }
     
     public void addCategory(String category) {
@@ -153,7 +156,7 @@ public class Main extends javax.swing.JFrame implements IDictionary, ICategory {
         
         for (String c: categoryList) {
             if (c.equals(category)) {
-                JOptionPane.showMessageDialog(null, "Category " + category + " already exists.");
+                JOptionPane.showMessageDialog(this, "Category " + category + " already exists.");
                 return;
             }
         }
@@ -309,7 +312,7 @@ public class Main extends javax.swing.JFrame implements IDictionary, ICategory {
         if (jTextField1.getText().trim().equals(jLabel3.getText().trim())) {
             return true;
         }
-        JOptionPane.showMessageDialog(null, "Texts doesn't match. Correct it or delete it.");
+        JOptionPane.showMessageDialog(this, "Texts doesn't match. Correct it or delete it.");
         return false;
     }
 

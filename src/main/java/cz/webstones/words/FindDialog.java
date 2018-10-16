@@ -49,7 +49,7 @@ public class FindDialog extends javax.swing.JDialog {
         }
                 
         if (dict == null) {
-            JOptionPane.showMessageDialog(null, "No dictionary provided!");
+            JOptionPane.showMessageDialog(this, "No dictionary provided!");
             return;
         }
         
@@ -73,7 +73,7 @@ public class FindDialog extends javax.swing.JDialog {
             }
         }
         
-        JOptionPane.showMessageDialog(null, "Nothing found");
+        JOptionPane.showMessageDialog(this, "Nothing found");
     }
 
     /**
