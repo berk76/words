@@ -134,7 +134,7 @@ public class Main extends javax.swing.JFrame implements IDictionary, ICategory {
         int dialogResult = JOptionPane.showConfirmDialog (this, "Do you want create MP3?","Question", JOptionPane.YES_NO_OPTION);
         if(dialogResult == JOptionPane.YES_OPTION){
             try {
-                String fName = String.format("%s/%s.mp3", setup.getFullMp3Path(), removeBadChars(w.getEn()));
+                String fName = String.format("%s/%s", setup.getFullMp3Path(), w.getMp3FilenameEn());
                 File f = new File(fName);
                 if (!f.exists()) {
                     Mp3Creator.createMp3(w.getEn(), setup.getLanguage(), fName);
@@ -265,7 +265,7 @@ public class Main extends javax.swing.JFrame implements IDictionary, ICategory {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                String fName = String.format("%s/%s.mp3", setup.getFullMp3Path(), removeBadChars(wordToPlay.getEn()));
+                String fName = String.format("%s/%s", setup.getFullMp3Path(), wordToPlay.getMp3FilenameEn());
                 File f = new File(fName);
                 if (f.exists()) {
                     AudioFilePlayer.playFile(fName);
@@ -280,11 +280,6 @@ public class Main extends javax.swing.JFrame implements IDictionary, ICategory {
         findDialog.setLabel("Searching in category " + jComboBox1.getSelectedItem());
         findDialog.setVisible(true);
     }
-    
-    private String removeBadChars(String w) {
-        return w.replaceAll("\\?", "").replaceAll("\\.", "").replaceAll("'", "").replaceAll(",", "");
-    }
-    
     
     private void updateStatus() {
         this.jLabel2.setText(String.valueOf(this.dictCurrnt + 1) + " / " + String.valueOf(filteredDictionary.size()) + " words");

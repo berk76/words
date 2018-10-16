@@ -20,6 +20,11 @@ public class WordDto {
     private Date lastGoodHit;
     private String category;
 
+    
+    public String getMp3FilenameEn() {
+        return String.format("%s.mp3", removeBadChars(this.getEn()));
+    }
+    
     /**
      * @return the cz
      */
@@ -150,5 +155,9 @@ public class WordDto {
      */
     public void setCategory(String category) {
         this.category = category;
+    }
+    
+    private String removeBadChars(String w) {
+        return w.replaceAll("\\?", "").replaceAll("\\.", "").replaceAll("'", "").replaceAll(",", "");
     }
 }
