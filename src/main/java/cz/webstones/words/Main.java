@@ -4,6 +4,8 @@
  */
 package cz.webstones.words;
 
+import cz.webstones.words.mp3.Mp3Creator;
+import cz.webstones.words.mp3.Mp3CreatorException;
 import java.awt.Font;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -34,6 +36,7 @@ public class Main extends javax.swing.JFrame implements IDictionary, ICategory {
     private WordDialog wordDialog = new WordDialog(this, true, addCatDialog, this);
     private AboutDialog aboutDialog = new AboutDialog(this, true);
     private FindDialog findDialog = new FindDialog(this, false);
+    protected WordDto wordToPlay = null;
 
     /**
      * Creates new form Main
@@ -126,6 +129,20 @@ public class Main extends javax.swing.JFrame implements IDictionary, ICategory {
             }
         }
         allDictionary.add(w);
+        
+        /* Get MP3 */
+        try {
+            String fName = String.format("%s/%s.mp3", setup.getFullMp3Path(), removeBadChars(w.getEn()));
+            File f = new File(fName);
+            if (!f.exists()) {
+                Mp3Creator.createMp3(w.getEn(), setup.getLanguage(), fName);
+            }
+        } catch (Mp3CreatorException ex) {
+            JOptionPane.showMessageDialog(null, ex.getMessage());
+        }
+        
+        wordToPlay = w;
+        play();
     }
     
     public void addCategory(String category) {
@@ -245,7 +262,7 @@ public class Main extends javax.swing.JFrame implements IDictionary, ICategory {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                String fName = String.format("%s/%s.mp3", setup.getFullMp3Path(), removeBadChars(filteredDictionary.get(dictCurrnt).getEn()));
+                String fName = String.format("%s/%s.mp3", setup.getFullMp3Path(), removeBadChars(wordToPlay.getEn()));
                 File f = new File(fName);
                 if (f.exists()) {
                     AudioFilePlayer.playFile(fName);
@@ -590,6 +607,7 @@ public class Main extends javax.swing.JFrame implements IDictionary, ICategory {
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
         this.jLabel3.setText(filteredDictionary.get(this.dictCurrnt).getEn());
+        wordToPlay = filteredDictionary.get(this.dictCurrnt);
         play();
     }//GEN-LAST:event_jButton3ActionPerformed
 

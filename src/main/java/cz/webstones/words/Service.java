@@ -55,6 +55,7 @@ public class Service {
         result.setCategoryFile(props.getProperty("categories.file"));
         result.setDictionarySeparator(props.getProperty("dictionary.separator"));
         result.setDictionaryDateFormat(props.getProperty("dictionary.date.format"));
+        result.setLanguage(props.getProperty("language.id"));
         return result;
     }
     

@@ -15,6 +15,7 @@ public class Setup {
     private String categoryFile;
     private String dictionarySeparator;
     private String dictionaryDateFormat;
+    private String language;
 
     /**
      * @return the dataDir
@@ -131,6 +132,20 @@ public class Setup {
      */
     public void setDictionaryDateFormat(String dictionaryDateFormat) {
         this.dictionaryDateFormat = dictionaryDateFormat;
+    }
+
+    /**
+     * @return the language
+     */
+    public String getLanguage() {
+        return language;
+    }
+
+    /**
+     * @param language the language to set
+     */
+    public void setLanguage(String language) {
+        this.language = language;
     }
     
 }
