@@ -4,6 +4,7 @@
  */
 package cz.webstones.words;
 
+import java.io.File;
 import java.util.Date;
 
 /**
@@ -22,7 +23,7 @@ public class WordDto {
 
     
     public String getMp3FilenameEn() {
-        return String.format("%s.mp3", removeBadChars(this.getEn()));
+        return String.format("%s" + File.separator + "%s.mp3", Service.getSetup(false).getFullMp3Path(), removeBadChars(this.getEn()));
     }
     
     /**

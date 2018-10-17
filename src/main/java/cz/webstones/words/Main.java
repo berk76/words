@@ -61,11 +61,7 @@ public class Main extends javax.swing.JFrame implements IDictionary, ICategory {
         findDialog.setDictionary(this);
         
         try {
-            File s = new File(System.getProperty("user.dir") + File.separator + "setup.properties");
-            if (!s.canRead()) {
-                s = null;
-            }
-            setup = Service.loadSetup(s);
+            setup = Service.getSetup(true);
             loadDictionary();
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -132,9 +128,9 @@ public class Main extends javax.swing.JFrame implements IDictionary, ICategory {
         
         /* Get MP3 */
         int dialogResult = JOptionPane.showConfirmDialog (this, "Do you want create MP3?","Question", JOptionPane.YES_NO_OPTION);
-        if(dialogResult == JOptionPane.YES_OPTION){
+        if (dialogResult == JOptionPane.YES_OPTION){
             try {
-                String fName = String.format("%s/%s", setup.getFullMp3Path(), w.getMp3FilenameEn());
+                String fName = w.getMp3FilenameEn();
                 File f = new File(fName);
                 if (!f.exists()) {
                     Mp3Creator.createMp3(w.getEn(), setup.getLanguage(), fName);
@@ -265,7 +261,7 @@ public class Main extends javax.swing.JFrame implements IDictionary, ICategory {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                String fName = String.format("%s/%s", setup.getFullMp3Path(), wordToPlay.getMp3FilenameEn());
+                String fName = wordToPlay.getMp3FilenameEn();
                 File f = new File(fName);
                 if (f.exists()) {
                     AudioFilePlayer.playFile(fName);
