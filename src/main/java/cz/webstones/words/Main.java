@@ -133,20 +133,26 @@ public class Main extends javax.swing.JFrame implements IDictionary, ICategory {
             }
         }
         allDictionary.add(w);
+        checkIfSoundExists(w);
+        updateCategoryCombo();
+    }
+    
+    private void checkIfSoundExists(WordDto w) {
+        String fName = w.getMp3FilenameEn();
+        File f = new File(fName);
+        
+        if (f.exists()) {
+            return;
+        }
         
         /* Get MP3 */
-        int dialogResult = JOptionPane.showConfirmDialog (this, "Do you want create MP3?","Question", JOptionPane.YES_NO_OPTION);
+        int dialogResult = JOptionPane.showConfirmDialog (this, "Sound for this word is missing.\nDo you want download MP3?","Question", JOptionPane.YES_NO_OPTION);
         if (dialogResult == JOptionPane.YES_OPTION){
             try {
-                String fName = w.getMp3FilenameEn();
-                File f = new File(fName);
-                if (!f.exists()) {
-                    Mp3Creator.createMp3(w.getEn(), setup.getLanguage(), fName);
-                }
+                Mp3Creator.createMp3(w.getEn(), setup.getLanguage(), fName);
             } catch (Mp3CreatorException ex) {
                 JOptionPane.showMessageDialog(this, ex.getMessage());
             }
-
             wordToPlay = w;
             play();
         }
@@ -608,6 +614,8 @@ public class Main extends javax.swing.JFrame implements IDictionary, ICategory {
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
+        checkIfSoundExists(filteredDictionary.get(dictCurrnt));
+        
         this.jLabel3.setText(filteredDictionary.get(this.dictCurrnt).getEn());
         wordToPlay = filteredDictionary.get(this.dictCurrnt);
         play();
@@ -658,6 +666,7 @@ public class Main extends javax.swing.JFrame implements IDictionary, ICategory {
         wordDialog.setForeignWordEditable(false);
         wordDialog.setVisible(true);
         this.jLabel1.setText(filteredDictionary.get(this.dictCurrnt).getCz());
+        checkIfSoundExists(filteredDictionary.get(dictCurrnt));
     }//GEN-LAST:event_jMenuItem3ActionPerformed
 
     private void jMenuItem4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem4ActionPerformed
