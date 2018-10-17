@@ -54,7 +54,7 @@ public class Service {
 
             /* Save user setup if doesn't exist */
             if (!s.exists() && createLocalCopy) {
-                saveSetup(s);
+                saveSetup();
             }
         } catch (IOException ex) {
             ex.printStackTrace();
@@ -111,9 +111,10 @@ public class Service {
         }
     }
 
-    private static void saveSetup(File f) throws IOException {
+    public static void saveSetup() throws IOException {
         OutputStream output = null;
         Properties props = new Properties();
+        File f = new File(System.getProperty("user.dir") + File.separator + "setup.properties");
         
         if (setup == null) {
             return;
@@ -410,6 +411,32 @@ public class Service {
             }
         }
 
+        return result;
+    }
+    
+    public static ArrayList<LanguageDto> getLanguageList() throws UnsupportedEncodingException, IOException {
+        ArrayList<LanguageDto> result = new ArrayList<LanguageDto>();
+
+        Class cls = Setup.class;
+        ClassLoader cLoader = cls.getClassLoader();
+        InputStream is = cLoader.getResourceAsStream("languages.txt");
+        BufferedReader reader = new BufferedReader(new InputStreamReader(is, "UTF-8"));
+
+        String line;
+        while ((is != null) && ((line = reader.readLine()) != null)) {
+            String a[] = line.split(";");
+            if (a.length == 2) {
+                LanguageDto l = new LanguageDto();
+                l.setCode(a[0]);
+                l.setName(a[1]);
+                result.add(l);
+            }
+        }
+        reader.close();
+        if (is != null) {
+            is.close();
+        }
+        
         return result;
     }
 }

@@ -36,6 +36,7 @@ public class Main extends javax.swing.JFrame implements IDictionary, ICategory {
     private WordDialog wordDialog = new WordDialog(this, true, addCatDialog, this);
     private AboutDialog aboutDialog = new AboutDialog(this, true);
     private FindDialog findDialog = new FindDialog(this, false);
+    private LanguageDialog langDialog = new LanguageDialog(this, true);
     protected WordDto wordToPlay = null;
 
     /**
@@ -62,9 +63,16 @@ public class Main extends javax.swing.JFrame implements IDictionary, ICategory {
         
         try {
             setup = Service.getSetup(true);
+            if ((setup.getLanguage() == null) || setup.getLanguage().equals("")) {
+                langDialog.setVisible(true);
+                setup.setLanguage(langDialog.getLangCode());
+                Service.saveSetup();
+            }
+            
             loadDictionary();
         } catch (Exception ex) {
             ex.printStackTrace();
+            System.exit(-1);
         }
         
         next(1);

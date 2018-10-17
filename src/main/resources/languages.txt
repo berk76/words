@@ -1,0 +1,53 @@
+af-ZA;Afrikaans
+sq;Albanian
+ar-AE;Arabic
+hy;Armenian
+bn-BD;Bengali (Bangladesh)
+bn-IN;Bengali (India)
+bs;Bosnian
+ca-ES;Catalan
+cmn-Hant-TW;Chinese
+hr-HR;Croatian
+cs-CZ;Czech
+da-DK;Danish
+nl-NL;Dutch
+en-AU;English (Australia)
+en-GB;English (United Kingdom)
+en-US;English (United States)
+eo;Esperanto
+fil-PH;Filipino
+fi-FI;Finnish
+fr-FR;French
+fr-CA;French (Canada)
+de-DE;German
+el-GR;Greek
+hi-IN;Hindi
+hu-HU;Hungarian
+is-IS;Icelandic
+id-ID;Indonesian
+it-IT;Italian
+ja-JP;Japanese (Japan)
+km;Khmer
+ko-KR;Korean
+la;Latin
+lv;Latvian
+mk;Macedonian
+ne;Nepali
+nb-NO;Norwegian
+pl-PL;Polish
+pt-BR;Portuguese
+ro-RO;Romanian
+ru-RU;Russian
+sr-RS;Serbian
+si;Sinhala
+sk-SK;Slovak
+es-MX;Spanish (Mexico)
+es-ES;Spanish (Spain)
+sw;Swahili
+sv-SE;Swedish
+ta;Tamil
+th-TH;Thai
+tr-TR;Turkish
+uk-UA;Ukrainian
+vi-VN;Vietnamese
+cy;Welsh
