@@ -6,21 +6,17 @@ Small application for learning and repeating foreign words. I made this small ap
 
 ## Files and directories
 
-Create following directory structure:
+First time you run program you will be prompted about dictionary language.
+After choosing language program will create following files and directories:
 
-* `Words/Words.jar` - binary file of compiled application
-* `Words/Data/Dictionary.txt` - dictionary file (see below)
-* `Words/Data/MP3/*.mp3` - MP3 files with pronunciation (see below)
-
-## Dictionary file structure
-
-Dictionary is CSV file with following structure.
-
-`foreign word;native word;category name`
+* `./setup.properties` - configuration file with your settings
+* `./Data/Dictionary.txt` - dictionary file
+* `./Data/MP3/` - MP3 directory for files with pronunciation 
 
 ## MP3 files
 
-MP3 file should have the same name as foreign word in `Dictionary.txt`. You can obtain MP3 files for your dictionary from following sites:
+Each time when you add new word or when you edit existing word program will automatically download MP3 with sound from internet for you.  
+Optionally you can download MP3 manually and place it into MP3 directory. You can obtain MP3 files for your dictionary from following sites:
 
 * http://forvo.com
 * http://soundoftext.com
@@ -30,6 +26,6 @@ MP3 file should have the same name as foreign word in `Dictionary.txt`. You can 
  1. download project `git clone https://github.com/berk76/words Words`
  1. change directory `cd Words`
  1. build project `mvn assembly:assembly`
- 1. change directory `cd target`
- 1. find and run Words.jar `java -jar Words-x.y.z-SNAPSHOT-jar-with-dependencies.jar`
+ 1. change directory `cd target` and find Words.jar
+ 1. place it somewhere into Words/ directory for example and run it `java -jar Words.jar`
  
