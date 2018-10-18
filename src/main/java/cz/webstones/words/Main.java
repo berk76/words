@@ -134,7 +134,17 @@ public class Main extends javax.swing.JFrame implements IDictionary, ICategory {
         }
         allDictionary.add(w);
         checkIfSoundExists(w);
-        updateCategoryCombo();
+        
+        jComboBox1.setSelectedItem(w.getCategory());
+        
+        /* find word and set it current */
+        for (int i = 0; i < filteredDictionary.size(); i++) {
+            WordDto cw = filteredDictionary.get(i);
+            if (cw.getEn().equals(w.getEn()) && cw.getCz().equals(w.getCz())) {
+                setDictCurrnet(i);
+                return;
+            }
+        }
     }
     
     private void checkIfSoundExists(WordDto w) {
