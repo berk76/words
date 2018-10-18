@@ -15,8 +15,8 @@ After choosing language program will create following files and directories:
 
 ## MP3 files
 
-Each time when you add new word or when you edit existing word program will automatically download MP3 with sound from internet for you.  
-Optionally you can download MP3 manually and place it into MP3 directory. You can obtain MP3 files for your dictionary from following sites:
+Each time when you add new word program will automatically download MP3 with sound from internet for you.
+Optionally you can download MP3 manually and place it into MP3 directory. In this case you can obtain MP3 files for your dictionary from following sites:
 
 * http://forvo.com
 * http://soundoftext.com
