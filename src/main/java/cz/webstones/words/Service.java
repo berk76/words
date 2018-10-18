@@ -44,7 +44,7 @@ public class Service {
 
         try {
             /* Load user setup */
-            File s = new File(System.getProperty("user.dir") + File.separator + "setup.properties");
+            File s = new File(Setup.getSetupFilePath());
             if (s.canRead()) {
                 loadSetup(s);
             }
@@ -114,7 +114,7 @@ public class Service {
     public static void saveSetup() throws IOException {
         OutputStream output = null;
         Properties props = new Properties();
-        File f = new File(System.getProperty("user.dir") + File.separator + "setup.properties");
+        File f = new File(Setup.getSetupFilePath());
         
         if (setup == null) {
             return;
