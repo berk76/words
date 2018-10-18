@@ -672,10 +672,16 @@ public class Main extends javax.swing.JFrame implements IDictionary, ICategory {
 
     private void jMenuItem3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem3ActionPerformed
         // Edit Word
+        String oldWord = filteredDictionary.get(this.dictCurrnt).getMp3FilenameEn();
         wordDialog.setWord(filteredDictionary.get(dictCurrnt), categoryList);
-        wordDialog.setForeignWordEditable(false);
+        //wordDialog.setForeignWordEditable(false);
         wordDialog.setVisible(true);
         this.jLabel1.setText(filteredDictionary.get(this.dictCurrnt).getCz());
+        this.jLabel3.setText(filteredDictionary.get(this.dictCurrnt).getEn());
+        if (!oldWord.equals(filteredDictionary.get(this.dictCurrnt).getMp3FilenameEn())) {
+            File f = new File(oldWord);
+            f.delete();
+        }
         checkIfSoundExists(filteredDictionary.get(dictCurrnt));
     }//GEN-LAST:event_jMenuItem3ActionPerformed
 
