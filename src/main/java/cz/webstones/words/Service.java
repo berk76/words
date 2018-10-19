@@ -23,10 +23,7 @@ import java.math.RoundingMode;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.Properties;
-import java.util.Random;
 
 /**
  *
@@ -280,6 +277,7 @@ public class Service {
         bd = bd.setScale(places, RoundingMode.HALF_UP);
         return bd.doubleValue();
     }
+    
     // http://www.rgagnon.com/javadetails/java-handle-utf8-file-with-bom.html
     // FEFF because this is the Unicode char represented by the UTF-8 byte order mark (EF BB BF).
     public static final String UTF8_BOM = "\uFEFF";
