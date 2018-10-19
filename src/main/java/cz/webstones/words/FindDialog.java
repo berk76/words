@@ -5,6 +5,7 @@
 package cz.webstones.words;
 
 import java.util.ArrayList;
+import java.util.List;
 import javax.swing.JOptionPane;
 
 /**
@@ -13,7 +14,7 @@ import javax.swing.JOptionPane;
  */
 public class FindDialog extends javax.swing.JDialog {
     
-    private ArrayList<WordDto> dict = null;
+    private List<WordDto> dict = null;
     private IDictionary dictionary;
 
     /**
@@ -33,7 +34,7 @@ public class FindDialog extends javax.swing.JDialog {
         jTextField1.setText(s);
     }
     
-    public void setDict(ArrayList<WordDto> d) {
+    public void setDict(List<WordDto> d) {
         this.dict = d;
     }
     

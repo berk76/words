@@ -98,6 +98,10 @@ public class WordDto {
     public void setWrongHits(int wrongHits) {
         this.wrongHits = wrongHits;
     }
+    
+    public void incWrongHits() {
+        this.wrongHits++;
+    }
 
     /**
      * @return the goodHits
@@ -111,6 +115,10 @@ public class WordDto {
      */
     public void setGoodHits(int goodHits) {
         this.goodHits = goodHits;
+    }
+    
+    public void incGoodHits() {
+        this.goodHits++;
     }
 
     /**

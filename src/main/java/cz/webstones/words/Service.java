@@ -156,11 +156,11 @@ public class Service {
         }
     }
 
-    public static ArrayList<WordDto> loadDictionary(String file,
+    public static Dictionary loadDictionary(String file,
             String separator, String dateFormat)
             throws FileNotFoundException, UnsupportedEncodingException, IOException {
 
-        ArrayList<WordDto> result = new ArrayList<WordDto>();
+        Dictionary result = new Dictionary();
         SimpleDateFormat sdf = new SimpleDateFormat(dateFormat);
 
         InputStream is = new FileInputStream(file);
@@ -214,7 +214,7 @@ public class Service {
                 }
             }
 
-            result.add(w);
+            result.addWord(w);
 
         }
         reader.close();
@@ -223,7 +223,7 @@ public class Service {
         return result;
     }
 
-    public static void saveDictionary(ArrayList<WordDto> dict, String file,
+    public static void saveDictionary(Dictionary dict, String file,
             String separator, String dateFormat)
             throws FileNotFoundException, UnsupportedEncodingException, IOException {
 
@@ -241,7 +241,7 @@ public class Service {
                 bw.write(UTF8_BOM);
             }
 
-            for (WordDto w : dict) {
+            for (WordDto w : dict.getDictionaryAsList()) {
                 bw.write(cleanAndAddSeparator(w.getEn(), separator));
                 bw.write(cleanAndAddSeparator(w.getCz(), separator));
                 bw.write(cleanAndAddSeparator(w.getCategory(), separator));
@@ -267,82 +267,6 @@ public class Service {
             result = s.replaceAll(separator, "").trim();
         }
         result += separator;
-
-        return result;
-    }
-
-    public static ArrayList<String> loadCategoryList(ArrayList<WordDto> dict) {
-        ArrayList<String> result = new ArrayList<String>();
-
-        for (WordDto w : dict) {
-            boolean alreadyExists = false;
-
-            for (String s : result) {
-                if (s.equals(w.getCategory())) {
-                    alreadyExists = true;
-                    break;
-                }
-            }
-
-            if (!alreadyExists) {
-                result.add(w.getCategory());
-            }
-        }
-
-        return result;
-    }
-
-    public static void saveCategoryList(ArrayList<String> cat, String file)
-            throws FileNotFoundException, UnsupportedEncodingException, IOException {
-
-        FileOutputStream fos = null;
-        OutputStreamWriter osw = null;
-        BufferedWriter bw = null;
-
-        try {
-            fos = new FileOutputStream(file);
-            osw = new OutputStreamWriter(fos, "UTF-8");
-            bw = new BufferedWriter(osw);
-
-            for (String s : cat) {
-                bw.write(s);
-                bw.newLine();
-            }
-        } finally {
-            bw.close();
-            osw.close();
-            fos.close();
-        }
-    }
-
-    public static ArrayList<WordDto> createReorderedList(ArrayList<WordDto> dict, String category) {
-        ArrayList<WordDto> result = new ArrayList<WordDto>();
-        Random rand = new Random();
-
-        for (WordDto w : dict) {
-            if (category.equals("All") || category.equals(w.getCategory())) {
-                result.add(w);
-            }
-        }
-
-        for (WordDto w : result) {
-            int p = 0; // lower number means higher priority
-
-            p += (w.getGoodHits() - w.getWrongHits()) * 10000;
-            /*
-             p += (365 * 24 * 60) - w.getLastWrongHitInMinutes() * 100;
-             p += (365 * 24 * 60) - w.getLastGoodHitInMinutes() * 10;
-             */
-            p += rand.nextInt(10);
-            w.setOrder(p);
-        }
-
-        Collections.sort(result, new Comparator<WordDto>() {
-            @Override
-            public int compare(WordDto a, WordDto b) {
-                return a.getOrder() < b.getOrder() ? -1 : (a.getOrder() > b.getOrder()) ? 1 : 0;
-            }
-        });
 
         return result;
     }
