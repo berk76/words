@@ -67,6 +67,15 @@ public class Dictionary {
         return false;
     }
     
+    public WordDto findDuplicity(WordDto w) {
+        for (WordDto t : dict) {
+            if (t.getCz().equals(w.getCz()) && t.getEn().equals(w.getEn())) {
+                return t;
+            }
+        }
+        return null;
+    }
+    
     public WordDto getWord() {
         return dict.get(current);
     }

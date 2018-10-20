@@ -125,9 +125,10 @@ public class Main extends javax.swing.JFrame implements IDictionary, ICategory {
         w.setCz(w.getCz().trim());
         w.setEn(w.getEn().trim());
         
-        if (allDictionary.isDuplicityEn(w) && allDictionary.isDuplicityCz(w)) {
+        WordDto dup = allDictionary.findDuplicity(w);
+        if (dup != null) {
             JOptionPane.showMessageDialog(this, "Word " + w.getEn() + " already exists.");
-            jComboBox1.setSelectedItem("All");
+            jComboBox1.setSelectedItem(dup.getCategory());
             filteredDictionary.setWordCurrent(w);
             next(0);
             return;
