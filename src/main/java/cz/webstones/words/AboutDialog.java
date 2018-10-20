@@ -76,7 +76,7 @@ public class AboutDialog extends javax.swing.JDialog {
         setTitle("About");
 
         jLabel1.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
-        jLabel1.setText("Words 1.2.0 snapshot");
+        jLabel1.setText("Words 1.3.0 snapshot");
 
         jTextArea1.setEditable(false);
         jTextArea1.setColumns(20);
