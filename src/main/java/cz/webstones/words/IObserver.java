@@ -8,7 +8,6 @@ package cz.webstones.words;
  *
  * @author jaroslav_b
  */
-public interface IDictionary {
-    public void setDictCurrnet(int i);
-    public int getDictCurrnet();
+public interface IObserver {
+    public void updateObserver();
 }

@@ -17,11 +17,34 @@ import java.util.Random;
 public class Dictionary {
     
     private ArrayList<WordDto> dict = new ArrayList<WordDto>();
+    private ArrayList<IObserver> observers = new ArrayList<IObserver>();
     private int current = 0;
+    
+
+    /* Observer subject */
+    
+    public void attach(IObserver o) {
+        observers.add(o);
+    }
+    
+    public void detach(IObserver o) {
+        observers.remove(o);
+    }
+    
+    private void notifyAllObservers() {
+        for (IObserver o: observers) {
+            o.updateObserver();
+        }
+    }
+    
+    /* Observer subject end */
     
     public void setDictCurrnet(int i) {
         if (dict.size() > i) {
-            current = i;
+            if (current != i) {
+                current = i;
+                notifyAllObservers();
+            }
         }
     }
     
@@ -78,6 +101,10 @@ public class Dictionary {
     
     public WordDto getWord() {
         return dict.get(current);
+    }
+    
+    public WordDto getWord(int i) {
+        return dict.get(i);
     }
     
     public List<WordDto> getDictionaryAsList() {

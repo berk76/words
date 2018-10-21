@@ -23,7 +23,7 @@ import javax.swing.JOptionPane;
  *
  * @author jaroslav_b
  */
-public class Main extends javax.swing.JFrame implements IDictionary, ICategory {
+public class Main extends javax.swing.JFrame implements ICategory, IObserver {
     
     private Dictionary allDictionary;
     private Dictionary filteredDictionary;
@@ -57,7 +57,6 @@ public class Main extends javax.swing.JFrame implements IDictionary, ICategory {
         jTextField1.setText("");
         
         findDialog.setText("");
-        findDialog.setDictionary(this);
         
         try {
             setup = Service.getSetup(true);
@@ -92,6 +91,10 @@ public class Main extends javax.swing.JFrame implements IDictionary, ICategory {
         Preferences prefs;
         prefs = Preferences.userRoot().node(this.getClass().getName());
         return prefs.get("RUNNING", null) != null ? Boolean.valueOf(prefs.get("RUNNING", null)) : false;
+    }
+    
+    public void updateObserver() {
+        next(0);
     }
     
     private void loadDictionary() throws FileNotFoundException, UnsupportedEncodingException, IOException {
@@ -217,15 +220,6 @@ public class Main extends javax.swing.JFrame implements IDictionary, ICategory {
         Service.saveDictionary(allDictionary, setup.getFullDictionaryFilePath(), 
             setup.getDictionarySeparator(), setup.getDictionaryDateFormat());
     }
-
-    public void setDictCurrnet(int i) {
-        filteredDictionary.setDictCurrnet(i);
-        next(0);
-    }
-    
-    public int getDictCurrnet() {
-        return filteredDictionary.getDictCurrnet();
-    }
     
     private void next(int i) {
         if (filteredDictionary.size() == 0) {
@@ -263,6 +257,7 @@ public class Main extends javax.swing.JFrame implements IDictionary, ICategory {
     
     private void reorder() {
         filteredDictionary = allDictionary.createReorderedDictionary(jComboBox1.getSelectedItem().toString());
+        filteredDictionary.attach(this);
     }
     
     private void play() {
@@ -282,7 +277,7 @@ public class Main extends javax.swing.JFrame implements IDictionary, ICategory {
     }
     
     private void showFindDialog() {
-        findDialog.setDict(filteredDictionary.getDictionaryAsList());
+        findDialog.setDict(filteredDictionary);
         findDialog.setLabel("Searching in category " + jComboBox1.getSelectedItem());
         findDialog.setVisible(true);
     }

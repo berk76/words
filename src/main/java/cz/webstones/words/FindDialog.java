@@ -4,7 +4,6 @@
  */
 package cz.webstones.words;
 
-import java.util.List;
 import javax.swing.JOptionPane;
 
 /**
@@ -13,8 +12,7 @@ import javax.swing.JOptionPane;
  */
 public class FindDialog extends javax.swing.JDialog {
     
-    private List<WordDto> dict = null;
-    private IDictionary dictionary;
+    private Dictionary dict = null;
 
     /**
      * Creates new form FindDialog
@@ -33,12 +31,8 @@ public class FindDialog extends javax.swing.JDialog {
         jTextField1.setText(s);
     }
     
-    public void setDict(List<WordDto> d) {
+    public void setDict(Dictionary d) {
         this.dict = d;
-    }
-    
-    public void setDictionary(IDictionary d) {
-        dictionary = d;
     }
     
     private void search() {
@@ -53,7 +47,7 @@ public class FindDialog extends javax.swing.JDialog {
             return;
         }
         
-        int c = dictionary.getDictCurrnet();
+        int c = dict.getDictCurrnet();
         
         for (int i = 0; i < dict.size(); i++) {
             c++;
@@ -62,13 +56,13 @@ public class FindDialog extends javax.swing.JDialog {
                 c = 0;
             }
             
-            if (c == dictionary.getDictCurrnet()) {
+            if (c == dict.getDictCurrnet()) {
                 break;
             }
-            
-            WordDto w = dict.get(c);
+
+            WordDto w = dict.getWord(c);
             if (w.getCz().contains(what) || w.getEn().contains(what)) {
-                dictionary.setDictCurrnet(c);
+                dict.setDictCurrnet(c);
                 return;
             }
         }
