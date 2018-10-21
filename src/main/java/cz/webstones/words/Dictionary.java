@@ -16,11 +16,17 @@ import java.util.Random;
  */
 public class Dictionary {
     
+    public static final int stateNoChabge = 0;
+    public static final int stateCurWordChanged = 1;
+    public static final int stateCategoryListChanged = 2;
+    public static final int stateWordAdded = 3;
+    
     private ArrayList<WordDto> dict = new ArrayList<WordDto>();
     private ArrayList<IObserver> observers = new ArrayList<IObserver>();
+    private int subjectState = Dictionary.stateNoChabge;
     private int current = 0;
     
-
+    
     /* Observer subject */
     
     public void attach(IObserver o) {
@@ -37,12 +43,18 @@ public class Dictionary {
         }
     }
     
+    public int getSubjectState() {
+        return subjectState;
+    }
+    
     /* Observer subject end */
     
     public void setDictCurrnet(int i) {
         if (dict.size() > i) {
             if (current != i) {
                 current = i;
+                
+                subjectState = Dictionary.stateCurWordChanged;
                 notifyAllObservers();
             }
         }
@@ -70,6 +82,9 @@ public class Dictionary {
     
     public void addWord(WordDto w) {
         dict.add(w);
+        
+        subjectState = Dictionary.stateWordAdded;
+        notifyAllObservers();
     }
     
     public boolean isDuplicityEn (WordDto w) {

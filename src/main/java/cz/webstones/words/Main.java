@@ -71,8 +71,6 @@ public class Main extends javax.swing.JFrame implements ICategory, IObserver {
             ex.printStackTrace();
             System.exit(-1);
         }
-        
-        next(0);
     }
     
     private void onStart(){
@@ -94,7 +92,11 @@ public class Main extends javax.swing.JFrame implements ICategory, IObserver {
     }
     
     public void updateObserver() {
-        next(0);
+        switch (filteredDictionary.getSubjectState()) {
+            case Dictionary.stateCurWordChanged:
+                next(0);
+                break;
+        }
     }
     
     private void loadDictionary() throws FileNotFoundException, UnsupportedEncodingException, IOException {
@@ -133,7 +135,6 @@ public class Main extends javax.swing.JFrame implements ICategory, IObserver {
             JOptionPane.showMessageDialog(this, "Word " + w.getEn() + " already exists.");
             jComboBox1.setSelectedItem(dup.getCategory());
             filteredDictionary.setWordCurrent(w);
-            next(0);
             return;
         }
         allDictionary.addWord(w);
@@ -141,7 +142,6 @@ public class Main extends javax.swing.JFrame implements ICategory, IObserver {
         
         jComboBox1.setSelectedItem(w.getCategory());
         filteredDictionary.setWordCurrent(w);
-        next(0);
     }
     
     private void checkIfSoundExists(WordDto w) {
@@ -258,6 +258,8 @@ public class Main extends javax.swing.JFrame implements ICategory, IObserver {
     private void reorder() {
         filteredDictionary = allDictionary.createReorderedDictionary(jComboBox1.getSelectedItem().toString());
         filteredDictionary.attach(this);
+        filteredDictionary.setDictCurrnet(0);
+        next(0);
     }
     
     private void play() {
@@ -631,7 +633,6 @@ public class Main extends javax.swing.JFrame implements ICategory, IObserver {
         if (!wordDialog.isVisible()) {
             findDialog.setVisible(false);
             reorder();
-            next(0);
         }
     }//GEN-LAST:event_jComboBox1ActionPerformed
 
