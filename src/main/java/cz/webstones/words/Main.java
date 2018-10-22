@@ -8,14 +8,8 @@ import cz.webstones.words.mp3.Mp3Creator;
 import cz.webstones.words.mp3.Mp3CreatorException;
 import java.awt.Font;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.text.Collator;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Date;
-import java.util.Locale;
 import java.util.prefs.Preferences;
 import javax.swing.JOptionPane;
 
@@ -23,18 +17,17 @@ import javax.swing.JOptionPane;
  *
  * @author jaroslav_b
  */
-public class Main extends javax.swing.JFrame implements ICategory, IObserver {
+public class Main extends javax.swing.JFrame implements IObserver {
     
-    private Dictionary allDictionary;
-    private Dictionary filteredDictionary;
-    private ArrayList<String> categoryList;
+    private Dictionary dict = new Dictionary();
     private Setup setup;
     private AddCategoryDialog addCatDialog = new AddCategoryDialog(this, true);
     private RenameCategoryDialog renameCatDialog = new RenameCategoryDialog(this, true);
-    private WordDialog wordDialog = new WordDialog(this, true, addCatDialog, this);
+    private WordDialog wordDialog = new WordDialog(this, true, addCatDialog, dict);
     private AboutDialog aboutDialog = new AboutDialog(this, true);
     private FindDialog findDialog = new FindDialog(this, false);
     private LanguageDialog langDialog = new LanguageDialog(this, true);
+    private boolean disableCategotyChange = false;
     protected WordDto wordToPlay = null;
 
     /**
@@ -65,10 +58,16 @@ public class Main extends javax.swing.JFrame implements ICategory, IObserver {
                 setup.setLanguage(langDialog.getLangCode());
                 Service.saveSetup();
             }
+
+            dict.attach(this);
+            dict.loadDictionary(
+                setup.getFullDictionaryFilePath(), 
+                setup.getDictionarySeparator(), 
+                setup.getDictionaryDateFormat());
             
-            loadDictionary();
         } catch (Exception ex) {
             ex.printStackTrace();
+            onFinish();
             System.exit(-1);
         }
     }
@@ -92,56 +91,36 @@ public class Main extends javax.swing.JFrame implements ICategory, IObserver {
     }
     
     public void updateObserver() {
-        switch (filteredDictionary.getSubjectState()) {
+        switch (dict.getSubjectState()) {
             case Dictionary.stateCurWordChanged:
                 next(0);
+                break;
+            case Dictionary.stateCurCategoryChanged:
+                if (!dict.getCurrentCategory().equals(jComboBox1.getSelectedItem().toString())) {
+                    jComboBox1.setSelectedItem(dict.getCurrentCategory());
+                }
+                break;
+            case Dictionary.stateCategoryListChanged:
+                disableCategotyChange = true;
+                updateCategoryCombo();
+                disableCategotyChange = false;
+                break;
+            case Dictionary.stateWordAdded:
                 break;
         }
     }
     
-    private void loadDictionary() throws FileNotFoundException, UnsupportedEncodingException, IOException {
-        allDictionary = Service.loadDictionary(
-                setup.getFullDictionaryFilePath(), 
-                setup.getDictionarySeparator(), 
-                setup.getDictionaryDateFormat());
-        
-        categoryList = allDictionary.getCategoryList();
-        updateCategoryCombo();
-        
-        reorder();
-    }
-    
     public void addWord(WordDto w) {
-        if ((w.getEn() == null) || w.getEn().trim().equals("")) {
-            JOptionPane.showMessageDialog(this, "Word cannot be empty.");
+        try {
+            dict.addWord(w);
+        } catch (DictionaryException ex) {
+            JOptionPane.showMessageDialog(this, ex.getMessage());
             return;
         }
-        
-        if ((w.getCz() == null) || w.getCz().trim().equals("")) {
-            JOptionPane.showMessageDialog(this, "Word cannot be empty.");
-            return;
-        }
-        
-        if ((w.getCategory() == null) || w.getCategory().trim().equals("")) {
-            JOptionPane.showMessageDialog(this, "Category cannot be empty.");
-            return;
-        }
-        
-        w.setCz(w.getCz().trim());
-        w.setEn(w.getEn().trim());
-        
-        WordDto dup = allDictionary.findDuplicity(w);
-        if (dup != null) {
-            JOptionPane.showMessageDialog(this, "Word " + w.getEn() + " already exists.");
-            jComboBox1.setSelectedItem(dup.getCategory());
-            filteredDictionary.setWordCurrent(w);
-            return;
-        }
-        allDictionary.addWord(w);
         checkIfSoundExists(w);
         
-        jComboBox1.setSelectedItem(w.getCategory());
-        filteredDictionary.setWordCurrent(w);
+        dict.setCategory(w.getCategory());
+        dict.setWordCurrent(w);
     }
     
     private void checkIfSoundExists(WordDto w) {
@@ -166,79 +145,54 @@ public class Main extends javax.swing.JFrame implements ICategory, IObserver {
     }
     
     public void addCategory(String category) {
-        
-        if ((category == null) || category.trim().equals("")) {
+        try {
+            dict.addCategory(category);
+        } catch (DictionaryException ex) {
+            JOptionPane.showMessageDialog(this, ex.getMessage());
             return;
         }
-        
-        for (String c: categoryList) {
-            if (c.equals(category)) {
-                JOptionPane.showMessageDialog(this, "Category " + category + " already exists.");
-                return;
-            }
-        }
-        
-        categoryList.add(category);
-        updateCategoryCombo();
-
-        wordDialog.setCategoryList(categoryList, category);
     }
     
     public void renameCategory(String oldCat, String newCat) {
-        
-        if ((newCat == null) || newCat.trim().equals("")) {
-            return;
-        }
-        
-        allDictionary.renameCategory(oldCat, newCat);
-        categoryList = allDictionary.getCategoryList();
-        updateCategoryCombo();
-        jComboBox1.setSelectedItem(newCat);
-        
-        reorder();
+        dict.renameCategory(oldCat, newCat);
+        dict.setCategory(newCat);
     }
     
     private void updateCategoryCombo() {
-        String selected = jComboBox1.getSelectedItem().toString();
-        
         int n = jComboBox1.getItemCount();
         for (int i = 1; i < n; i++) {
             jComboBox1.removeItemAt(n - i);
         }
         
-        //jComboBox1.removeAllItems();
-        //jComboBox1.addItem("All");
-        
-        Collections.sort(categoryList, Collator.getInstance(new Locale("cs", "CS"))); 
-        for (String s: categoryList) {
+        for (String s: dict.getCategoryList()) {
             jComboBox1.addItem(s);
         }
-        jComboBox1.setSelectedItem(selected);
+        jComboBox1.setSelectedItem(dict.getCurrentCategory());
     }
     
     private void saveDirectory() throws IOException {
-        Service.saveDictionary(allDictionary, setup.getFullDictionaryFilePath(), 
+        dict.saveDictionary(setup.getFullDictionaryFilePath(), 
             setup.getDictionarySeparator(), setup.getDictionaryDateFormat());
     }
     
     private void next(int i) {
-        if (filteredDictionary.size() == 0) {
+        if (dict.size() == 0) {
             return;
         }
         
-        int dictCurrnt = filteredDictionary.getDictCurrnet();
+        int dictCurrnt = dict.getDictCurrnet();
         
         dictCurrnt += i;
-        if (dictCurrnt >= this.filteredDictionary.size()) {
-            dictCurrnt = this.filteredDictionary.size() -1;
+        if (dictCurrnt >= dict.size()) {
+            dictCurrnt = dict.size() -1;
         }
         if (dictCurrnt < 0) {
             dictCurrnt = 0;
         }
-        filteredDictionary.setDictCurrnet(dictCurrnt);
+        dict.setDictCurrnet(dictCurrnt);
         
         Font f;
-        WordDto w = filteredDictionary.getWord();
+        WordDto w = dict.getWord();
         f = Service.findFont(w.getCz(), this.jLabel1.getFont());
         this.jLabel1.setFont(f);
         f = Service.findFont(w.getEn(), this.jLabel3.getFont());
@@ -253,13 +207,6 @@ public class Main extends javax.swing.JFrame implements ICategory, IObserver {
         
         updateStatus();
         disableGoodWrong(true);
-    }
-    
-    private void reorder() {
-        filteredDictionary = allDictionary.createReorderedDictionary(jComboBox1.getSelectedItem().toString());
-        filteredDictionary.attach(this);
-        filteredDictionary.setDictCurrnet(0);
-        next(0);
     }
     
     private void play() {
@@ -279,13 +226,13 @@ public class Main extends javax.swing.JFrame implements ICategory, IObserver {
     }
     
     private void showFindDialog() {
-        findDialog.setDict(filteredDictionary);
+        findDialog.setDict(dict);
         findDialog.setLabel("Searching in category " + jComboBox1.getSelectedItem());
         findDialog.setVisible(true);
     }
     
     private void updateStatus() {
-        this.jLabel2.setText(String.valueOf(filteredDictionary.getDictCurrnet() + 1) + " / " + String.valueOf(filteredDictionary.size()) + " words");
+        this.jLabel2.setText(String.valueOf(dict.getDictCurrnet() + 1) + " / " + String.valueOf(dict.size()) + " words");
     }
     
     private void disableControls(boolean b) {
@@ -591,26 +538,29 @@ public class Main extends javax.swing.JFrame implements ICategory, IObserver {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        // Button Good
         if (compareTexts()) {
-            filteredDictionary.getWord().incGoodHits();
-            filteredDictionary.getWord().setLastGoodHit(new Date());
+            dict.getWord().incGoodHits();
+            dict.getWord().setLastGoodHit(new Date());
             next(1);
         }
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+        // Button Wrong
         if (compareTexts()) {
-            filteredDictionary.getWord().incWrongHits();
-            filteredDictionary.getWord().setLastWrongHit(new Date());
+            dict.getWord().incWrongHits();
+            dict.getWord().setLastWrongHit(new Date());
             next(1);
         }
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
-        checkIfSoundExists(filteredDictionary.getWord());
+        // Button Show&Play
+        checkIfSoundExists(dict.getWord());
         
-        this.jLabel3.setText(filteredDictionary.getWord().getEn());
-        wordToPlay = filteredDictionary.getWord();
+        this.jLabel3.setText(dict.getWord().getEn());
+        wordToPlay = dict.getWord();
         play();
     }//GEN-LAST:event_jButton3ActionPerformed
 
@@ -629,10 +579,11 @@ public class Main extends javax.swing.JFrame implements ICategory, IObserver {
     }//GEN-LAST:event_formWindowClosing
 
     private void jComboBox1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBox1ActionPerformed
-        // Do not reorder if category has been added
-        if (!wordDialog.isVisible()) {
-            findDialog.setVisible(false);
-            reorder();
+        findDialog.setVisible(false);
+        if (!disableCategotyChange) {
+            if (!dict.getCurrentCategory().equals(jComboBox1.getSelectedItem().toString())) {
+                dict.setCategory(jComboBox1.getSelectedItem().toString());
+            }
         }
     }//GEN-LAST:event_jComboBox1ActionPerformed
 
@@ -654,20 +605,21 @@ public class Main extends javax.swing.JFrame implements ICategory, IObserver {
 
     private void jMenuItem3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem3ActionPerformed
         // Edit Word
-        String oldWord = filteredDictionary.getWord().getMp3FilenameEn();
-        wordDialog.setWord(filteredDictionary.getWord(), categoryList);
+        String oldWord = dict.getWord().getMp3FilenameEn();
+        wordDialog.setWord(dict.getWord());
         //wordDialog.setForeignWordEditable(false);
         wordDialog.setVisible(true);
-        this.jLabel1.setText(filteredDictionary.getWord().getCz());
-        this.jLabel3.setText(filteredDictionary.getWord().getEn());
-        if (!oldWord.equals(filteredDictionary.getWord().getMp3FilenameEn())) {
+        this.jLabel1.setText(dict.getWord().getCz());
+        this.jLabel3.setText(dict.getWord().getEn());
+        if (!oldWord.equals(dict.getWord().getMp3FilenameEn())) {
             File f = new File(oldWord);
             f.delete();
         }
-        checkIfSoundExists(filteredDictionary.getWord());
+        checkIfSoundExists(dict.getWord());
     }//GEN-LAST:event_jMenuItem3ActionPerformed
 
     private void jMenuItem4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem4ActionPerformed
+        // Add Category
         addCatDialog.setCategoryText("");
         addCatDialog.setVisible(true);
         if (addCatDialog.isCommited()) {
@@ -676,8 +628,9 @@ public class Main extends javax.swing.JFrame implements ICategory, IObserver {
     }//GEN-LAST:event_jMenuItem4ActionPerformed
 
     private void jMenuItem5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem5ActionPerformed
+        // Rename Category
         renameCatDialog.setNewCategoryText("");
-        renameCatDialog.setCategoryList(categoryList, jComboBox1.getSelectedItem().toString());
+        renameCatDialog.setCategoryList(dict.getCategoryList(), jComboBox1.getSelectedItem().toString());
         renameCatDialog.setVisible(true);
         if (renameCatDialog.isCommited()) {
             renameCategory(renameCatDialog.getOldCategoryText(), renameCatDialog.getNewCategoryText());
@@ -688,7 +641,7 @@ public class Main extends javax.swing.JFrame implements ICategory, IObserver {
         // Add Word
         WordDto w = new WordDto();
         w.setCategory(jComboBox1.getSelectedItem().toString());
-        wordDialog.setWord(w, categoryList);
+        wordDialog.setWord(w);
         wordDialog.setForeignWordEditable(true);
         wordDialog.setVisible(true);
         if (wordDialog.isCommited()) {

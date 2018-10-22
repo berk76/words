@@ -7,21 +7,16 @@ package cz.webstones.words;
 import java.awt.Font;
 import java.awt.GraphicsEnvironment;
 import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
-import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Properties;
 
@@ -153,108 +148,6 @@ public class Service {
         }
     }
 
-    public static Dictionary loadDictionary(String file,
-            String separator, String dateFormat)
-            throws FileNotFoundException, UnsupportedEncodingException, IOException {
-
-        Dictionary result = new Dictionary();
-        SimpleDateFormat sdf = new SimpleDateFormat(dateFormat);
-
-        InputStream is = new FileInputStream(file);
-        BufferedReader reader = new BufferedReader(new InputStreamReader(is, "UTF-8"));
-
-        boolean first = true;
-        String line;
-        while ((is != null) && ((line = reader.readLine()) != null)) {
-
-            if (first) {
-                bomPresent = false;
-                if (isUTF8BOMPresent(line)) {
-                    line = removeUTF8BOM(line);
-                    bomPresent = true;
-                }
-                first = false;
-            }
-
-            String arr[] = line.split(separator);
-
-            if (arr.length < 2) {
-                continue;
-            }
-
-            WordDto w = new WordDto();
-            w.setEn(arr[0]);
-            w.setCz(arr[1]);
-            w.setCategory(arr[2]);
-
-            if (arr.length > 3) {
-                w.setGoodHits(Integer.valueOf(arr[3]));
-            }
-
-            if (arr.length > 4) {
-                try {
-                    w.setLastGoodHit(sdf.parse(arr[4]));
-                } catch (ParseException ex) {
-                    w.setLastGoodHit(null);
-                }
-            }
-
-            if (arr.length > 5) {
-                w.setWrongHits(Integer.valueOf(arr[5]));
-            }
-
-            if (arr.length > 6) {
-                try {
-                    w.setLastWrongHit(sdf.parse(arr[6]));
-                } catch (ParseException ex) {
-                    w.setLastWrongHit(null);
-                }
-            }
-
-            result.addWord(w);
-
-        }
-        reader.close();
-        is.close();
-
-        return result;
-    }
-
-    public static void saveDictionary(Dictionary dict, String file,
-            String separator, String dateFormat)
-            throws FileNotFoundException, UnsupportedEncodingException, IOException {
-
-        SimpleDateFormat sdf = new SimpleDateFormat(dateFormat);
-        FileOutputStream fos = null;
-        OutputStreamWriter osw = null;
-        BufferedWriter bw = null;
-
-        try {
-            fos = new FileOutputStream(file);
-            osw = new OutputStreamWriter(fos, "UTF-8");
-            bw = new BufferedWriter(osw);
-
-            if (bomPresent) {
-                bw.write(UTF8_BOM);
-            }
-
-            for (WordDto w : dict.getDictionaryAsList()) {
-                bw.write(cleanAndAddSeparator(w.getEn(), separator));
-                bw.write(cleanAndAddSeparator(w.getCz(), separator));
-                bw.write(cleanAndAddSeparator(w.getCategory(), separator));
-                bw.write(cleanAndAddSeparator(String.valueOf(w.getGoodHits()), separator));
-                bw.write(cleanAndAddSeparator(((w.getLastGoodHit() != null) ? sdf.format(w.getLastGoodHit()) : ""), separator));
-                bw.write(cleanAndAddSeparator(String.valueOf(w.getWrongHits()), separator));
-                bw.write(cleanAndAddSeparator(((w.getLastWrongHit() != null) ? sdf.format(w.getLastWrongHit()) : ""), separator));
-                bw.newLine();
-            }
-        } finally {
-            bw.close();
-            osw.close();
-            fos.close();
-        }
-    }
-
     public static String cleanAndAddSeparator(String s, String separator) {
         String result;
 
@@ -283,7 +176,7 @@ public class Service {
     public static final String UTF8_BOM = "\uFEFF";
     public static boolean bomPresent = false;
 
-    private static boolean isUTF8BOMPresent(String s) {
+    public static boolean isUTF8BOMPresent(String s) {
         boolean result = false;
         if (s.startsWith(UTF8_BOM)) {
             result = true;
@@ -291,7 +184,7 @@ public class Service {
         return result;
     }
 
-    private static String removeUTF8BOM(String s) {
+    public static String removeUTF8BOM(String s) {
         if (s.startsWith(UTF8_BOM)) {
             s = s.substring(1);
         }

@@ -5,36 +5,41 @@
 package cz.webstones.words;
 
 import java.awt.Font;
-import java.text.Collator;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Locale;
+import javax.swing.JOptionPane;
 
 /**
  *
  * @author jaroslav_b
  */
-public class WordDialog extends javax.swing.JDialog {
+public class WordDialog extends javax.swing.JDialog implements IObserver {
     
     private boolean commited;
-    private ArrayList<String> categoryList;
     private WordDto word;
     private AddCategoryDialog addCatDialog;
-    private ICategory category;
+    private Dictionary dict;
 
     /**
      * Creates new form WordDialog
      */
-    public WordDialog(java.awt.Frame parent, boolean modal, AddCategoryDialog d, ICategory cat) {
+    public WordDialog(java.awt.Frame parent, boolean modal, AddCategoryDialog d, Dictionary dic) {
         super(parent, modal);
         initComponents();
         this.setLocationRelativeTo(null);
         addCatDialog = d;
-        category = cat;
+        dict = dic;
+        dict.attach(this);
     }
     
-    public void setWord(WordDto w, ArrayList<String> categoryList) {
+    public void updateObserver() {
+        switch (dict.getSubjectState()) {
+            case Dictionary.stateCategoryListChanged:
+                updateCategoryCombo();
+                break;
+        }
+    }
+    
+    public void setWord(WordDto w) {
         SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy HH:mm");
         int total = 0;
         double rate = 0;
@@ -51,7 +56,6 @@ public class WordDialog extends javax.swing.JDialog {
         jTextField1.setText(this.word.getCz());
         jTextField2.setText(this.word.getEn());
 
-        this.categoryList = categoryList;
         updateCategoryCombo();
         jComboBox1.setSelectedItem(this.word.getCategory());
         
@@ -69,18 +73,12 @@ public class WordDialog extends javax.swing.JDialog {
         jTextField2.setFocusable(b);
     }
     
-    public void setCategoryList(ArrayList<String> categoryList, String selected) {
-        this.categoryList = categoryList;
-        updateCategoryCombo();
-        jComboBox1.setSelectedItem(selected);
-    }
-    
     private void updateCategoryCombo() {
         jComboBox1.removeAllItems();
-        Collections.sort(categoryList, Collator.getInstance(new Locale("cs", "CS"))); 
-        for (String s: categoryList) {
+        for (String s: dict.getCategoryList()) {
             jComboBox1.addItem(s);
         }
+        jComboBox1.setSelectedItem(dict.getCurrentCategory());
     }
 
     /**
@@ -288,8 +286,13 @@ public class WordDialog extends javax.swing.JDialog {
         addCatDialog.setCategoryText("");
         addCatDialog.setVisible(true);
         if (addCatDialog.isCommited()) {
-            category.addCategory(addCatDialog.getCategoryText());
+            try {
+                dict.addCategory(addCatDialog.getCategoryText());
+            } catch (DictionaryException ex) {
+                JOptionPane.showMessageDialog(this, ex.getMessage());
+            }
         }
+        jComboBox1.setSelectedItem(addCatDialog.getCategoryText());
     }//GEN-LAST:event_jButton3ActionPerformed
 
     
