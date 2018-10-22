@@ -43,7 +43,7 @@ public class Main extends javax.swing.JFrame implements IObserver {
         }
         
         initComponents();
-        this.setTitle("Words");
+        this.setTitle(Service.version);
         jLabel1.setText("");
         jLabel2.setText("");
         jLabel3.setText("");
@@ -92,25 +92,29 @@ public class Main extends javax.swing.JFrame implements IObserver {
     
     public void updateObserver() {
         switch (dict.getSubjectState()) {
+            
             case Dictionary.stateCurWordChanged:
                 next(0);
                 break;
+                
             case Dictionary.stateCurCategoryChanged:
                 if (!dict.getCurrentCategory().equals(jComboBox1.getSelectedItem().toString())) {
                     jComboBox1.setSelectedItem(dict.getCurrentCategory());
                 }
                 break;
+                
             case Dictionary.stateCategoryListChanged:
                 disableCategotyChange = true;
                 updateCategoryCombo();
                 disableCategotyChange = false;
                 break;
+                
             case Dictionary.stateWordAdded:
                 break;
         }
     }
     
-    public void addWord(WordDto w) {
+    private void addWord(WordDto w) {
         try {
             dict.addWord(w);
         } catch (DictionaryException ex) {
@@ -120,7 +124,7 @@ public class Main extends javax.swing.JFrame implements IObserver {
         checkIfSoundExists(w);
         
         dict.setCategory(w.getCategory());
-        dict.setWordCurrent(w);
+        dict.setCurrent(w);
     }
     
     private void checkIfSoundExists(WordDto w) {
@@ -132,7 +136,7 @@ public class Main extends javax.swing.JFrame implements IObserver {
         }
         
         /* Get MP3 */
-        int dialogResult = JOptionPane.showConfirmDialog (this, "Sound for this word is missing.\nDo you want download MP3?","Question", JOptionPane.YES_NO_OPTION);
+        int dialogResult = JOptionPane.showConfirmDialog (this, "Pronunciation for this word is missing.\nDo you want download MP3?","Question", JOptionPane.YES_NO_OPTION);
         if (dialogResult == JOptionPane.YES_OPTION){
             try {
                 Mp3Creator.createMp3(w.getEn(), setup.getLanguage(), fName);
@@ -144,16 +148,15 @@ public class Main extends javax.swing.JFrame implements IObserver {
         }
     }
     
-    public void addCategory(String category) {
+    private void addCategory(String category) {
         try {
             dict.addCategory(category);
         } catch (DictionaryException ex) {
             JOptionPane.showMessageDialog(this, ex.getMessage());
-            return;
         }
     }
     
-    public void renameCategory(String oldCat, String newCat) {
+    private void renameCategory(String oldCat, String newCat) {
         dict.renameCategory(oldCat, newCat);
         dict.setCategory(newCat);
     }
@@ -180,7 +183,7 @@ public class Main extends javax.swing.JFrame implements IObserver {
             return;
         }
         
-        int dictCurrnt = dict.getDictCurrnet();
+        int dictCurrnt = dict.getCurrnet();
         
         dictCurrnt += i;
         if (dictCurrnt >= dict.size()) {
@@ -189,7 +192,7 @@ public class Main extends javax.swing.JFrame implements IObserver {
         if (dictCurrnt < 0) {
             dictCurrnt = 0;
         }
-        dict.setDictCurrnet(dictCurrnt);
+        dict.setCurrnet(dictCurrnt);
         
         Font f;
         WordDto w = dict.getWord();
@@ -232,7 +235,7 @@ public class Main extends javax.swing.JFrame implements IObserver {
     }
     
     private void updateStatus() {
-        this.jLabel2.setText(String.valueOf(dict.getDictCurrnet() + 1) + " / " + String.valueOf(dict.size()) + " words");
+        this.jLabel2.setText(String.valueOf(dict.getCurrnet() + 1) + " / " + String.valueOf(dict.size()) + " words");
     }
     
     private void disableControls(boolean b) {
@@ -257,7 +260,7 @@ public class Main extends javax.swing.JFrame implements IObserver {
         if (jTextField1.getText().trim().equals(jLabel3.getText().trim())) {
             return true;
         }
-        JOptionPane.showMessageDialog(this, "Texts doesn't match. Correct it or delete it.");
+        JOptionPane.showMessageDialog(this, "Texts don't match. Correct it or delete it.");
         return false;
     }
 

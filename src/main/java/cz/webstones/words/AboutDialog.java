@@ -29,6 +29,7 @@ public class AboutDialog extends javax.swing.JDialog {
         initComponents();
         this.setLocationRelativeTo(null);
 
+        jLabel1.setText(Service.version);
         jLabel4.setText(urlGitHub);
         jLabel4.setForeground(Color.BLUE.darker());
         jLabel4.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
@@ -76,7 +77,7 @@ public class AboutDialog extends javax.swing.JDialog {
         setTitle("About");
 
         jLabel1.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
-        jLabel1.setText("Words 1.3.0 snapshot");
+        jLabel1.setText("Words");
 
         jTextArea1.setEditable(false);
         jTextArea1.setColumns(20);

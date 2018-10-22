@@ -37,6 +37,7 @@ public class Dictionary {
     public static final int stateWordAdded = 4;
     
     public static final String allCategoryName = "All";
+    public static final String encoding = "UTF-8";
     
     private ArrayList<WordDto> dictAll = new ArrayList<WordDto>();
     private ArrayList<WordDto> dictFil = new ArrayList<WordDto>();
@@ -47,7 +48,7 @@ public class Dictionary {
     private String currentCategory = Dictionary.allCategoryName;
     
     
-    /* Observer subject */
+    /* Observer subject interface */
     
     public void attach(IObserver o) {
         observers.add(o);
@@ -77,7 +78,7 @@ public class Dictionary {
         SimpleDateFormat sdf = new SimpleDateFormat(dateFormat);
 
         InputStream is = new FileInputStream(file);
-        BufferedReader reader = new BufferedReader(new InputStreamReader(is, "UTF-8"));
+        BufferedReader reader = new BufferedReader(new InputStreamReader(is, encoding));
 
         boolean first = true;
         String line;
@@ -136,7 +137,7 @@ public class Dictionary {
         setCategory(Dictionary.allCategoryName);
         updateCategoryList();
         current = -1;
-        setDictCurrnet(0);
+        setCurrnet(0);
     }
 
     public void saveDictionary(String file,
@@ -150,7 +151,7 @@ public class Dictionary {
 
         try {
             fos = new FileOutputStream(file);
-            osw = new OutputStreamWriter(fos, "UTF-8");
+            osw = new OutputStreamWriter(fos, encoding);
             bw = new BufferedWriter(osw);
 
             if (Service.bomPresent) {
@@ -184,6 +185,103 @@ public class Dictionary {
         return dictFil;
     }
     
+    /* Word manipulation */
+    
+    public void setCurrnet(int i) {
+        if (dictFil.size() > i) {
+            if (current != i) {
+                current = i;
+                
+                subjectState = Dictionary.stateCurWordChanged;
+                notifyAllObservers();
+            }
+        }
+    }
+    
+    public int getCurrnet() {
+        return current;
+    }
+    
+    public boolean setCurrent(WordDto w) {
+        for (int i = 0; i < dictFil.size(); i++) {
+            WordDto cw = dictFil.get(i);
+            if (cw.getEn().equals(w.getEn()) && cw.getCz().equals(w.getCz())) {
+                setCurrnet(i);
+                return true;
+            }
+        }
+        
+        return false;
+    }
+    
+    public void addWord(WordDto w) throws DictionaryException {
+        
+        if ((w.getEn() == null) || w.getEn().trim().equals("")) {
+            throw new DictionaryException("Word cannot be empty.");
+        }
+        
+        if ((w.getCz() == null) || w.getCz().trim().equals("")) {
+            throw new DictionaryException("Word cannot be empty.");
+        }
+        
+        if ((w.getCategory() == null) || w.getCategory().trim().equals("")) {
+            throw new DictionaryException("Category cannot be empty.");
+        }
+        
+        w.setCz(w.getCz().trim());
+        w.setEn(w.getEn().trim());
+        
+        WordDto dup = findDuplicity(w);
+        if (dup != null) {
+            setCategory(dup.getCategory());
+            setCurrent(w);
+            throw new DictionaryException("Word " + w.getEn() + " already exists.");
+        }
+
+        dictAll.add(w);
+        
+        subjectState = Dictionary.stateWordAdded;
+        notifyAllObservers();
+    }
+/*    
+    public boolean isDuplicityEn (WordDto w) {
+        for (WordDto t : dictAll) {
+            if (t.getEn().equals(w.getEn())) {
+                return true;
+            }
+        }
+        return false;
+    }
+    
+    public boolean isDuplicityCz (WordDto w) {
+        for (WordDto t : dictAll) {
+            if (t.getCz().equals(w.getCz())) {
+                return true;
+            }
+        }
+        return false;
+    }
+*/  
+    public WordDto findDuplicity(WordDto w) {
+        for (WordDto t : dictAll) {
+            if (t.getCz().equals(w.getCz()) && t.getEn().equals(w.getEn())) {
+                return t;
+            }
+        }
+        return null;
+    }
+    
+    public WordDto getWord() {
+        return dictFil.get(current);
+    }
+    
+    public WordDto getWord(int i) {
+        return dictFil.get(i);
+    }
+    
+    
+    /* Category manipulation */
+    
     public void setCategory(String category) {
         dictFil = new ArrayList<WordDto>();
         Random rand = new Random();
@@ -216,110 +314,13 @@ public class Dictionary {
         String oldCategory = currentCategory;
         currentCategory = category;
         current = -1;
-        setDictCurrnet(0);
+        setCurrnet(0);
         
         if (!oldCategory.equals(currentCategory)) {
             subjectState = Dictionary.stateCurCategoryChanged;
             notifyAllObservers();
         }
     }
-    
-    /* Word manipulation */
-    
-    public void setDictCurrnet(int i) {
-        if (dictFil.size() > i) {
-            if (current != i) {
-                current = i;
-                
-                subjectState = Dictionary.stateCurWordChanged;
-                notifyAllObservers();
-            }
-        }
-    }
-    
-    public int getDictCurrnet() {
-        return current;
-    }
-    
-    public boolean setWordCurrent(WordDto w) {
-        for (int i = 0; i < dictFil.size(); i++) {
-            WordDto cw = dictFil.get(i);
-            if (cw.getEn().equals(w.getEn()) && cw.getCz().equals(w.getCz())) {
-                setDictCurrnet(i);
-                return true;
-            }
-        }
-        
-        return false;
-    }
-    
-    public void addWord(WordDto w) throws DictionaryException {
-        
-        if ((w.getEn() == null) || w.getEn().trim().equals("")) {
-            throw new DictionaryException("Word cannot be empty.");
-        }
-        
-        if ((w.getCz() == null) || w.getCz().trim().equals("")) {
-            throw new DictionaryException("Word cannot be empty.");
-        }
-        
-        if ((w.getCategory() == null) || w.getCategory().trim().equals("")) {
-            throw new DictionaryException("Category cannot be empty.");
-        }
-        
-        w.setCz(w.getCz().trim());
-        w.setEn(w.getEn().trim());
-        
-        WordDto dup = findDuplicity(w);
-        if (dup != null) {
-            setCategory(dup.getCategory());
-            setWordCurrent(w);
-            throw new DictionaryException("Word " + w.getEn() + " already exists.");
-        }
-
-        dictAll.add(w);
-        
-        subjectState = Dictionary.stateWordAdded;
-        notifyAllObservers();
-    }
-    
-    public boolean isDuplicityEn (WordDto w) {
-        for (WordDto t : dictAll) {
-            if (t.getEn().equals(w.getEn())) {
-                return true;
-            }
-        }
-        return false;
-    }
-    
-    public boolean isDuplicityCz (WordDto w) {
-        for (WordDto t : dictAll) {
-            if (t.getCz().equals(w.getCz())) {
-                return true;
-            }
-        }
-        return false;
-    }
-    
-    public WordDto findDuplicity(WordDto w) {
-        for (WordDto t : dictAll) {
-            if (t.getCz().equals(w.getCz()) && t.getEn().equals(w.getEn())) {
-                return t;
-            }
-        }
-        return null;
-    }
-    
-    public WordDto getWord() {
-        return dictFil.get(current);
-    }
-    
-    public WordDto getWord(int i) {
-        return dictFil.get(i);
-    }
-    
-    
-    /* Category manipulation */
     
     private void updateCategoryList() {
         categoryList = new ArrayList<String>();

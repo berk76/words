@@ -9,5 +9,7 @@ package cz.webstones.words;
  * @author jaroslav_b
  */
 public interface IObserver {
+    
     public void updateObserver();
+    
 }

@@ -47,7 +47,7 @@ public class FindDialog extends javax.swing.JDialog {
             return;
         }
         
-        int c = dict.getDictCurrnet();
+        int c = dict.getCurrnet();
         
         for (int i = 0; i < dict.size(); i++) {
             c++;
@@ -56,13 +56,13 @@ public class FindDialog extends javax.swing.JDialog {
                 c = 0;
             }
             
-            if (c == dict.getDictCurrnet()) {
+            if (c == dict.getCurrnet()) {
                 break;
             }
 
             WordDto w = dict.getWord(c);
             if (w.getCz().contains(what) || w.getEn().contains(what)) {
-                dict.setDictCurrnet(c);
+                dict.setCurrnet(c);
                 return;
             }
         }
