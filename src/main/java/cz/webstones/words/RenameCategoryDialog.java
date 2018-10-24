@@ -36,7 +36,6 @@ public class RenameCategoryDialog extends javax.swing.JDialog {
     
     public void setCategoryList(ArrayList<String> categoryList, String selectedItem) {
         jComboBox1.removeAllItems();
-        Collections.sort(categoryList, Collator.getInstance(new Locale("cs", "CS"))); 
         for (String s: categoryList) {
             jComboBox1.addItem(s);
         }

@@ -17,10 +17,11 @@ public class FindDialog extends javax.swing.JDialog {
     /**
      * Creates new form FindDialog
      */
-    public FindDialog(java.awt.Frame parent, boolean modal) {
+    public FindDialog(java.awt.Frame parent, boolean modal, Dictionary d) {
         super(parent, modal);
         initComponents();
         this.setLocationRelativeTo(null);
+        dict = d;
     }
     
     public void setLabel(String s) {
@@ -29,10 +30,6 @@ public class FindDialog extends javax.swing.JDialog {
     
     public void setText(String s) {
         jTextField1.setText(s);
-    }
-    
-    public void setDict(Dictionary d) {
-        this.dict = d;
     }
     
     private void search() {

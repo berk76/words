@@ -25,7 +25,7 @@ public class Main extends javax.swing.JFrame implements IObserver {
     private RenameCategoryDialog renameCatDialog = new RenameCategoryDialog(this, true);
     private WordDialog wordDialog = new WordDialog(this, true, addCatDialog, dict);
     private AboutDialog aboutDialog = new AboutDialog(this, true);
-    private FindDialog findDialog = new FindDialog(this, false);
+    private FindDialog findDialog = new FindDialog(this, false, dict);
     private LanguageDialog langDialog = new LanguageDialog(this, true);
     private boolean disableCategotyChange = false;
     protected WordDto wordToPlay = null;
@@ -229,7 +229,6 @@ public class Main extends javax.swing.JFrame implements IObserver {
     }
     
     private void showFindDialog() {
-        findDialog.setDict(dict);
         findDialog.setLabel("Searching in category " + jComboBox1.getSelectedItem());
         findDialog.setVisible(true);
     }
