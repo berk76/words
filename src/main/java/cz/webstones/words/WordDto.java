@@ -167,6 +167,6 @@ public class WordDto {
     }
     
     private String removeBadChars(String w) {
-        return w.replaceAll("\\?", "").replaceAll("\\.", "").replaceAll("'", "").replaceAll(",", "");
+        return w.replaceAll("\\?", "").replaceAll("\\.", "").replaceAll("'", "").replaceAll(",", "").replaceAll("\"", "");
     }
 }
