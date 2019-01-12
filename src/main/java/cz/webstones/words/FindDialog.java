@@ -4,7 +4,10 @@
  */
 package cz.webstones.words;
 
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 import javax.swing.JOptionPane;
+import javax.swing.JTextField;
 
 /**
  *
@@ -20,6 +23,20 @@ public class FindDialog extends javax.swing.JDialog {
     public FindDialog(java.awt.Frame parent, boolean modal, Dictionary d) {
         super(parent, modal);
         initComponents();
+        jTextField1.addFocusListener(new FocusListener()
+        {
+            public void focusLost(FocusEvent e)
+            {
+                JTextField field = (JTextField)e.getSource();
+                field.select(0, 0);
+            }
+ 
+            public void focusGained(FocusEvent e)
+            {
+                JTextField field = (JTextField)e.getSource();
+                field.selectAll();
+            }
+        });
         this.setLocationRelativeTo(null);
         dict = d;
     }
