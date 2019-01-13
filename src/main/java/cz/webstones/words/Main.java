@@ -204,7 +204,11 @@ public class Main extends javax.swing.JFrame implements IObserver {
         this.jTextField1.setFont(f);
         
         this.jLabel1.setText(w.getCz());
-        this.jLabel3.setText("");
+        if (findDialog.isShowing()) {
+            this.jLabel3.setText(w.getEn());
+        } else {
+            this.jLabel3.setText("");
+        }
         this.jTextField1.setText("");
         this.jTextField1.grabFocus();
         
