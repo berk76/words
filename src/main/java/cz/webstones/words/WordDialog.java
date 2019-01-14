@@ -33,7 +33,7 @@ public class WordDialog extends javax.swing.JDialog implements IObserver {
     
     public void updateObserver() {
         switch (dict.getSubjectState()) {
-            case Dictionary.stateCategoryListChanged:
+            case stateCategoryListChanged:
                 updateCategoryCombo();
                 break;
         }

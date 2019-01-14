@@ -93,23 +93,23 @@ public class Main extends javax.swing.JFrame implements IObserver {
     public void updateObserver() {
         switch (dict.getSubjectState()) {
             
-            case Dictionary.stateCurWordChanged:
+            case stateCurWordChanged:
                 next(0);
                 break;
                 
-            case Dictionary.stateCurCategoryChanged:
+            case stateCurCategoryChanged:
                 if (!dict.getCurrentCategory().equals(jComboBox1.getSelectedItem().toString())) {
                     jComboBox1.setSelectedItem(dict.getCurrentCategory());
                 }
                 break;
                 
-            case Dictionary.stateCategoryListChanged:
+            case stateCategoryListChanged:
                 disableCategotyChange = true;
                 updateCategoryCombo();
                 disableCategotyChange = false;
                 break;
                 
-            case Dictionary.stateWordAdded:
+            case stateWordAdded:
                 break;
         }
     }

@@ -30,12 +30,6 @@ import java.util.Random;
  */
 public class Dictionary {
     
-    public static final int stateNoChabge = 0;
-    public static final int stateCurWordChanged = 1;
-    public static final int stateCurCategoryChanged = 2;
-    public static final int stateCategoryListChanged = 3;
-    public static final int stateWordAdded = 4;
-    
     public static final String allCategoryName = "All";
     public static final String encoding = "UTF-8";
     
@@ -43,7 +37,7 @@ public class Dictionary {
     private ArrayList<WordDto> dictFil = new ArrayList<WordDto>();
     private ArrayList<String> categoryList = new ArrayList<String>();
     private ArrayList<IObserver> observers = new ArrayList<IObserver>();
-    private int subjectState = Dictionary.stateNoChabge;
+    private DictionaryStateEnum subjectState = DictionaryStateEnum.stateNoChabge;
     private int current = 0;
     private String currentCategory = Dictionary.allCategoryName;
     
@@ -64,7 +58,7 @@ public class Dictionary {
         }
     }
     
-    public int getSubjectState() {
+    public DictionaryStateEnum getSubjectState() {
         return subjectState;
     }
     
@@ -192,7 +186,7 @@ public class Dictionary {
             if (current != i) {
                 current = i;
                 
-                subjectState = Dictionary.stateCurWordChanged;
+                subjectState = DictionaryStateEnum.stateCurWordChanged;
                 notifyAllObservers();
             }
         }
@@ -240,7 +234,7 @@ public class Dictionary {
 
         dictAll.add(w);
         
-        subjectState = Dictionary.stateWordAdded;
+        subjectState = DictionaryStateEnum.stateWordAdded;
         notifyAllObservers();
     }
 /*    
@@ -317,7 +311,7 @@ public class Dictionary {
         setCurrnet(0);
         
         if (!oldCategory.equals(currentCategory)) {
-            subjectState = Dictionary.stateCurCategoryChanged;
+            subjectState = DictionaryStateEnum.stateCurCategoryChanged;
             notifyAllObservers();
         }
     }
@@ -342,7 +336,7 @@ public class Dictionary {
         
         sortCategoryList();
         
-        subjectState = Dictionary.stateCategoryListChanged;
+        subjectState = DictionaryStateEnum.stateCategoryListChanged;
         notifyAllObservers();
     }
     
@@ -382,7 +376,7 @@ public class Dictionary {
         categoryList.add(category);
         sortCategoryList();
         
-        subjectState = Dictionary.stateCategoryListChanged;
+        subjectState = DictionaryStateEnum.stateCategoryListChanged;
         notifyAllObservers();
     }
     
