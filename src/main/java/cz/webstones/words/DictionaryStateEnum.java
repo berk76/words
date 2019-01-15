@@ -11,6 +11,7 @@ package cz.webstones.words;
 public enum DictionaryStateEnum {
     stateNoChabge,
     stateCurWordChanged,
+    stateCurWordDeleted,
     stateCurCategoryChanged,
     stateCategoryListChanged,
     stateWordAdded

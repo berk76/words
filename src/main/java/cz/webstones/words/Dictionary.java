@@ -6,6 +6,7 @@ package cz.webstones.words;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -33,10 +34,10 @@ public class Dictionary {
     public static final String allCategoryName = "All";
     public static final String encoding = "UTF-8";
     
-    private ArrayList<WordDto> dictAll = new ArrayList<WordDto>();
-    private ArrayList<WordDto> dictFil = new ArrayList<WordDto>();
-    private ArrayList<String> categoryList = new ArrayList<String>();
-    private ArrayList<IObserver> observers = new ArrayList<IObserver>();
+    private ArrayList<WordDto> dictAll = new ArrayList<>();
+    private ArrayList<WordDto> dictFil = new ArrayList<>();
+    private ArrayList<String> categoryList = new ArrayList<>();
+    private ArrayList<IObserver> observers = new ArrayList<>();
     private DictionaryStateEnum subjectState = DictionaryStateEnum.stateNoChabge;
     private int current = 0;
     private String currentCategory = Dictionary.allCategoryName;
@@ -237,25 +238,8 @@ public class Dictionary {
         subjectState = DictionaryStateEnum.stateWordAdded;
         notifyAllObservers();
     }
-/*    
-    public boolean isDuplicityEn (WordDto w) {
-        for (WordDto t : dictAll) {
-            if (t.getEn().equals(w.getEn())) {
-                return true;
-            }
-        }
-        return false;
-    }
+
     
-    public boolean isDuplicityCz (WordDto w) {
-        for (WordDto t : dictAll) {
-            if (t.getCz().equals(w.getCz())) {
-                return true;
-            }
-        }
-        return false;
-    }
-*/  
     public WordDto findDuplicity(WordDto w) {
         for (WordDto t : dictAll) {
             if (t.getCz().equals(w.getCz()) && t.getEn().equals(w.getEn())) {
@@ -263,6 +247,23 @@ public class Dictionary {
             }
         }
         return null;
+    }
+
+    public void deleteCurrentWord() {
+        WordDto w = getWord();
+        
+        File f = new File(w.getMp3FilenameEn());
+        f.delete();
+        dictFil.remove(w);
+        dictAll.remove(w);
+        
+        subjectState = DictionaryStateEnum.stateCurWordDeleted;
+        notifyAllObservers();
+        
+        if (dictFil.isEmpty()) {
+            updateCategoryList();
+            setCategory(Dictionary.allCategoryName);
+        }
     }
     
     public WordDto getWord() {
