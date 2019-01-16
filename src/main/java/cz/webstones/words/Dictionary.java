@@ -40,7 +40,13 @@ public class Dictionary {
     private ArrayList<IObserver> observers = new ArrayList<>();
     private DictionaryStateEnum subjectState = DictionaryStateEnum.stateNoChabge;
     private int current = 0;
-    private String currentCategory = Dictionary.allCategoryName;
+    private String currentCategory;
+    
+    public Dictionary() throws DictionaryException {
+        super();
+        
+        currentCategory = Dictionary.allCategoryName;
+    }
     
     
     /* Observer subject interface */
@@ -176,6 +182,10 @@ public class Dictionary {
         return dictFil.size();
     }
     
+    public int sizeOfAll() {
+        return dictAll.size();
+    }
+    
     public List<WordDto> getDictionaryAsList() {
         return dictFil;
     }
@@ -223,6 +233,10 @@ public class Dictionary {
             throw new DictionaryException("Category cannot be empty.");
         }
         
+        if (w.getCategory().equals(Dictionary.allCategoryName)) {
+            throw new DictionaryException("Category name cannot be " + Dictionary.allCategoryName + " !");
+        }
+        
         w.setCz(w.getCz().trim());
         w.setEn(w.getEn().trim());
         
@@ -234,6 +248,10 @@ public class Dictionary {
         }
 
         dictAll.add(w);
+        
+        if (currentCategory.equals(Dictionary.allCategoryName) || currentCategory.equals(w.getCategory())) {
+            dictFil.add(w);
+        }
         
         subjectState = DictionaryStateEnum.stateWordAdded;
         notifyAllObservers();
@@ -366,6 +384,10 @@ public class Dictionary {
         
         if ((category == null) || category.trim().equals("")) {
             return;
+        }
+        
+        if (category.equals(Dictionary.allCategoryName)) {
+            throw new DictionaryException("Category name cannot be " + Dictionary.allCategoryName + " !");
         }
         
         for (String c: categoryList) {

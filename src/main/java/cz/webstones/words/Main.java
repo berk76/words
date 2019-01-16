@@ -11,6 +11,8 @@ import java.awt.Font;
 import java.io.File;
 import java.io.IOException;
 import java.util.Date;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.prefs.Preferences;
 import javax.swing.JOptionPane;
 
@@ -20,21 +22,29 @@ import javax.swing.JOptionPane;
  */
 public class Main extends javax.swing.JFrame implements IObserver {
     
-    private Dictionary dict = new Dictionary();
+    private Dictionary dict;
     private Setup setup;
-    private AddCategoryDialog addCatDialog = new AddCategoryDialog(this, true);
-    private RenameCategoryDialog renameCatDialog = new RenameCategoryDialog(this, true);
-    private WordDialog wordDialog = new WordDialog(this, true, addCatDialog, dict);
-    private AboutDialog aboutDialog = new AboutDialog(this, true);
-    private FindDialog findDialog = new FindDialog(this, false, dict);
-    private LanguageDialog langDialog = new LanguageDialog(this, true);
+    private AddCategoryDialog addCatDialog;
+    private RenameCategoryDialog renameCatDialog;
+    private WordDialog wordDialog;
+    private AboutDialog aboutDialog;
+    private FindDialog findDialog;
+    private LanguageDialog langDialog;
     private boolean disableCategotyChange = false;
     protected WordDto wordToPlay = null;
 
     /**
      * Creates new form Main
      */
-    public Main() {
+    public Main() throws DictionaryException {
+        
+        dict = new Dictionary();
+        addCatDialog = new AddCategoryDialog(this, true);
+        renameCatDialog = new RenameCategoryDialog(this, true);
+        wordDialog = new WordDialog(this, true, addCatDialog, dict);
+        aboutDialog = new AboutDialog(this, true);
+        findDialog = new FindDialog(this, false, dict);
+        langDialog = new LanguageDialog(this, true);
         
         if (isRunning()){
             JOptionPane.showMessageDialog(this, "Two instances of this program cannot be running at the same time. \n Exiting now");
@@ -706,7 +716,11 @@ public class Main extends javax.swing.JFrame implements IObserver {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new Main().setVisible(true);
+                try {
+                    new Main().setVisible(true);
+                } catch (DictionaryException ex) {
+                    Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+                }
             }
         });
     }

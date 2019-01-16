@@ -21,6 +21,17 @@ public class WordDto {
     private Date lastGoodHit;
     private String category;
 
+    public WordDto() {
+        super();
+    }
+    
+    public WordDto(String cz, String en, String category) {
+        super();
+        
+        this.cz = cz;
+        this.en = en;
+        this.category = category;
+    }
     
     public String getMp3FilenameEn() {
         return String.format("%s" + File.separator + "%s.mp3", Service.getSetup(false).getFullMp3Path(), removeBadChars(this.getEn()));
