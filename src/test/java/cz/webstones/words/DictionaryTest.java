@@ -15,7 +15,7 @@ import org.junit.Test;
 public class DictionaryTest {
     
     @Test
-    public void testDictionary() throws IOException, DictionaryException {
+    public void testWords() throws IOException, DictionaryException {
         Dictionary d = new Dictionary();
         
         /* Test initial values */
@@ -77,5 +77,33 @@ public class DictionaryTest {
         assertEquals("Category list size:", 1, d.getCategoryList().size());
         assertEquals("Curr cat:", Dictionary.allCategoryName, d.getCurrentCategory());
         
+    }
+    
+    @Test
+    public void testCategories() throws DictionaryException {
+        Dictionary d = new Dictionary();
+        
+        assertEquals("Curr cat:", Dictionary.allCategoryName, d.getCurrentCategory());
+        
+        /* Fill category list */
+        d.addCategory("TestCat1");
+        d.addCategory("TestCat2");
+        d.addCategory("TestCat3");
+        
+        assertEquals("Category list size:", 3, d.getCategoryList().size());
+        
+        /* Fill some words */
+        d.addWord(new WordDto("test1cz", "test1en", "TestCat1"));
+        d.addWord(new WordDto("test2cz", "test2en", "TestCat1"));
+        d.addWord(new WordDto("test3cz", "test3en", "TestCat2"));
+        
+        /* Rename category */
+        d.renameCategory("TestCat1", "TestCat4");
+        
+        assertEquals("Category list size:", 2, d.getCategoryList().size());
+        
+        d.setCategory("TestCat4");
+        assertEquals("Fil dictionary size:", 2, d.size());
+        assertEquals("All dictionary size:", 3, d.sizeOfAll());
     }
 }
