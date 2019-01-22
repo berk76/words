@@ -1,7 +1,7 @@
 # Words
 
 Small vocabulary for learning and repeating foreign words or all sentences and 
-listening correct pronunciation.
+listening correct pronunciation. 
 
 ![Words.png](doc/Words.png)
 
@@ -9,9 +9,11 @@ listening correct pronunciation.
 
 Words is small application I made for my little school girl. It enables you 
 put in foreign words and sentences, categorize them and download correct 
-pronunciation.  
+pronunciation. Little pupil then can learn words by himself/herself.  
 
-## The features
+## Features
+
+Vocabulary enables you:
 
 * Add, modify or delete new words or sentences.
 * Organize words or sentences in various categories.
