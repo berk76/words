@@ -137,6 +137,7 @@ public class Main extends javax.swing.JFrame implements IObserver {
         
         dict.setCategory(w.getCategory());
         dict.setCurrent(w);
+        this.jLabel3.setText(w.getEn());
     }
     
     private void checkIfSoundExists(WordDto w) {
