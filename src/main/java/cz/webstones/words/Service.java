@@ -26,7 +26,7 @@ import java.util.Properties;
  */
 public class Service {
 
-    public static final String version = "Words 1.3.0 snapshot";
+    public static final String version = "Words 1.4.0 snapshot";
     private static Setup setup = null;
 
     public static Setup getSetup(boolean createLocalCopy) {
