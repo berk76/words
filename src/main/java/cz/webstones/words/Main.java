@@ -47,8 +47,11 @@ public class Main extends javax.swing.JFrame implements IObserver {
         langDialog = new LanguageDialog(this, true);
         
         if (isRunning()){
-            JOptionPane.showMessageDialog(this, "Two instances of this program cannot be running at the same time. \n Exiting now");
-            System.exit(0);
+            String txt = "You should not run this application in more instances, otherwise you may lost some changes in your dictionary.\nDo you want to run it anyway?";
+            int dialogResult = JOptionPane.showConfirmDialog (this, txt,"Question", JOptionPane.YES_NO_OPTION);
+            if (dialogResult == JOptionPane.NO_OPTION){
+                System.exit(0);
+            }
         } else {
             onStart();
         }
