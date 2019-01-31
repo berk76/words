@@ -14,6 +14,7 @@ import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.prefs.Preferences;
+import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
 
 /**
@@ -31,7 +32,9 @@ public class Main extends javax.swing.JFrame implements IObserver {
     private FindDialog findDialog;
     private LanguageDialog langDialog;
     private boolean disableCategotyChange = false;
+    private ImageIcon loadingIcon = new ImageIcon(this.getClass().getClassLoader().getResource("ajax-loader.gif"));
     protected WordDto wordToPlay = null;
+    private boolean controlsEnabled = true;
 
     /**
      * Creates new form Main
@@ -154,13 +157,28 @@ public class Main extends javax.swing.JFrame implements IObserver {
         /* Get MP3 */
         int dialogResult = JOptionPane.showConfirmDialog (this, "Pronunciation for this word is missing.\nDo you want download MP3?","Question", JOptionPane.YES_NO_OPTION);
         if (dialogResult == JOptionPane.YES_OPTION){
-            try {
-                Mp3Creator.createMp3(w.getEn(), setup.getLanguage(), fName);
-            } catch (Mp3CreatorException ex) {
-                JOptionPane.showMessageDialog(this, ex.getMessage());
-            }
+            
+            disableControls(true);
             wordToPlay = w;
-            play();
+            jLabel2.setIcon(loadingIcon);
+            jLabel2.setText("Downloading ...");
+                
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        Mp3Creator.createMp3(wordToPlay.getEn(), setup.getLanguage(), wordToPlay.getMp3FilenameEn());
+                    } catch (Mp3CreatorException ex) {
+                        JOptionPane.showMessageDialog(null, ex.getMessage());
+                    }    
+                    disableControls(false);
+                    jLabel2.setIcon(null);
+                    updateStatus();
+                    
+                    play();
+                }
+            }).start();
+            
         }
     }
     
@@ -254,10 +272,13 @@ public class Main extends javax.swing.JFrame implements IObserver {
     }
     
     private void updateStatus() {
-        this.jLabel2.setText(String.valueOf(dict.getCurrnet() + 1) + " / " + String.valueOf(dict.size()) + " words");
+        if (controlsEnabled) {
+            this.jLabel2.setText(String.valueOf(dict.getCurrnet() + 1) + " / " + String.valueOf(dict.size()) + " words");
+        }
     }
     
     private void disableControls(boolean b) {
+        controlsEnabled = !b;
         jButton1.setEnabled(!b);
         jButton2.setEnabled(!b);
         jButton3.setEnabled(!b);
