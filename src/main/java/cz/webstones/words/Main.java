@@ -35,6 +35,7 @@ public class Main extends javax.swing.JFrame implements IObserver {
     private ImageIcon loadingIcon = new ImageIcon(this.getClass().getClassLoader().getResource("ajax-loader.gif"));
     protected WordDto wordToPlay = null;
     private boolean controlsEnabled = true;
+    private boolean mp3DownloadConfirmed = false;
 
     /**
      * Creates new form Main
@@ -155,9 +156,14 @@ public class Main extends javax.swing.JFrame implements IObserver {
         }
         
         /* Get MP3 */
-        int dialogResult = JOptionPane.showConfirmDialog (this, "Pronunciation for this word is missing.\nDo you want download MP3?","Question", JOptionPane.YES_NO_OPTION);
-        if (dialogResult == JOptionPane.YES_OPTION){
-            
+        if (!mp3DownloadConfirmed) {
+            int dialogResult = JOptionPane.showConfirmDialog (this, "Pronunciation for this word is missing.\nDo you want downloading it?","Question", JOptionPane.YES_NO_OPTION);
+            if (dialogResult == JOptionPane.YES_OPTION) {
+                mp3DownloadConfirmed = true;
+            }
+        }
+        
+        if (mp3DownloadConfirmed) {
             disableControls(true);
             wordToPlay = w;
             jLabel2.setIcon(loadingIcon);
@@ -170,6 +176,7 @@ public class Main extends javax.swing.JFrame implements IObserver {
                         Mp3Creator.createMp3(wordToPlay.getEn(), setup.getLanguage(), wordToPlay.getMp3FilenameEn());
                     } catch (Mp3CreatorException ex) {
                         JOptionPane.showMessageDialog(null, ex.getMessage());
+                        mp3DownloadConfirmed = false;
                     }    
                     disableControls(false);
                     jLabel2.setIcon(null);
