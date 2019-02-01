@@ -140,18 +140,20 @@ public class Main extends javax.swing.JFrame implements IObserver {
             JOptionPane.showMessageDialog(this, ex.getMessage());
             return;
         }
-        checkIfSoundExists(w);
+        checkIfSoundExistsAndPlay(w);
         
         dict.setCategory(w.getCategory());
         dict.setCurrent(w);
         this.jLabel3.setText(w.getEn());
     }
     
-    private void checkIfSoundExists(WordDto w) {
+    private void checkIfSoundExistsAndPlay(WordDto w) {
         String fName = w.getMp3FilenameEn();
         File f = new File(fName);
         
         if (f.exists()) {
+            wordToPlay = w;
+            _play();
             return;
         }
         
@@ -182,7 +184,7 @@ public class Main extends javax.swing.JFrame implements IObserver {
                     jLabel2.setIcon(null);
                     updateStatus();
                     
-                    play();
+                    _play();
                 }
             }).start();
             
@@ -257,7 +259,7 @@ public class Main extends javax.swing.JFrame implements IObserver {
         disableGoodWrong(true);
     }
     
-    private void play() {
+    private void _play() {
         disableControls(true);
         
         new Thread(new Runnable() {
@@ -617,11 +619,8 @@ public class Main extends javax.swing.JFrame implements IObserver {
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
         // Button Show&Play
-        checkIfSoundExists(dict.getWord());
-        
         this.jLabel3.setText(dict.getWord().getEn());
-        wordToPlay = dict.getWord();
-        play();
+        checkIfSoundExistsAndPlay(dict.getWord());
     }//GEN-LAST:event_jButton3ActionPerformed
 
     private void formWindowClosed(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosed
@@ -675,7 +674,7 @@ public class Main extends javax.swing.JFrame implements IObserver {
             File f = new File(oldWord);
             f.delete();
         }
-        checkIfSoundExists(dict.getWord());
+        checkIfSoundExistsAndPlay(dict.getWord());
     }//GEN-LAST:event_jMenuItem3ActionPerformed
 
     private void jMenuItem4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem4ActionPerformed
