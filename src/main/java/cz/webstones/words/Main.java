@@ -140,55 +140,60 @@ public class Main extends javax.swing.JFrame implements IObserver {
             JOptionPane.showMessageDialog(this, ex.getMessage());
             return;
         }
-        checkIfSoundExistsAndPlay(w);
+        play(w);
         
         dict.setCategory(w.getCategory());
         dict.setCurrent(w);
         this.jLabel3.setText(w.getEn());
     }
     
-    private void checkIfSoundExistsAndPlay(WordDto w) {
-        String fName = w.getMp3FilenameEn();
-        File f = new File(fName);
-        
-        if (f.exists()) {
-            wordToPlay = w;
-            _play();
-            return;
-        }
-        
-        /* Get MP3 */
-        if (!mp3DownloadConfirmed) {
-            int dialogResult = JOptionPane.showConfirmDialog (this, "Pronunciation for this word is missing.\nDo you want downloading it?","Question", JOptionPane.YES_NO_OPTION);
-            if (dialogResult == JOptionPane.YES_OPTION) {
-                mp3DownloadConfirmed = true;
+        private void play(WordDto w) {
+            String fName = w.getMp3FilenameEn();
+            File f = new File(fName);
+            
+            if (!f.exists() && !mp3DownloadConfirmed) {
+                String txt = "Pronunciation for this word is missing.\nDo you want downloading it?";
+                int dialogResult = JOptionPane.showConfirmDialog (this, txt,"Question", JOptionPane.YES_NO_OPTION);
+                if (dialogResult == JOptionPane.YES_OPTION) {
+                    mp3DownloadConfirmed = true;
+                }
             }
-        }
-        
-        if (mp3DownloadConfirmed) {
+            
             disableControls(true);
             wordToPlay = w;
-            jLabel2.setIcon(loadingIcon);
-            jLabel2.setText("Downloading ...");
-                
+        
             new Thread(new Runnable() {
                 @Override
                 public void run() {
-                    try {
-                        Mp3Creator.createMp3(wordToPlay.getEn(), setup.getLanguage(), wordToPlay.getMp3FilenameEn());
-                    } catch (Mp3CreatorException ex) {
-                        JOptionPane.showMessageDialog(null, ex.getMessage());
-                        mp3DownloadConfirmed = false;
-                    }    
-                    disableControls(false);
-                    jLabel2.setIcon(null);
-                    updateStatus();
+
+                    String fName = wordToPlay.getMp3FilenameEn();
+                    File f = new File(fName);
+
+                    if (!f.exists() && mp3DownloadConfirmed) {
+                        jLabel2.setIcon(loadingIcon);
+                        jLabel2.setText("Downloading ...");
+
+                        try {
+                            Mp3Creator.createMp3(wordToPlay.getEn(), setup.getLanguage(), wordToPlay.getMp3FilenameEn());
+                        } catch (Mp3CreatorException ex) {
+                            JOptionPane.showMessageDialog(null, ex.getMessage());
+                            mp3DownloadConfirmed = false;
+                        }    
+
+                        disableControls(false);
+                        jLabel2.setIcon(null);
+                        updateStatus();
+                        disableControls(true);
+                    }
+
+                    if (f.exists()) {
+                        AudioFilePlayer.playFile(fName);
+                    }
                     
-                    _play();
+                    disableControls(false);
+
                 }
             }).start();
-            
-        }
     }
     
     private void addCategory(String category) {
@@ -257,22 +262,6 @@ public class Main extends javax.swing.JFrame implements IObserver {
         
         updateStatus();
         disableGoodWrong(true);
-    }
-    
-    private void _play() {
-        disableControls(true);
-        
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                String fName = wordToPlay.getMp3FilenameEn();
-                File f = new File(fName);
-                if (f.exists()) {
-                    AudioFilePlayer.playFile(fName);
-                }
-                disableControls(false);
-            }
-        }).start();
     }
     
     private void showFindDialog() {
@@ -620,7 +609,7 @@ public class Main extends javax.swing.JFrame implements IObserver {
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
         // Button Show&Play
         this.jLabel3.setText(dict.getWord().getEn());
-        checkIfSoundExistsAndPlay(dict.getWord());
+        play(dict.getWord());
     }//GEN-LAST:event_jButton3ActionPerformed
 
     private void formWindowClosed(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosed
@@ -674,7 +663,7 @@ public class Main extends javax.swing.JFrame implements IObserver {
             File f = new File(oldWord);
             f.delete();
         }
-        checkIfSoundExistsAndPlay(dict.getWord());
+        play(dict.getWord());
     }//GEN-LAST:event_jMenuItem3ActionPerformed
 
     private void jMenuItem4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem4ActionPerformed
