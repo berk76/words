@@ -31,6 +31,7 @@ public class Main extends javax.swing.JFrame implements IObserver {
     private AboutDialog aboutDialog;
     private FindDialog findDialog;
     private LanguageDialog langDialog;
+    private ErrorDialog errorDialog;
     private boolean disableCategotyChange = false;
     private ImageIcon loadingIcon = new ImageIcon(this.getClass().getClassLoader().getResource("ajax-loader.gif"));
     protected WordDto wordToPlay = null;
@@ -49,6 +50,7 @@ public class Main extends javax.swing.JFrame implements IObserver {
         aboutDialog = new AboutDialog(this, true);
         findDialog = new FindDialog(this, false, dict);
         langDialog = new LanguageDialog(this, true);
+        errorDialog = new ErrorDialog(this, true);
         
         if (isRunning()){
             String txt = "You should not run this application in more instances, otherwise you may lost some changes in your dictionary.\nDo you want to run it anyway?";
@@ -176,7 +178,7 @@ public class Main extends javax.swing.JFrame implements IObserver {
                         try {
                             Mp3Creator.createMp3(wordToPlay.getEn(), setup.getLanguage(), wordToPlay.getMp3FilenameEn());
                         } catch (Mp3CreatorException ex) {
-                            JOptionPane.showMessageDialog(null, ex.getMessage());
+                            errorDialog.showError("Error: Cannot download pronunciation.", ex);
                             mp3DownloadConfirmed = false;
                         }    
 
