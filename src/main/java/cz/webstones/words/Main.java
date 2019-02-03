@@ -86,7 +86,7 @@ public class Main extends javax.swing.JFrame implements IObserver {
                 setup.getDictionaryDateFormat());
             
         } catch (Exception ex) {
-            ex.printStackTrace();
+            errorDialog.showError("Error: Cannot init and load dictionary.", ex);
             onFinish();
             System.exit(-1);
         }
@@ -139,7 +139,7 @@ public class Main extends javax.swing.JFrame implements IObserver {
         try {
             dict.addWord(w);
         } catch (DictionaryException ex) {
-            JOptionPane.showMessageDialog(this, ex.getMessage());
+            errorDialog.showError("Error: Cannot add word.", ex);
             return;
         }
         play(w);
@@ -189,7 +189,11 @@ public class Main extends javax.swing.JFrame implements IObserver {
                     }
 
                     if (f.exists()) {
-                        AudioFilePlayer.playFile(fName);
+                        try {
+                            AudioFilePlayer.playFile(fName);
+                        } catch (Exception ex) {
+                            errorDialog.showError("Error: Cannot play pronunciation.", ex);
+                        }
                     }
                     
                     disableControls(false);
@@ -202,7 +206,7 @@ public class Main extends javax.swing.JFrame implements IObserver {
         try {
             dict.addCategory(category);
         } catch (DictionaryException ex) {
-            JOptionPane.showMessageDialog(this, ex.getMessage());
+           errorDialog.showError("Error: Cannot add category.", ex);
         }
     }
     
@@ -622,7 +626,7 @@ public class Main extends javax.swing.JFrame implements IObserver {
         try {
             saveDirectory();
         } catch (IOException ex) {
-            ex.printStackTrace();
+            errorDialog.showError("Error: Cannot save dictionary.", ex);
         } finally {
             onFinish();
         }

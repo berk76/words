@@ -24,7 +24,7 @@ import javax.sound.sampled.DataLine.Info;
  */
 public class AudioFilePlayer {
     
-    public static void playFile(String path) {
+    public static void playFile(String path) throws UnsupportedAudioFileException, IOException, LineUnavailableException {
         final File file = new File(path);
 
         try (final AudioInputStream in = getAudioInputStream(file)) {
@@ -43,11 +43,6 @@ public class AudioFilePlayer {
                     line.stop();
                 }
             }
-
-        } catch (UnsupportedAudioFileException 
-               | LineUnavailableException 
-               | IOException e) {
-            throw new IllegalStateException(e);
         }
     }
     
