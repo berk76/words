@@ -80,7 +80,28 @@ public class WordDialog extends javax.swing.JDialog implements IObserver {
         }
         jComboBox1.setSelectedItem(dict.getCurrentCategory());
     }
+    
+    private void addCategory() {
+        addCatDialog.setCategoryText("");
+        addCatDialog.setVisible(true);
+        if (addCatDialog.isCommited()) {
+            try {
+                dict.addCategory(addCatDialog.getCategoryText());
+            } catch (DictionaryException ex) {
+                JOptionPane.showMessageDialog(this, ex.getMessage());
+            }
+        }
+        jComboBox1.setSelectedItem(addCatDialog.getCategoryText());
+    }
 
+    @Override
+    public void setVisible(boolean b) {
+        if (dict.getCategoryList().isEmpty()) {
+            addCategory();
+        }
+        super.setVisible(b);
+    }
+    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -283,16 +304,7 @@ public class WordDialog extends javax.swing.JDialog implements IObserver {
     }//GEN-LAST:event_jTextField6ActionPerformed
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
-        addCatDialog.setCategoryText("");
-        addCatDialog.setVisible(true);
-        if (addCatDialog.isCommited()) {
-            try {
-                dict.addCategory(addCatDialog.getCategoryText());
-            } catch (DictionaryException ex) {
-                JOptionPane.showMessageDialog(this, ex.getMessage());
-            }
-        }
-        jComboBox1.setSelectedItem(addCatDialog.getCategoryText());
+        addCategory();
     }//GEN-LAST:event_jButton3ActionPerformed
 
     
