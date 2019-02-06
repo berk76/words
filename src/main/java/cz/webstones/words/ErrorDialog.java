@@ -38,6 +38,7 @@ public class ErrorDialog extends javax.swing.JDialog {
         } catch (IOException e) {
         }
         this.jTextArea1.setText(result);
+        this.jTextArea1.setCaretPosition(0);
         
         this.setVisible(true);
     }
