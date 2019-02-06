@@ -116,7 +116,7 @@
     </Component>
     <Component class="javax.swing.JLabel" name="jLabel3">
       <Properties>
-        <Property name="text" type="java.lang.String" value="Wiki:"/>
+        <Property name="text" type="java.lang.String" value="Web:"/>
       </Properties>
     </Component>
     <Component class="javax.swing.JButton" name="jButton1">

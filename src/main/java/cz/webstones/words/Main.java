@@ -426,7 +426,7 @@ public class Main extends javax.swing.JFrame implements IObserver {
 
         jLabel5.setText("Foreign word");
 
-        jLabel6.setText("Try to write down");
+        jLabel6.setText("Try to write it down");
 
         jLabel7.setText("Choose category");
 

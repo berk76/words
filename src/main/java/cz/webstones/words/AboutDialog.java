@@ -95,7 +95,7 @@ public class AboutDialog extends javax.swing.JDialog {
 
         jLabel2.setText("Written by Jaroslav Beran");
 
-        jLabel3.setText("Wiki:");
+        jLabel3.setText("Web:");
 
         jButton1.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
         jButton1.setText("Close");
