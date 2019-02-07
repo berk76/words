@@ -139,7 +139,7 @@ public class Main extends javax.swing.JFrame implements IObserver {
         try {
             dict.addWord(w);
         } catch (DictionaryException ex) {
-            errorDialog.showError("Error: Cannot add word.", ex);
+            JOptionPane.showMessageDialog(this, ex.getMessage());
             return;
         }
         play(w);
@@ -206,7 +206,7 @@ public class Main extends javax.swing.JFrame implements IObserver {
         try {
             dict.addCategory(category);
         } catch (DictionaryException ex) {
-            errorDialog.showError("Error: Cannot add category.", ex);
+            JOptionPane.showMessageDialog(this, ex.getMessage());
         }
     }
 
