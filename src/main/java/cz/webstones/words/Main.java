@@ -22,7 +22,7 @@ import javax.swing.JOptionPane;
  * @author jaroslav_b
  */
 public class Main extends javax.swing.JFrame implements IObserver {
-    
+
     private Dictionary dict;
     private Setup setup;
     private AddCategoryDialog addCatDialog;
@@ -42,7 +42,7 @@ public class Main extends javax.swing.JFrame implements IObserver {
      * Creates new form Main
      */
     public Main() throws DictionaryException {
-        
+
         dict = new Dictionary();
         addCatDialog = new AddCategoryDialog(this, true);
         renameCatDialog = new RenameCategoryDialog(this, true);
@@ -51,26 +51,26 @@ public class Main extends javax.swing.JFrame implements IObserver {
         findDialog = new FindDialog(this, false, dict);
         langDialog = new LanguageDialog(this, true);
         errorDialog = new ErrorDialog(this, true);
-        
-        if (isRunning()){
+
+        if (isRunning()) {
             String txt = "You should not run this application in more instances, otherwise you may lost some changes in your dictionary.\nDo you want to run it anyway?";
-            int dialogResult = JOptionPane.showConfirmDialog (this, txt,"Question", JOptionPane.YES_NO_OPTION);
-            if (dialogResult == JOptionPane.NO_OPTION){
+            int dialogResult = JOptionPane.showConfirmDialog(this, txt, "Question", JOptionPane.YES_NO_OPTION);
+            if (dialogResult == JOptionPane.NO_OPTION) {
                 System.exit(0);
             }
         } else {
             onStart();
         }
-        
+
         initComponents();
         this.setTitle(Service.version);
         jLabel1.setText("");
         jLabel2.setText("");
         jLabel3.setText("");
         jTextField1.setText("");
-        
+
         findDialog.setText("");
-        
+
         try {
             setup = Service.getSetup(true);
             if ((setup.getLanguage() == null) || setup.getLanguage().equals("")) {
@@ -81,60 +81,60 @@ public class Main extends javax.swing.JFrame implements IObserver {
 
             dict.attach(this);
             dict.loadDictionary(
-                setup.getFullDictionaryFilePath(), 
-                setup.getDictionarySeparator(), 
-                setup.getDictionaryDateFormat());
-            
+                    setup.getFullDictionaryFilePath(),
+                    setup.getDictionarySeparator(),
+                    setup.getDictionaryDateFormat());
+
         } catch (Exception ex) {
             errorDialog.showError("Error: Cannot init and load dictionary.", ex);
             onFinish();
             System.exit(-1);
         }
     }
-    
-    private void onStart(){
+
+    private void onStart() {
         Preferences prefs;
         prefs = Preferences.userRoot().node(this.getClass().getName());
         prefs.put("RUNNING", "true");
     }
 
-    private void onFinish(){
+    private void onFinish() {
         Preferences prefs;
         prefs = Preferences.userRoot().node(this.getClass().getName());
         prefs.put("RUNNING", "false");
     }
 
-    private boolean isRunning(){
+    private boolean isRunning() {
         Preferences prefs;
         prefs = Preferences.userRoot().node(this.getClass().getName());
         return prefs.get("RUNNING", null) != null ? Boolean.valueOf(prefs.get("RUNNING", null)) : false;
     }
-    
+
     public void updateObserver() {
         switch (dict.getSubjectState()) {
-            
+
             case stateCurWordChanged:
             case stateCurWordDeleted:
                 next(0);
                 break;
-                
+
             case stateCurCategoryChanged:
                 if (!dict.getCurrentCategory().equals(jComboBox1.getSelectedItem().toString())) {
                     jComboBox1.setSelectedItem(dict.getCurrentCategory());
                 }
                 break;
-                
+
             case stateCategoryListChanged:
                 disableCategotyChange = true;
                 updateCategoryCombo();
                 disableCategotyChange = false;
                 break;
-                
+
             case stateWordAdded:
                 break;
         }
     }
-    
+
     private void addWord(WordDto w) {
         try {
             dict.addWord(w);
@@ -143,111 +143,111 @@ public class Main extends javax.swing.JFrame implements IObserver {
             return;
         }
         play(w);
-        
+
         dict.setCategory(w.getCategory());
         dict.setCurrent(w);
         this.jLabel3.setText(w.getEn());
     }
-    
-        private void play(WordDto w) {
-            String fName = w.getMp3FilenameEn();
-            File f = new File(fName);
-            
-            if (!f.exists() && !mp3DownloadConfirmed) {
-                String txt = "Pronunciation for this word is missing.\nDo you want downloading it?";
-                int dialogResult = JOptionPane.showConfirmDialog (this, txt,"Question", JOptionPane.YES_NO_OPTION);
-                if (dialogResult == JOptionPane.YES_OPTION) {
-                    mp3DownloadConfirmed = true;
-                }
+
+    private void play(WordDto w) {
+        String fName = w.getMp3FilenameEn();
+        File f = new File(fName);
+
+        if (!f.exists() && !mp3DownloadConfirmed) {
+            String txt = "Pronunciation for this word is missing.\nDo you want downloading it?";
+            int dialogResult = JOptionPane.showConfirmDialog(this, txt, "Question", JOptionPane.YES_NO_OPTION);
+            if (dialogResult == JOptionPane.YES_OPTION) {
+                mp3DownloadConfirmed = true;
             }
-            
-            disableControls(true);
-            wordToPlay = w;
-        
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
+        }
 
-                    String fName = wordToPlay.getMp3FilenameEn();
-                    File f = new File(fName);
+        disableControls(true);
+        wordToPlay = w;
 
-                    if (!f.exists() && mp3DownloadConfirmed) {
-                        jLabel2.setIcon(loadingIcon);
-                        jLabel2.setText("Downloading ...");
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
 
-                        try {
-                            Mp3Creator.createMp3(wordToPlay.getEn(), setup.getLanguage(), wordToPlay.getMp3FilenameEn());
-                        } catch (Mp3CreatorException ex) {
-                            errorDialog.showError("Error: Cannot download pronunciation.", ex);
-                            mp3DownloadConfirmed = false;
-                        }    
+                String fName = wordToPlay.getMp3FilenameEn();
+                File f = new File(fName);
 
-                        disableControls(false);
-                        jLabel2.setIcon(null);
-                        updateStatus();
-                        disableControls(true);
+                if (!f.exists() && mp3DownloadConfirmed) {
+                    jLabel2.setIcon(loadingIcon);
+                    jLabel2.setText("Downloading ...");
+
+                    try {
+                        Mp3Creator.createMp3(wordToPlay.getEn(), setup.getLanguage(), wordToPlay.getMp3FilenameEn());
+                    } catch (Mp3CreatorException ex) {
+                        errorDialog.showError("Error: Cannot download pronunciation.", ex);
+                        mp3DownloadConfirmed = false;
                     }
 
-                    if (f.exists()) {
-                        try {
-                            AudioFilePlayer.playFile(fName);
-                        } catch (Exception ex) {
-                            errorDialog.showError("Error: Cannot play pronunciation.", ex);
-                        }
-                    }
-                    
                     disableControls(false);
-
+                    jLabel2.setIcon(null);
+                    updateStatus();
+                    disableControls(true);
                 }
-            }).start();
+
+                if (f.exists()) {
+                    try {
+                        AudioFilePlayer.playFile(fName);
+                    } catch (Exception ex) {
+                        errorDialog.showError("Error: Cannot play pronunciation.", ex);
+                    }
+                }
+
+                disableControls(false);
+
+            }
+        }).start();
     }
-    
+
     private void addCategory(String category) {
         try {
             dict.addCategory(category);
         } catch (DictionaryException ex) {
-           errorDialog.showError("Error: Cannot add category.", ex);
+            errorDialog.showError("Error: Cannot add category.", ex);
         }
     }
-    
+
     private void renameCategory(String oldCat, String newCat) {
         dict.renameCategory(oldCat, newCat);
         dict.setCategory(newCat);
     }
-    
+
     private void updateCategoryCombo() {
         int n = jComboBox1.getItemCount();
         for (int i = 1; i < n; i++) {
             jComboBox1.removeItemAt(n - i);
         }
-        
-        for (String s: dict.getCategoryList()) {
+
+        for (String s : dict.getCategoryList()) {
             jComboBox1.addItem(s);
         }
         jComboBox1.setSelectedItem(dict.getCurrentCategory());
     }
-    
+
     private void saveDirectory() throws IOException {
-        dict.saveDictionary(setup.getFullDictionaryFilePath(), 
-            setup.getDictionarySeparator(), setup.getDictionaryDateFormat());
+        dict.saveDictionary(setup.getFullDictionaryFilePath(),
+                setup.getDictionarySeparator(), setup.getDictionaryDateFormat());
     }
-    
+
     private void next(int i) {
         if (dict.size() == 0) {
             return;
         }
-        
+
         int dictCurrnt = dict.getCurrnet();
-        
+
         dictCurrnt += i;
         if (dictCurrnt >= dict.size()) {
-            dictCurrnt = dict.size() -1;
+            dictCurrnt = dict.size() - 1;
         }
         if (dictCurrnt < 0) {
             dictCurrnt = 0;
         }
         dict.setCurrnet(dictCurrnt);
-        
+
         Font f;
         WordDto w = dict.getWord();
         f = Service.findFont(w.getCz(), this.jLabel1.getFont());
@@ -256,7 +256,7 @@ public class Main extends javax.swing.JFrame implements IObserver {
         this.jLabel3.setFont(f);
         f = Service.findFont(w.getEn(), this.jTextField1.getFont());
         this.jTextField1.setFont(f);
-        
+
         this.jLabel1.setText(w.getCz());
         if (findDialog.isShowing()) {
             this.jLabel3.setText(w.getEn());
@@ -265,22 +265,22 @@ public class Main extends javax.swing.JFrame implements IObserver {
         }
         this.jTextField1.setText("");
         this.jTextField1.grabFocus();
-        
+
         updateStatus();
         disableGoodWrong(true);
     }
-    
+
     private void showFindDialog() {
         findDialog.setLabel("Searching in category " + jComboBox1.getSelectedItem());
         findDialog.setVisible(true);
     }
-    
+
     private void updateStatus() {
         if (controlsEnabled) {
             this.jLabel2.setText(String.valueOf(dict.getCurrnet() + 1) + " / " + String.valueOf(dict.size()) + " words");
         }
     }
-    
+
     private void disableControls(boolean b) {
         controlsEnabled = !b;
         jButton1.setEnabled(!b);
@@ -291,12 +291,12 @@ public class Main extends javax.swing.JFrame implements IObserver {
         jComboBox1.setEnabled(!b);
         this.revalidate();
     }
-    
+
     private void disableGoodWrong(boolean b) {
         jButton1.setEnabled(!b);
         jButton2.setEnabled(!b);
     }
-    
+
     private boolean compareTexts() {
         if (jTextField1.getText().trim().isEmpty()) {
             return true;
@@ -619,7 +619,6 @@ public class Main extends javax.swing.JFrame implements IObserver {
     }//GEN-LAST:event_jButton3ActionPerformed
 
     private void formWindowClosed(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosed
-        
     }//GEN-LAST:event_formWindowClosed
 
     private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
@@ -702,12 +701,12 @@ public class Main extends javax.swing.JFrame implements IObserver {
             wordDialog.setVisible(false);
             addWord(w);
         }
-        
+
     }//GEN-LAST:event_jMenuItem7ActionPerformed
 
     private void jMenuItem8ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem8ActionPerformed
-        int dialogResult = JOptionPane.showConfirmDialog (this, "Do you want to delete word: " + dict.getWord().getCz() + " ?","Question", JOptionPane.YES_NO_OPTION);
-        if (dialogResult == JOptionPane.YES_OPTION){
+        int dialogResult = JOptionPane.showConfirmDialog(this, "Do you want to delete word: " + dict.getWord().getCz() + " ?", "Question", JOptionPane.YES_NO_OPTION);
+        if (dialogResult == JOptionPane.YES_OPTION) {
             dict.deleteCurrentWord();
         }
     }//GEN-LAST:event_jMenuItem8ActionPerformed
