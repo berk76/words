@@ -193,6 +193,13 @@ public class Dictionary {
     /* Word manipulation */
     
     public void setCurrnet(int i) {
+
+        if (dictFil.size() == 0) {
+            current = 0;
+            subjectState = DictionaryStateEnum.stateCurWordChanged;
+            notifyAllObservers();
+        }
+
         if (dictFil.size() > i) {
             if (current != i) {
                 current = i;

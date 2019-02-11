@@ -234,8 +234,14 @@ public class Main extends javax.swing.JFrame implements IObserver {
 
     private void next(int i) {
         if (dict.size() == 0) {
+            this.jLabel1.setText("<category is empty>");
+            this.jLabel3.setText("");
+            this.jLabel2.setText("0 / 0 words");
+            disableControls(true);
+            jComboBox1.setEnabled(true);
             return;
         }
+        disableControls(false);
 
         int dictCurrnt = dict.getCurrnet();
 
