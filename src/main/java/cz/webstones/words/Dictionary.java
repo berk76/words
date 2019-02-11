@@ -284,11 +284,6 @@ public class Dictionary {
         
         subjectState = DictionaryStateEnum.stateCurWordDeleted;
         notifyAllObservers();
-        
-        if (dictFil.isEmpty()) {
-            updateCategoryList();
-            setCategory(Dictionary.allCategoryName);
-        }
     }
     
     public WordDto getWord() {

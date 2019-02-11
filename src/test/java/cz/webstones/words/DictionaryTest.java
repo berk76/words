@@ -120,17 +120,17 @@ public class DictionaryTest {
         d.deleteCurrentWord();
         
         assertEquals("Observer getNoChange:", 0, o.getNoChange());
-        assertEquals("Observer getCurWordChanged:", 1, o.getCurWordChanged());
+        assertEquals("Observer getCurWordChanged:", 0, o.getCurWordChanged());
         assertEquals("Observer getCurWordDeleted:", 1, o.getCurWordDeleted());
-        assertEquals("Observer getCurCategoryChanged:", 1, o.getCurCategoryChanged());
-        assertEquals("Observer getCategoryListChanged:", 1, o.getCategoryListChanged());
+        assertEquals("Observer getCurCategoryChanged:", 0, o.getCurCategoryChanged());
+        assertEquals("Observer getCategoryListChanged:", 0, o.getCategoryListChanged());
         assertEquals("Observer getWordAdded:", 0, o.getWordAdded());
         assertEquals("Observer getUnknown:", 0, o.getUnknown());
         
-        assertEquals("Fil dictionary size:", 1, d.size());
+        assertEquals("Fil dictionary size:", 0, d.size());
         assertEquals("All dictionary size:", 1, d.sizeOfAll());
-        assertEquals("Category list size:", 1, d.getCategoryList().size());
-        assertEquals("Curr cat:", Dictionary.allCategoryName, d.getCurrentCategory());
+        assertEquals("Category list size:", 3, d.getCategoryList().size());
+        assertEquals("Curr cat:", "TestCat1", d.getCurrentCategory());
         
     }
     
