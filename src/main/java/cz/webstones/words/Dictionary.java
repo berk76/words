@@ -226,7 +226,7 @@ public class Dictionary {
         return false;
     }
     
-    public void addWord(WordDto w) throws DictionaryException {
+    public void validateWord(WordDto w) throws DictionaryException {
         
         if ((w.getEn() == null) || w.getEn().trim().equals("")) {
             throw new DictionaryException("Word cannot be empty.");
@@ -246,6 +246,11 @@ public class Dictionary {
         
         w.setCz(w.getCz().trim());
         w.setEn(w.getEn().trim());
+    }
+    
+    public void addWord(WordDto w) throws DictionaryException {
+        
+        validateWord(w);
         
         WordDto dup = findDuplicity(w);
         if (dup != null) {
@@ -261,6 +266,19 @@ public class Dictionary {
         }
         
         subjectState = DictionaryStateEnum.stateWordAdded;
+        notifyAllObservers();
+    }
+    
+    
+    public void updateWord(WordDto w) throws DictionaryException {
+        
+        validateWord(w);
+        
+        if (!currentCategory.equals(Dictionary.allCategoryName) && !currentCategory.equals(w.getCategory())) {
+            dictFil.remove(w);
+        }
+        
+        subjectState = DictionaryStateEnum.stateCurWordChanged;
         notifyAllObservers();
     }
 

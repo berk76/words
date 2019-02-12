@@ -135,20 +135,6 @@ public class Main extends javax.swing.JFrame implements IObserver {
         }
     }
 
-    private void addWord(WordDto w) {
-        try {
-            dict.addWord(w);
-        } catch (DictionaryException ex) {
-            JOptionPane.showMessageDialog(this, ex.getMessage());
-            return;
-        }
-        play(w);
-
-        dict.setCategory(w.getCategory());
-        dict.setCurrent(w);
-        this.jLabel3.setText(w.getEn());
-    }
-
     private void play(WordDto w) {
         String fName = w.getMp3FilenameEn();
         File f = new File(fName);
@@ -664,17 +650,23 @@ public class Main extends javax.swing.JFrame implements IObserver {
 
     private void jMenuItem3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem3ActionPerformed
         // Edit Word
-        String oldWord = dict.getWord().getMp3FilenameEn();
-        wordDialog.setWord(dict.getWord());
+        WordDto w = dict.getWord();
+        String oldWordPath = w.getMp3FilenameEn();
+        wordDialog.setWord(w);
         //wordDialog.setForeignWordEditable(false);
         wordDialog.setVisible(true);
-        this.jLabel1.setText(dict.getWord().getCz());
-        this.jLabel3.setText(dict.getWord().getEn());
-        if (!oldWord.equals(dict.getWord().getMp3FilenameEn())) {
-            File f = new File(oldWord);
-            f.delete();
+        
+        try {
+            dict.updateWord(w);
+        } catch (DictionaryException ex) {
+            errorDialog.showError("Error: Cannot modify word.", ex);
         }
-        play(dict.getWord());
+        
+        if (!oldWordPath.equals(w.getMp3FilenameEn())) {
+            File f = new File(oldWordPath);
+            f.delete();
+            play(w);
+        }
     }//GEN-LAST:event_jMenuItem3ActionPerformed
 
     private void jMenuItem4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem4ActionPerformed
@@ -703,11 +695,22 @@ public class Main extends javax.swing.JFrame implements IObserver {
         wordDialog.setWord(w);
         wordDialog.setForeignWordEditable(true);
         wordDialog.setVisible(true);
+        
         if (wordDialog.isCommited()) {
-            wordDialog.setVisible(false);
-            addWord(w);
+     
+            try {
+                dict.addWord(w);
+            } catch (DictionaryException ex) {
+                JOptionPane.showMessageDialog(this, ex.getMessage());
+                return;
+            }
+            
+            dict.setCategory(w.getCategory());
+            dict.setCurrent(w);
+            this.jLabel3.setText(w.getEn());
+            
+            play(w);
         }
-
     }//GEN-LAST:event_jMenuItem7ActionPerformed
 
     private void jMenuItem8ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem8ActionPerformed

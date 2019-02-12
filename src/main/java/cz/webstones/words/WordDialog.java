@@ -287,11 +287,23 @@ public class WordDialog extends javax.swing.JDialog implements IObserver {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        setCommited(true);
-        this.word.setCz(jTextField1.getText());
-        this.word.setEn(jTextField2.getText());
-        this.word.setCategory(jComboBox1.getSelectedItem().toString());
-        this.setVisible(false);
+        WordDto tmp = new WordDto();
+        tmp.setCz(jTextField1.getText());
+        tmp.setEn(jTextField2.getText());
+        tmp.setCategory(jComboBox1.getSelectedItem().toString());
+        
+        try {
+            dict.validateWord(tmp);
+            
+            this.word.setCz(jTextField1.getText());
+            this.word.setEn(jTextField2.getText());
+            this.word.setCategory(jComboBox1.getSelectedItem().toString());
+            
+            setCommited(true);
+            this.setVisible(false);
+        } catch (DictionaryException ex) {
+            JOptionPane.showMessageDialog(this, ex.getMessage());
+        }
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
