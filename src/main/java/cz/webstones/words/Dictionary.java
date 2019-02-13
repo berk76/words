@@ -421,6 +421,25 @@ public class Dictionary {
         
         subjectState = DictionaryStateEnum.stateCategoryListChanged;
         notifyAllObservers();
+        
+        setCategory(category);
+    }
+    
+    public void deleteCurrentCategory() throws DictionaryException {
+        if (currentCategory.equals(allCategoryName)) {
+            throw new DictionaryException("Cannot delete category: " + allCategoryName);
+        }
+        
+        if (dictFil.size() != 0) {
+            throw new DictionaryException("Category " + currentCategory + " is not empty.");
+        }
+        
+        categoryList.remove(currentCategory);
+        
+        subjectState = DictionaryStateEnum.stateCategoryListChanged;
+        notifyAllObservers();
+        
+        setCategory(allCategoryName);
     }
     
     private void sortCategoryList() {

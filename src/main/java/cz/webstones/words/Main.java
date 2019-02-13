@@ -192,7 +192,7 @@ public class Main extends javax.swing.JFrame implements IObserver {
         try {
             dict.addCategory(category);
         } catch (DictionaryException ex) {
-            JOptionPane.showMessageDialog(this, ex.getMessage());
+            JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
 
@@ -334,6 +334,7 @@ public class Main extends javax.swing.JFrame implements IObserver {
         jMenu2 = new javax.swing.JMenu();
         jMenuItem4 = new javax.swing.JMenuItem();
         jMenuItem5 = new javax.swing.JMenuItem();
+        jMenuItem9 = new javax.swing.JMenuItem();
         jMenu4 = new javax.swing.JMenu();
         jMenuItem6 = new javax.swing.JMenuItem();
 
@@ -552,6 +553,15 @@ public class Main extends javax.swing.JFrame implements IObserver {
         });
         jMenu2.add(jMenuItem5);
 
+        jMenuItem9.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        jMenuItem9.setText("Delete");
+        jMenuItem9.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem9ActionPerformed(evt);
+            }
+        });
+        jMenu2.add(jMenuItem9);
+
         jMenuBar1.add(jMenu2);
 
         jMenu4.setText("Help");
@@ -701,7 +711,7 @@ public class Main extends javax.swing.JFrame implements IObserver {
             try {
                 dict.addWord(w);
             } catch (DictionaryException ex) {
-                JOptionPane.showMessageDialog(this, ex.getMessage());
+                JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
                 return;
             }
             
@@ -714,11 +724,22 @@ public class Main extends javax.swing.JFrame implements IObserver {
     }//GEN-LAST:event_jMenuItem7ActionPerformed
 
     private void jMenuItem8ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem8ActionPerformed
-        int dialogResult = JOptionPane.showConfirmDialog(this, "Do you want to delete word: " + dict.getWord().getCz() + " ?", "Question", JOptionPane.YES_NO_OPTION);
+        int dialogResult = JOptionPane.showConfirmDialog(this, "Do you want to delete word: " + dict.getWord().getCz() + "?", "Question", JOptionPane.YES_NO_OPTION);
         if (dialogResult == JOptionPane.YES_OPTION) {
             dict.deleteCurrentWord();
         }
     }//GEN-LAST:event_jMenuItem8ActionPerformed
+
+    private void jMenuItem9ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem9ActionPerformed
+        int dialogResult = JOptionPane.showConfirmDialog(this, "Do you want to delete category: " + dict.getCurrentCategory() + "?", "Question", JOptionPane.YES_NO_OPTION);
+        if (dialogResult == JOptionPane.YES_OPTION) {
+            try {
+                dict.deleteCurrentCategory();
+            } catch (DictionaryException ex) {
+                JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        }
+    }//GEN-LAST:event_jMenuItem9ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -784,6 +805,7 @@ public class Main extends javax.swing.JFrame implements IObserver {
     private javax.swing.JMenuItem jMenuItem6;
     private javax.swing.JMenuItem jMenuItem7;
     private javax.swing.JMenuItem jMenuItem8;
+    private javax.swing.JMenuItem jMenuItem9;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JTextField jTextField1;
     // End of variables declaration//GEN-END:variables
