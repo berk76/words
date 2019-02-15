@@ -63,6 +63,7 @@ public class Main extends javax.swing.JFrame implements IObserver {
         }
 
         initComponents();
+        this.setLocationRelativeTo(null);
         this.setTitle(Service.version);
         jLabel1.setText("");
         jLabel2.setText("");
