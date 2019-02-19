@@ -1,6 +1,6 @@
 # Words
 
-![Build Status](https://travis-ci.com/berk76/words.svg?branch=master)
+[![Build Status](https://travis-ci.com/berk76/words.svg?branch=master)](https://travis-ci.com/berk76/words)
 
 Small vocabulary for learning and repeating foreign words and sentences and listening correct pronunciation. 
 
