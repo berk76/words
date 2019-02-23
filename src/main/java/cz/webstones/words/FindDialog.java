@@ -49,7 +49,7 @@ public class FindDialog extends javax.swing.JDialog {
         jTextField1.setText(s);
     }
     
-    private void search() {
+    private void search(boolean caseSensitive) {
         String what = jTextField1.getText();
         
         if (what.equals("")) {
@@ -75,9 +75,18 @@ public class FindDialog extends javax.swing.JDialog {
             }
 
             WordDto w = dict.getWord(c);
-            if (w.getCz().contains(what) || w.getEn().contains(what)) {
+            boolean found = false;
+
+            if (caseSensitive && (w.getCz().contains(what) || w.getEn().contains(what))) {
+                found = true;
+            }
+            if (!caseSensitive && (w.getCz().toLowerCase().contains(what.toLowerCase()) || w.getEn().toLowerCase().contains(what.toLowerCase()))) {
+                found = true;
+            }
+
+            if (found) {
                 dict.setCurrnet(c);
-                return;
+                    return;
             }
         }
         
@@ -97,6 +106,7 @@ public class FindDialog extends javax.swing.JDialog {
         jButton1 = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
+        checkbox1 = new java.awt.Checkbox();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Find");
@@ -128,6 +138,9 @@ public class FindDialog extends javax.swing.JDialog {
         jLabel1.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
         jLabel1.setText("jLabel1");
 
+        checkbox1.setLabel("Case sensitive");
+        checkbox1.setState(true);
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -142,7 +155,9 @@ public class FindDialog extends javax.swing.JDialog {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jButton1))
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(jLabel1)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel1)
+                            .addComponent(checkbox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
@@ -153,6 +168,8 @@ public class FindDialog extends javax.swing.JDialog {
                 .addComponent(jLabel1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(checkbox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButton1)
@@ -168,16 +185,17 @@ public class FindDialog extends javax.swing.JDialog {
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-        search();
+        search(checkbox1.getState());
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void jTextField1KeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTextField1KeyPressed
         if(evt.getKeyCode() == java.awt.event.KeyEvent.VK_ENTER) {
-            search();
+            search(checkbox1.getState());
         }
     }//GEN-LAST:event_jTextField1KeyPressed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private java.awt.Checkbox checkbox1;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
     private javax.swing.JLabel jLabel1;
