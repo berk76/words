@@ -190,4 +190,74 @@ public class DictionaryTest {
         assertEquals("Fil dictionary size:", 2, d.size());
         assertEquals("All dictionary size:", 3, d.sizeOfAll());
     }
+    
+    @Test
+    public void testSearchCSensitive() throws DictionaryException {    
+        Dictionary d = new Dictionary();
+        
+        d.addCategory("TestCat1");
+        d.addWord(new WordDto("maminka", "mum", "TestCat1"));
+        d.addWord(new WordDto("Maminka", "Mum", "TestCat1"));
+        d.addWord(new WordDto("tatínek", "dad", "TestCat1"));
+        d.addWord(new WordDto("Tatínek", "Dad", "TestCat1"));
+        
+        boolean result = d.searchInCurrentCategory("dědeček", true);
+        assertEquals("Not found:", false, result);
+        
+        /* CZ */
+        result = d.searchInCurrentCategory("tatínek", true);
+        assertEquals("Found tatínek:", true, result);
+        assertEquals("Found tatínek:", "tatínek", d.getWord().getCz());
+        
+        result = d.searchInCurrentCategory("tatínek", true);
+        assertEquals("Not found tatínek:", false, result);
+        
+        /* EN */
+        result = d.searchInCurrentCategory("mum", true);
+        assertEquals("Found mum:", true, result);
+        assertEquals("Found mum:", "mum", d.getWord().getEn());
+        
+        result = d.searchInCurrentCategory("mum", true);
+        assertEquals("Not found mum:", false, result);
+    }
+    
+    @Test
+    public void testSearchCInSensitive() throws DictionaryException {    
+        Dictionary d = new Dictionary();
+        
+        d.addCategory("TestCat1");
+        d.addWord(new WordDto("maminka", "mum", "TestCat1"));
+        d.addWord(new WordDto("Maminka", "Mum", "TestCat1"));
+        d.addWord(new WordDto("tatínek", "dad", "TestCat1"));
+        d.addWord(new WordDto("Tatínek", "Dad", "TestCat1"));
+        
+        boolean result = d.searchInCurrentCategory("dědeček", true);
+        assertEquals("Not found:", false, result);
+        
+        /* CZ */
+        result = d.searchInCurrentCategory("tatínek", false);
+        assertEquals("Found tatínek:", true, result);
+        assertEquals("Found tatínek:", "tatínek", d.getWord().getCz());
+        
+        result = d.searchInCurrentCategory("tatínek", false);
+        assertEquals("Found Tatínek:", true, result);
+        assertEquals("Found Tatínek:", "Tatínek", d.getWord().getCz());
+        
+        result = d.searchInCurrentCategory("tatínek", false);
+        assertEquals("Found tatínek:", true, result);
+        assertEquals("Found tatínek:", "tatínek", d.getWord().getCz());
+        
+        /* EN */
+        result = d.searchInCurrentCategory("mum", false);
+        assertEquals("Found mum:", true, result);
+        assertEquals("Found mum:", "mum", d.getWord().getEn());
+        
+        result = d.searchInCurrentCategory("mum", false);
+        assertEquals("Found Mum:", true, result);
+        assertEquals("Found Mum:", "Mum", d.getWord().getEn());
+        
+        result = d.searchInCurrentCategory("mum", false);
+        assertEquals("Found mum:", true, result);
+        assertEquals("Found mum:", "mum", d.getWord().getEn());
+    }
 }

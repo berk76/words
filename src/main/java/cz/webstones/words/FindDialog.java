@@ -61,36 +61,9 @@ public class FindDialog extends javax.swing.JDialog {
             return;
         }
         
-        int c = dict.getCurrnet();
-        
-        for (int i = 0; i < dict.size(); i++) {
-            c++;
-                    
-            if (c >= dict.size()) {
-                c = 0;
-            }
-            
-            if (c == dict.getCurrnet()) {
-                break;
-            }
-
-            WordDto w = dict.getWord(c);
-            boolean found = false;
-
-            if (caseSensitive && (w.getCz().contains(what) || w.getEn().contains(what))) {
-                found = true;
-            }
-            if (!caseSensitive && (w.getCz().toLowerCase().contains(what.toLowerCase()) || w.getEn().toLowerCase().contains(what.toLowerCase()))) {
-                found = true;
-            }
-
-            if (found) {
-                dict.setCurrnet(c);
-                    return;
-            }
+        if (!dict.searchInCurrentCategory(what, caseSensitive)) {
+            JOptionPane.showMessageDialog(this, "Nothing found");
         }
-        
-        JOptionPane.showMessageDialog(this, "Nothing found");
     }
 
     /**

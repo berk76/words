@@ -312,6 +312,44 @@ public class Dictionary {
         return dictFil.get(i);
     }
     
+    public boolean searchInCurrentCategory(String what, boolean caseSensitive) {
+        
+        if (what.equals("")) {
+            return false;
+        }
+                
+        int c = getCurrnet();
+        
+        for (int i = 0; i < size(); i++) {
+            c++;
+                    
+            if (c >= size()) {
+                c = 0;
+            }
+            
+            if (c == getCurrnet()) {
+                break;
+            }
+
+            WordDto w = getWord(c);
+            boolean found = false;
+
+            if (caseSensitive && (w.getCz().contains(what) || w.getEn().contains(what))) {
+                found = true;
+            }
+            if (!caseSensitive && (w.getCz().toLowerCase().contains(what.toLowerCase()) || w.getEn().toLowerCase().contains(what.toLowerCase()))) {
+                found = true;
+            }
+
+            if (found) {
+                setCurrnet(c);
+                    return true;
+            }
+        }
+        
+        return false;
+    }
+    
     
     /* Category manipulation */
     
