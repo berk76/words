@@ -312,7 +312,7 @@ public class Dictionary {
         return dictFil.get(i);
     }
     
-    public boolean searchInCurrentCategory(String what, boolean caseSensitive) {
+    public boolean searchInCurrentCategory(String what, boolean caseSensitive, boolean exactMatch) {
         
         if (what.equals("")) {
             return false;
@@ -332,15 +332,27 @@ public class Dictionary {
             }
 
             WordDto w = getWord(c);
+            String s1 = w.getCz();
+            String s2 = w.getEn();
+            
+            if (!caseSensitive) {
+                what = what.toLowerCase();
+                s1 = s1.toLowerCase();
+                s2 = s2.toLowerCase();
+            }
+            
             boolean found = false;
 
-            if (caseSensitive && (w.getCz().contains(what) || w.getEn().contains(what))) {
-                found = true;
+            if (exactMatch) {
+                if (s1.equals(what) || s2.equals(what)) {
+                    found = true;
+                }
+            } else {
+                if (s1.contains(what) || s2.contains(what)) {
+                    found = true;
+                }
             }
-            if (!caseSensitive && (w.getCz().toLowerCase().contains(what.toLowerCase()) || w.getEn().toLowerCase().contains(what.toLowerCase()))) {
-                found = true;
-            }
-
+            
             if (found) {
                 setCurrnet(c);
                     return true;

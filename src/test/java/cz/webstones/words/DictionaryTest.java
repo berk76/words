@@ -201,23 +201,23 @@ public class DictionaryTest {
         d.addWord(new WordDto("tatínek", "dad", "TestCat1"));
         d.addWord(new WordDto("Tatínek", "Dad", "TestCat1"));
         
-        boolean result = d.searchInCurrentCategory("dědeček", true);
+        boolean result = d.searchInCurrentCategory("dědeček", true, false);
         assertEquals("Not found:", false, result);
         
         /* CZ */
-        result = d.searchInCurrentCategory("tatínek", true);
+        result = d.searchInCurrentCategory("tatínek", true, false);
         assertEquals("Found tatínek:", true, result);
         assertEquals("Found tatínek:", "tatínek", d.getWord().getCz());
         
-        result = d.searchInCurrentCategory("tatínek", true);
+        result = d.searchInCurrentCategory("tatínek", true, false);
         assertEquals("Not found tatínek:", false, result);
         
         /* EN */
-        result = d.searchInCurrentCategory("mum", true);
+        result = d.searchInCurrentCategory("mum", true, false);
         assertEquals("Found mum:", true, result);
         assertEquals("Found mum:", "mum", d.getWord().getEn());
         
-        result = d.searchInCurrentCategory("mum", true);
+        result = d.searchInCurrentCategory("mum", true, false);
         assertEquals("Not found mum:", false, result);
     }
     
@@ -231,33 +231,120 @@ public class DictionaryTest {
         d.addWord(new WordDto("tatínek", "dad", "TestCat1"));
         d.addWord(new WordDto("Tatínek", "Dad", "TestCat1"));
         
-        boolean result = d.searchInCurrentCategory("dědeček", true);
+        boolean result = d.searchInCurrentCategory("dědeček", true, false);
         assertEquals("Not found:", false, result);
         
         /* CZ */
-        result = d.searchInCurrentCategory("tatínek", false);
+        result = d.searchInCurrentCategory("tatínek", false, false);
         assertEquals("Found tatínek:", true, result);
         assertEquals("Found tatínek:", "tatínek", d.getWord().getCz());
         
-        result = d.searchInCurrentCategory("tatínek", false);
+        result = d.searchInCurrentCategory("tatínek", false, false);
         assertEquals("Found Tatínek:", true, result);
         assertEquals("Found Tatínek:", "Tatínek", d.getWord().getCz());
         
-        result = d.searchInCurrentCategory("tatínek", false);
+        result = d.searchInCurrentCategory("tatínek", false, false);
         assertEquals("Found tatínek:", true, result);
         assertEquals("Found tatínek:", "tatínek", d.getWord().getCz());
         
         /* EN */
-        result = d.searchInCurrentCategory("mum", false);
+        result = d.searchInCurrentCategory("mum", false, false);
         assertEquals("Found mum:", true, result);
         assertEquals("Found mum:", "mum", d.getWord().getEn());
         
-        result = d.searchInCurrentCategory("mum", false);
+        result = d.searchInCurrentCategory("mum", false, false);
         assertEquals("Found Mum:", true, result);
         assertEquals("Found Mum:", "Mum", d.getWord().getEn());
         
-        result = d.searchInCurrentCategory("mum", false);
+        result = d.searchInCurrentCategory("mum", false, false);
         assertEquals("Found mum:", true, result);
         assertEquals("Found mum:", "mum", d.getWord().getEn());
     }
+    
+    @Test
+    public void testSearchExactMatch() throws DictionaryException {    
+        Dictionary d = new Dictionary();
+        
+        d.addCategory("TestCat1");
+        d.addWord(new WordDto("maminka", "mum", "TestCat1"));
+        d.addWord(new WordDto("Maminka", "Mum", "TestCat1"));
+        d.addWord(new WordDto("Maminka je červená.", "Mum is red.", "TestCat1"));
+        d.addWord(new WordDto("tatínek", "dad", "TestCat1"));
+        d.addWord(new WordDto("Tatínek", "Dad", "TestCat1"));
+        d.addWord(new WordDto("Tatínek je bílý.", "Dad is white.", "TestCat1"));
+        
+        /* CZ */
+        boolean result = d.searchInCurrentCategory("tatínek", false, true);
+        assertEquals("Found tatínek:", true, result);
+        assertEquals("Found tatínek:", "tatínek", d.getWord().getCz());
+        
+        result = d.searchInCurrentCategory("tatínek", false, true);
+        assertEquals("Found Tatínek:", true, result);
+        assertEquals("Found Tatínek:", "Tatínek", d.getWord().getCz());
+        
+        result = d.searchInCurrentCategory("tatínek", false, true);
+        assertEquals("Found tatínek:", true, result);
+        assertEquals("Found tatínek:", "tatínek", d.getWord().getCz());
+        
+        /* EN */
+        result = d.searchInCurrentCategory("mum", false, true);
+        assertEquals("Found mum:", true, result);
+        assertEquals("Found mum:", "mum", d.getWord().getEn());
+        
+        result = d.searchInCurrentCategory("mum", false, true);
+        assertEquals("Found Mum:", true, result);
+        assertEquals("Found Mum:", "Mum", d.getWord().getEn());
+        
+        result = d.searchInCurrentCategory("mum", false, true);
+        assertEquals("Found mum:", true, result);
+        assertEquals("Found mum:", "mum", d.getWord().getEn());
+    }
+
+    @Test
+    public void testSearchNotExactMatch() throws DictionaryException {    
+        Dictionary d = new Dictionary();
+        
+        d.addCategory("TestCat1");
+        d.addWord(new WordDto("maminka", "mum", "TestCat1"));
+        d.addWord(new WordDto("Maminka", "Mum", "TestCat1"));
+        d.addWord(new WordDto("Maminka je červená.", "Mum is red.", "TestCat1"));
+        d.addWord(new WordDto("tatínek", "dad", "TestCat1"));
+        d.addWord(new WordDto("Tatínek", "Dad", "TestCat1"));
+        d.addWord(new WordDto("Tatínek je bílý.", "Dad is white.", "TestCat1"));
+        
+        /* CZ */
+        boolean result = d.searchInCurrentCategory("tatínek", false, false);
+        assertEquals("Found tatínek:", true, result);
+        assertEquals("Found tatínek:", "tatínek", d.getWord().getCz());
+        
+        result = d.searchInCurrentCategory("tatínek", false, false);
+        assertEquals("Found Tatínek:", true, result);
+        assertEquals("Found Tatínek:", "Tatínek", d.getWord().getCz());
+        
+        result = d.searchInCurrentCategory("tatínek", false, false);
+        assertEquals("Found Tatínek:", true, result);
+        assertEquals("Found Tatínek:", "Tatínek je bílý.", d.getWord().getCz());
+        
+        result = d.searchInCurrentCategory("tatínek", false, false);
+        assertEquals("Found tatínek:", true, result);
+        assertEquals("Found tatínek:", "tatínek", d.getWord().getCz());
+        
+        /* EN */
+        result = d.searchInCurrentCategory("mum", false, false);
+        assertEquals("Found mum:", true, result);
+        assertEquals("Found mum:", "mum", d.getWord().getEn());
+        
+        result = d.searchInCurrentCategory("mum", false, false);
+        assertEquals("Found Mum:", true, result);
+        assertEquals("Found Mum:", "Mum", d.getWord().getEn());
+        
+        result = d.searchInCurrentCategory("mum", false, false);
+        assertEquals("Found Mum:", true, result);
+        assertEquals("Found Mum:", "Mum is red.", d.getWord().getEn());
+        
+        result = d.searchInCurrentCategory("mum", false, false);
+        assertEquals("Found mum:", true, result);
+        assertEquals("Found mum:", "mum", d.getWord().getEn());
+    }
+
 }
