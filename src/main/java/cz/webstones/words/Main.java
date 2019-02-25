@@ -10,6 +10,7 @@ import cz.webstones.words.mp3.Mp3CreatorException;
 import java.awt.Font;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -85,6 +86,17 @@ public class Main extends javax.swing.JFrame implements IObserver {
                     setup.getFullDictionaryFilePath(),
                     setup.getDictionarySeparator(),
                     setup.getDictionaryDateFormat());
+
+            String pron = setup.getLanguage();
+            if (pron != null) {
+                ArrayList<LanguageDto> lang = Service.getLanguageList();
+                for (LanguageDto ldto: lang) {
+                    if (pron.equals(ldto.getCode())) {
+                        aboutDialog.setPronunciation(ldto);
+                        break;
+                    }
+                }
+            }
 
         } catch (Exception ex) {
             errorDialog.showError("Error: Cannot init and load dictionary.", ex);
