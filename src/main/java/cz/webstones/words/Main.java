@@ -140,6 +140,7 @@ public class Main extends javax.swing.JFrame implements IObserver {
                 if (!dict.getCurrentCategory().equals(jComboBox1.getSelectedItem().toString())) {
                     jComboBox1.setSelectedItem(dict.getCurrentCategory());
                 }
+                findDialog.setLabel(dict.getCurrentCategory());
                 break;
 
             case stateCategoryListChanged:
@@ -281,7 +282,6 @@ public class Main extends javax.swing.JFrame implements IObserver {
     }
 
     private void showFindDialog() {
-        findDialog.setLabel("Searching in category " + jComboBox1.getSelectedItem());
         findDialog.setVisible(true);
     }
 
@@ -652,7 +652,6 @@ public class Main extends javax.swing.JFrame implements IObserver {
     }//GEN-LAST:event_formWindowClosing
 
     private void jComboBox1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBox1ActionPerformed
-        findDialog.setVisible(false);
         if (!disableCategotyChange) {
             if (!dict.getCurrentCategory().equals(jComboBox1.getSelectedItem().toString())) {
                 dict.setCategory(jComboBox1.getSelectedItem().toString());

@@ -39,10 +39,12 @@ public class FindDialog extends javax.swing.JDialog {
         });
         this.setLocationRelativeTo(null);
         dict = d;
+        setLabel(d.getCurrentCategory());
     }
     
     public void setLabel(String s) {
-        jLabel1.setText(s);
+        String text = "Searching in category %s";
+        jLabel1.setText(String.format(text, s));
     }
     
     public void setText(String s) {
