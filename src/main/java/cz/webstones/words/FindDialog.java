@@ -64,6 +64,9 @@ public class FindDialog extends javax.swing.JDialog {
         if (!dict.searchInCurrentCategory(what, caseSensitive, exactMatch)) {
             JOptionPane.showMessageDialog(this, "Nothing found");
         }
+
+        this.toFront();
+        jTextField1.requestFocus();
     }
 
     /**

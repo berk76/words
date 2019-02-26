@@ -8,6 +8,7 @@ import static cz.webstones.words.DictionaryStateEnum.stateCurWordChanged;
 import cz.webstones.words.mp3.Mp3Creator;
 import cz.webstones.words.mp3.Mp3CreatorException;
 import java.awt.Font;
+import java.awt.Point;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -50,6 +51,10 @@ public class Main extends javax.swing.JFrame implements IObserver {
         wordDialog = new WordDialog(this, true, addCatDialog, dict);
         aboutDialog = new AboutDialog(this, true);
         findDialog = new FindDialog(this, false, dict);
+
+        Point p = findDialog.getLocation();
+        findDialog.setLocation(p.x + 500, p.y - 100);
+
         langDialog = new LanguageDialog(this, true);
         errorDialog = new ErrorDialog(this, true);
 
