@@ -13,7 +13,7 @@ import javax.swing.JTextField;
  *
  * @author jaroslav_b
  */
-public class FindDialog extends javax.swing.JDialog {
+public class FindDialog extends javax.swing.JDialog implements IObserver {
     
     private Dictionary dict = null;
 
@@ -39,9 +39,18 @@ public class FindDialog extends javax.swing.JDialog {
         });
         this.setLocationRelativeTo(null);
         dict = d;
+        dict.attach(this);
         setLabel(d.getCurrentCategory());
     }
     
+    public void updateObserver() {
+        switch (dict.getSubjectState()) {
+            case stateCurCategoryChanged:
+                setLabel(dict.getCurrentCategory());
+                    break;
+        }
+    }
+
     public void setLabel(String s) {
         String text = "Searching in category %s";
         jLabel1.setText(String.format(text, s));

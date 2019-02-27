@@ -140,7 +140,6 @@ public class Main extends javax.swing.JFrame implements IObserver {
                 if (!dict.getCurrentCategory().equals(jComboBox1.getSelectedItem().toString())) {
                     jComboBox1.setSelectedItem(dict.getCurrentCategory());
                 }
-                findDialog.setLabel(dict.getCurrentCategory());
                 break;
 
             case stateCategoryListChanged:
