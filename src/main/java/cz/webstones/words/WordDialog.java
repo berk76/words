@@ -288,16 +288,16 @@ public class WordDialog extends javax.swing.JDialog implements IObserver {
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         WordDto tmp = new WordDto();
-        tmp.setCz(jTextField1.getText());
-        tmp.setEn(jTextField2.getText());
+        tmp.setCz(jTextField1.getText().trim());
+        tmp.setEn(jTextField2.getText().trim());
         tmp.setCategory(jComboBox1.getSelectedItem().toString());
         
         try {
             dict.validateWord(tmp);
             
-            this.word.setCz(jTextField1.getText());
-            this.word.setEn(jTextField2.getText());
-            this.word.setCategory(jComboBox1.getSelectedItem().toString());
+            this.word.setCz(tmp.getCz());
+            this.word.setEn(tmp.getEn());
+            this.word.setCategory(tmp.getCategory());
             
             setCommited(true);
             this.setVisible(false);

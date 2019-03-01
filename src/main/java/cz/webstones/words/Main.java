@@ -723,7 +723,26 @@ public class Main extends javax.swing.JFrame implements IObserver {
         wordDialog.setVisible(true);
         
         if (wordDialog.isCommited()) {
-     
+
+            if (dict.findDuplicity(w) != null) {
+                JOptionPane.showMessageDialog(this, "Word " + w.getCz() + "/" + w.getEn() + " already exists!", "Error", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
+            if (dict.findDuplicity(w.getCz()) != null) {
+                int dialogResult = JOptionPane.showConfirmDialog(this, "Word " + w.getCz() + " already exists. Do you want create it anyway?", "Question", JOptionPane.YES_NO_OPTION);
+                if (dialogResult == JOptionPane.NO_OPTION) {
+                    return;
+                }
+            }
+
+            if (dict.findDuplicity(w.getEn()) != null) {
+                int dialogResult = JOptionPane.showConfirmDialog(this, "Word " + w.getEn() + " already exists. Do you want create it anyway?", "Question", JOptionPane.YES_NO_OPTION);
+                if (dialogResult == JOptionPane.NO_OPTION) {
+                    return;
+                }
+            }
+
             try {
                 dict.addWord(w);
             } catch (DictionaryException ex) {

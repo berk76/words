@@ -283,6 +283,15 @@ public class Dictionary {
     }
 
     
+    public WordDto findDuplicity(String s) {
+        for (WordDto t : dictAll) {
+            if (t.getCz().equals(s) || t.getEn().equals(s)) {
+                return t;
+            }
+        }
+        return null;
+    }
+
     public WordDto findDuplicity(WordDto w) {
         for (WordDto t : dictAll) {
             if (t.getCz().equals(w.getCz()) && t.getEn().equals(w.getEn())) {
