@@ -4,10 +4,7 @@
  */
 package cz.webstones.words;
 
-import java.text.Collator;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Locale;
 
 /**
  *
