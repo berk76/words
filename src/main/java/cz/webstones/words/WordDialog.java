@@ -100,6 +100,7 @@ public class WordDialog extends javax.swing.JDialog implements IObserver {
             addCategory();
         }
         super.setVisible(b);
+        jTextField1.requestFocus();
     }
     
     /**
