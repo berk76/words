@@ -12,7 +12,7 @@ import javax.swing.JOptionPane;
  *
  * @author jaroslav_b
  */
-public class WordDialog extends javax.swing.JDialog implements IObserver {
+public class WordDialog extends JEscapeableDialog implements IObserver {
     
     private boolean commited;
     private WordDto word;

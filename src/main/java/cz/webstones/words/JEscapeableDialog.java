@@ -18,9 +18,9 @@ import javax.swing.KeyStroke;
  *
  * @author jaroslav_b
  */
-public class JEscapeDialog extends JDialog {
+public class JEscapeableDialog extends JDialog {
     
-    public JEscapeDialog(java.awt.Frame parent, boolean modal) {
+    public JEscapeableDialog(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
     }
 

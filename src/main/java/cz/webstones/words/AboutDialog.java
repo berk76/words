@@ -17,7 +17,7 @@ import java.net.URISyntaxException;
  *
  * @author jaroslav_b
  */
-public class AboutDialog extends javax.swing.JDialog {
+public class AboutDialog extends JEscapeableDialog {
     
     private final String urlGitHub = "https://github.com/berk76/words/wiki";
 

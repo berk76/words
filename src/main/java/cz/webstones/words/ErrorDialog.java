@@ -12,7 +12,7 @@ import java.io.StringWriter;
  *
  * @author jaroslav_b
  */
-public class ErrorDialog extends javax.swing.JDialog {
+public class ErrorDialog extends JEscapeableDialog {
 
     /**
      * Creates new form ErrorDialog

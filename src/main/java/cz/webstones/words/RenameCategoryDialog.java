@@ -10,7 +10,7 @@ import java.util.ArrayList;
  *
  * @author jaroslav_b
  */
-public class RenameCategoryDialog extends javax.swing.JDialog {
+public class RenameCategoryDialog extends JEscapeableDialog {
 
     private boolean commited;
     

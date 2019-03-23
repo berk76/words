@@ -8,7 +8,7 @@ package cz.webstones.words;
  *
  * @author jaroslav_b
  */
-public class AddCategoryDialog extends javax.swing.JDialog {
+public class AddCategoryDialog extends JEscapeableDialog {
     
     private boolean commited;
 

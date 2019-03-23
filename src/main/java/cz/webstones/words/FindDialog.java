@@ -13,7 +13,7 @@ import javax.swing.JTextField;
  *
  * @author jaroslav_b
  */
-public class FindDialog extends JEscapeDialog implements IObserver {
+public class FindDialog extends JEscapeableDialog implements IObserver {
     
     private Dictionary dict = null;
 
