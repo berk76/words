@@ -32,9 +32,9 @@ public class DictionaryTest {
         d.addCategory("TestCat3");
         
         assertEquals("Observer getNoChange:", 0, o.getNoChange());
-        assertEquals("Observer getCurWordChanged:", 3, o.getCurWordChanged());
+        assertEquals("Observer getCurWordChanged:", 0, o.getCurWordChanged());
         assertEquals("Observer getCurWordDeleted:", 0, o.getCurWordDeleted());
-        assertEquals("Observer getCurCategoryChanged:", 3, o.getCurCategoryChanged());
+        assertEquals("Observer getCurCategoryChanged:", 0, o.getCurCategoryChanged());
         assertEquals("Observer getCategoryListChanged:", 3, o.getCategoryListChanged());
         assertEquals("Observer getWordAdded:", 0, o.getWordAdded());
         assertEquals("Observer getUnknown:", 0, o.getUnknown());
@@ -57,10 +57,10 @@ public class DictionaryTest {
         assertEquals("Observer getWordAdded:", 3, o.getWordAdded());
         assertEquals("Observer getUnknown:", 0, o.getUnknown());
         
-        assertEquals("Fil dictionary size:", 0, d.size());
+        assertEquals("Fil dictionary size:", 3, d.size());
         assertEquals("All dictionary size:", 3, d.sizeOfAll());
         assertEquals("Category list size:", 3, d.getCategoryList().size());
-        assertEquals("Curr cat:", "TestCat3", d.getCurrentCategory());
+        assertEquals("Curr cat:",Dictionary.allCategoryName , d.getCurrentCategory());
         
         /* Filter category */
         o.reset();
@@ -149,9 +149,9 @@ public class DictionaryTest {
         d.addCategory("TestCat3");
         
         assertEquals("Observer getNoChange:", 0, o.getNoChange());
-        assertEquals("Observer getCurWordChanged:", 3, o.getCurWordChanged());
+        assertEquals("Observer getCurWordChanged:", 0, o.getCurWordChanged());
         assertEquals("Observer getCurWordDeleted:", 0, o.getCurWordDeleted());
-        assertEquals("Observer getCurCategoryChanged:", 3, o.getCurCategoryChanged());
+        assertEquals("Observer getCurCategoryChanged:", 0, o.getCurCategoryChanged());
         assertEquals("Observer getCategoryListChanged:", 3, o.getCategoryListChanged());
         assertEquals("Observer getWordAdded:", 0, o.getWordAdded());
         assertEquals("Observer getUnknown:", 0, o.getUnknown());

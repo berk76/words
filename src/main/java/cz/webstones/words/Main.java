@@ -209,6 +209,7 @@ public class Main extends javax.swing.JFrame implements IObserver {
     private void addCategory(String category) {
         try {
             dict.addCategory(category);
+            dict.setCategory(category);
         } catch (DictionaryException ex) {
             JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }

@@ -15,7 +15,7 @@ import org.json.JSONObject;
 public class Mp3Creator {
     
     /* https://soundoftext.com/docs */
-    private static String endpoint = " https://api.soundoftext.com";
+    private static String endpoint = "https://api.soundoftext.com";
     private static boolean trustedInstalled = false;
     
     

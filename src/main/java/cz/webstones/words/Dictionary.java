@@ -480,8 +480,6 @@ public class Dictionary {
         
         subjectState = DictionaryStateEnum.stateCategoryListChanged;
         notifyAllObservers();
-        
-        setCategory(category);
     }
     
     public void deleteCurrentCategory() throws DictionaryException {
