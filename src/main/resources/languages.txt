@@ -5,6 +5,7 @@ hy;Armenian
 bn-BD;Bengali (Bangladesh)
 bn-IN;Bengali (India)
 bs;Bosnian
+my;Burmese (Myanmar)
 ca-ES;Catalan
 cmn-Hant-TW;Chinese
 hr-HR;Croatian
