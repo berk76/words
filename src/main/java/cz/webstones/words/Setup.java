@@ -4,8 +4,6 @@
  */
 package cz.webstones.words;
 
-import java.io.File;
-
 /**
  *
  * @author jaroslav_b
@@ -19,10 +17,6 @@ public class Setup {
     private String dictionaryDateFormat;
     private String language;
 
-    
-    public static String getSetupFilePath() {
-        return System.getProperty("user.dir") + File.separator + "setup.properties";
-    }
     
     /**
      * @return the dataDir
@@ -154,5 +148,5 @@ public class Setup {
     public void setLanguage(String language) {
         this.language = language;
     }
-    
+
 }

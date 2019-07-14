@@ -9,6 +9,7 @@ import java.awt.GraphicsEnvironment;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -27,8 +28,60 @@ import java.util.Properties;
 public class Service {
 
     public static final String version = "Words 1.8.0 snapshot";
+    private static final String setupFName = "setup.properties";
+    private static final String historyFName = "history.properties";
     private static Setup setup = null;
+    private static String dictPath = null;
 
+    public static void loadHistory() throws IOException {
+        Properties p = new Properties();
+        String path = System.getProperty("user.dir") + File.separator + historyFName;
+        File f = new File(path);
+        
+        if (f.canRead()) {
+            InputStream is = null;
+            try {
+                is = new FileInputStream(f);
+                p.load(is);
+                dictPath = p.getProperty("dictPath");
+            } catch(Exception ex) {
+                ex.printStackTrace();
+            } finally {
+                if (is != null)
+                    is.close();
+            }
+        }
+        
+        if (dictPath == null) {
+            dictPath = System.getProperty("user.dir") + File.separator + "Data";
+            f = new File(dictPath);
+            if (!f.isDirectory()) {
+                f.mkdir();
+            }
+        }
+        
+        setup = null;
+    }
+    
+    public static void saveHistory() throws IOException {
+        Properties p = new Properties();
+        String path = System.getProperty("user.dir") + File.separator + historyFName;
+        File f = new File(path);
+        
+        p.setProperty("dictPath", dictPath);
+        
+        OutputStream os = null;
+        try {
+            os = new FileOutputStream(f);
+            p.store(os, null);
+        } catch(Exception ex) {
+            ex.printStackTrace();
+        } finally {
+            if (os != null)
+                os.close();
+        }
+    }
+    
     public static Setup getSetup(boolean createLocalCopy) {
 
         if (setup != null) {
@@ -37,7 +90,7 @@ public class Service {
 
         try {
             /* Load user setup */
-            File s = new File(Setup.getSetupFilePath());
+            File s = new File(dictPath + File.separator + setupFName);
             if (s.canRead()) {
                 loadSetup(s);
             }
@@ -74,6 +127,8 @@ public class Service {
 
         props.load(is);
         is.close();
+        
+        setup.setDataDir(dictPath);
 
         if (setup.getDataDir() == null) {
             setup.setDataDir(props.getProperty("data.dir"));
@@ -107,7 +162,7 @@ public class Service {
     public static void saveSetup() throws IOException {
         OutputStream output = null;
         Properties props = new Properties();
-        File f = new File(Setup.getSetupFilePath());
+        File f = new File(dictPath + File.separator + setupFName);
         
         if (setup == null) {
             return;

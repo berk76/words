@@ -17,6 +17,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.prefs.Preferences;
 import javax.swing.ImageIcon;
+import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 
 /**
@@ -79,6 +80,7 @@ public class Main extends javax.swing.JFrame implements IObserver {
         findDialog.setText("");
 
         try {
+            Service.loadHistory();
             setup = Service.getSetup(true);
             if ((setup.getLanguage() == null) || setup.getLanguage().equals("")) {
                 langDialog.setVisible(true);
@@ -235,6 +237,7 @@ public class Main extends javax.swing.JFrame implements IObserver {
     private void saveDirectory() throws IOException {
         dict.saveDictionary(setup.getFullDictionaryFilePath(),
                 setup.getDictionarySeparator(), setup.getDictionaryDateFormat());
+        Service.saveHistory();
     }
 
     private void next(int i) {
@@ -327,7 +330,6 @@ public class Main extends javax.swing.JFrame implements IObserver {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jMenuItem2 = new javax.swing.JMenuItem();
         jPanel1 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         jTextField1 = new javax.swing.JTextField();
@@ -345,8 +347,8 @@ public class Main extends javax.swing.JFrame implements IObserver {
         jLabel7 = new javax.swing.JLabel();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu3 = new javax.swing.JMenu();
-        jMenu5 = new javax.swing.JMenu();
-        jMenu6 = new javax.swing.JMenu();
+        jMenuItem10 = new javax.swing.JMenuItem();
+        jMenuItem12 = new javax.swing.JMenuItem();
         jMenu1 = new javax.swing.JMenu();
         jMenuItem1 = new javax.swing.JMenuItem();
         jMenuItem7 = new javax.swing.JMenuItem();
@@ -358,8 +360,6 @@ public class Main extends javax.swing.JFrame implements IObserver {
         jMenuItem9 = new javax.swing.JMenuItem();
         jMenu4 = new javax.swing.JMenu();
         jMenuItem6 = new javax.swing.JMenuItem();
-
-        jMenuItem2.setText("jMenuItem2");
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         addWindowListener(new java.awt.event.WindowAdapter() {
@@ -512,13 +512,20 @@ public class Main extends javax.swing.JFrame implements IObserver {
         jMenu3.setText("Dictionary");
         jMenu3.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
 
-        jMenu5.setText("New...");
-        jMenu5.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
-        jMenu3.add(jMenu5);
+        jMenuItem10.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_N, java.awt.event.InputEvent.CTRL_MASK));
+        jMenuItem10.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        jMenuItem10.setText("New...");
+        jMenu3.add(jMenuItem10);
 
-        jMenu6.setText("Open...");
-        jMenu6.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
-        jMenu3.add(jMenu6);
+        jMenuItem12.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_O, java.awt.event.InputEvent.CTRL_MASK));
+        jMenuItem12.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        jMenuItem12.setText("Open...");
+        jMenuItem12.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem12ActionPerformed(evt);
+            }
+        });
+        jMenu3.add(jMenuItem12);
 
         jMenuBar1.add(jMenu3);
 
@@ -793,6 +800,18 @@ public class Main extends javax.swing.JFrame implements IObserver {
         }
     }//GEN-LAST:event_jMenuItem9ActionPerformed
 
+    private void jMenuItem12ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem12ActionPerformed
+        JFileChooser fileChooser = new JFileChooser();
+        fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+        int option = fileChooser.showOpenDialog(this);
+        if(option == JFileChooser.APPROVE_OPTION){
+           File file = fileChooser.getSelectedFile();
+           JOptionPane.showMessageDialog(this, "Folder Selected: " + file.getAbsolutePath(), "Info", JOptionPane.INFORMATION_MESSAGE);
+        } else {
+            JOptionPane.showMessageDialog(this, "Open command canceled", "Info", JOptionPane.INFORMATION_MESSAGE);
+        }        // TODO add your handling code here:
+    }//GEN-LAST:event_jMenuItem12ActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -849,11 +868,10 @@ public class Main extends javax.swing.JFrame implements IObserver {
     private javax.swing.JMenu jMenu2;
     private javax.swing.JMenu jMenu3;
     private javax.swing.JMenu jMenu4;
-    private javax.swing.JMenu jMenu5;
-    private javax.swing.JMenu jMenu6;
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JMenuItem jMenuItem1;
-    private javax.swing.JMenuItem jMenuItem2;
+    private javax.swing.JMenuItem jMenuItem10;
+    private javax.swing.JMenuItem jMenuItem12;
     private javax.swing.JMenuItem jMenuItem3;
     private javax.swing.JMenuItem jMenuItem4;
     private javax.swing.JMenuItem jMenuItem5;
