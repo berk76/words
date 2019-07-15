@@ -9,7 +9,6 @@ import java.awt.GraphicsEnvironment;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -30,10 +29,10 @@ public class Service {
     public static final String version = "Words 1.8.0 snapshot";
     private static final String setupFName = "setup.properties";
     private static final String historyFName = "history.properties";
-    private static Setup setup = null;
-    private static String dictPath = null;
 
-    public static void loadHistory() throws IOException {
+    
+    public static String getHistory() throws IOException {
+        String result = null;
         Properties p = new Properties();
         String path = System.getProperty("user.dir") + File.separator + historyFName;
         File f = new File(path);
@@ -43,7 +42,7 @@ public class Service {
             try {
                 is = new FileInputStream(f);
                 p.load(is);
-                dictPath = p.getProperty("dictPath");
+                result = p.getProperty("dictPath");
             } catch(Exception ex) {
                 ex.printStackTrace();
             } finally {
@@ -52,18 +51,18 @@ public class Service {
             }
         }
         
-        if (dictPath == null) {
-            dictPath = System.getProperty("user.dir") + File.separator + "Data";
-            f = new File(dictPath);
+        if (result == null) {
+            result = System.getProperty("user.dir") + File.separator + "Data";
+            f = new File(result);
             if (!f.isDirectory()) {
                 f.mkdir();
             }
         }
         
-        setup = null;
+        return result;
     }
     
-    public static void saveHistory() throws IOException {
+    public static void saveHistory(String dictPath) throws IOException {
         Properties p = new Properties();
         String path = System.getProperty("user.dir") + File.separator + historyFName;
         File f = new File(path);
@@ -82,25 +81,22 @@ public class Service {
         }
     }
     
-    public static Setup getSetup(boolean createLocalCopy) {
-
-        if (setup != null) {
-            return setup;
-        }
-
+    public static Setup getSetup(boolean createLocalCopy, String dictPath) {
+        Setup setup = null;
+        
         try {
             /* Load user setup */
             File s = new File(dictPath + File.separator + setupFName);
             if (s.canRead()) {
-                loadSetup(s);
+                setup = loadSetup(s, dictPath, setup);
             }
 
             /* Load default setup */
-            loadSetup(null);
+            setup = loadSetup(null, dictPath, setup);
 
             /* Save user setup if doesn't exist */
             if (!s.exists() && createLocalCopy) {
-                saveSetup();
+                saveSetup(setup);
             }
         } catch (IOException ex) {
             ex.printStackTrace();
@@ -109,14 +105,14 @@ public class Service {
         return setup;
     }
 
-    private static void loadSetup(File f) throws IOException {
+    private static Setup loadSetup(File f, String dictPath, Setup setup) throws IOException {
         InputStream is = null;
         Properties props = new Properties();
 
         if (setup == null) {
             setup = new Setup();
         }
-
+        
         if (f != null) {
             is = new FileInputStream(f);
         } else {
@@ -157,16 +153,14 @@ public class Service {
         if (setup.getLanguage() == null) {
             setup.setLanguage(props.getProperty("language.id"));
         }
+        
+        return setup;
     }
 
-    public static void saveSetup() throws IOException {
+    public static void saveSetup(Setup setup) throws IOException {
         OutputStream output = null;
         Properties props = new Properties();
-        File f = new File(dictPath + File.separator + setupFName);
-        
-        if (setup == null) {
-            return;
-        }
+        File f = new File(setup.getDataDir() + File.separator + setupFName);
 
         props.setProperty("data.dir", setup.getDataDir());
         props.setProperty("mp3.dir", setup.getMp3Dir());

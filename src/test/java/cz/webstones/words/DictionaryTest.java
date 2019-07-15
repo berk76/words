@@ -17,6 +17,8 @@ public class DictionaryTest {
     @Test
     public void testWords() throws IOException, DictionaryException {
         Dictionary d = new Dictionary();
+        String dictPath = Service.getHistory();
+        d.loadDictionary(Service.getSetup(true, dictPath));
         ObserverTestHelper o = new ObserverTestHelper(d);
         d.attach(o);
         

@@ -27,7 +27,6 @@ import javax.swing.JOptionPane;
 public class Main extends javax.swing.JFrame implements IObserver {
 
     private Dictionary dict;
-    private Setup setup;
     private AddCategoryDialog addCatDialog;
     private RenameCategoryDialog renameCatDialog;
     private WordDialog wordDialog;
@@ -45,7 +44,7 @@ public class Main extends javax.swing.JFrame implements IObserver {
      * Creates new form Main
      */
     public Main() throws DictionaryException {
-
+        
         dict = new Dictionary();
         addCatDialog = new AddCategoryDialog(this, true);
         renameCatDialog = new RenameCategoryDialog(this, true);
@@ -80,19 +79,16 @@ public class Main extends javax.swing.JFrame implements IObserver {
         findDialog.setText("");
 
         try {
-            Service.loadHistory();
-            setup = Service.getSetup(true);
+            String dictPath = Service.getHistory();
+            Setup setup = Service.getSetup(true, dictPath);
             if ((setup.getLanguage() == null) || setup.getLanguage().equals("")) {
                 langDialog.setVisible(true);
                 setup.setLanguage(langDialog.getLangCode());
-                Service.saveSetup();
+                Service.saveSetup(setup);
             }
 
             dict.attach(this);
-            dict.loadDictionary(
-                    setup.getFullDictionaryFilePath(),
-                    setup.getDictionarySeparator(),
-                    setup.getDictionaryDateFormat());
+            dict.loadDictionary(setup);
 
             String pron = setup.getLanguage();
             if (pron != null) {
@@ -156,7 +152,7 @@ public class Main extends javax.swing.JFrame implements IObserver {
     }
 
     private void play(WordDto w) {
-        String fName = w.getMp3FilenameEn();
+        String fName = w.getMp3FilenameEn(dict.getSetup().getFullMp3Path());
         File f = new File(fName);
 
         if (!f.exists() && !mp3DownloadConfirmed) {
@@ -174,7 +170,7 @@ public class Main extends javax.swing.JFrame implements IObserver {
             @Override
             public void run() {
 
-                String fName = wordToPlay.getMp3FilenameEn();
+                String fName = wordToPlay.getMp3FilenameEn(dict.getSetup().getFullMp3Path());
                 File f = new File(fName);
 
                 if (!f.exists() && mp3DownloadConfirmed) {
@@ -182,7 +178,7 @@ public class Main extends javax.swing.JFrame implements IObserver {
                     jLabel2.setText("Downloading ...");
 
                     try {
-                        Mp3Creator.createMp3(wordToPlay.getEn(), setup.getLanguage(), wordToPlay.getMp3FilenameEn());
+                        Mp3Creator.createMp3(wordToPlay.getEn(), dict.getSetup().getLanguage(), wordToPlay.getMp3FilenameEn(dict.getSetup().getFullMp3Path()));
                     } catch (Mp3CreatorException ex) {
                         errorDialog.showError("Error: Cannot download pronunciation.", ex);
                         mp3DownloadConfirmed = false;
@@ -235,9 +231,7 @@ public class Main extends javax.swing.JFrame implements IObserver {
     }
 
     private void saveDirectory() throws IOException {
-        dict.saveDictionary(setup.getFullDictionaryFilePath(),
-                setup.getDictionarySeparator(), setup.getDictionaryDateFormat());
-        Service.saveHistory();
+        dict.saveDictionary();
     }
 
     private void next(int i) {
@@ -667,11 +661,12 @@ public class Main extends javax.swing.JFrame implements IObserver {
     private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
         try {
             saveDirectory();
+            Service.saveHistory(dict.getSetup().getDataDir());
         } catch (IOException ex) {
             errorDialog.showError("Error: Cannot save dictionary.", ex);
         } finally {
             onFinish();
-        }
+        }        
     }//GEN-LAST:event_formWindowClosing
 
     private void jComboBox1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBox1ActionPerformed
@@ -701,7 +696,7 @@ public class Main extends javax.swing.JFrame implements IObserver {
     private void jMenuItem3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem3ActionPerformed
         // Edit Word
         WordDto w = dict.getWord();
-        String oldWordPath = w.getMp3FilenameEn();
+        String oldWordPath = w.getMp3FilenameEn(dict.getSetup().getFullMp3Path());
         wordDialog.setWord(w);
         //wordDialog.setForeignWordEditable(false);
         wordDialog.setVisible(true);
@@ -712,7 +707,7 @@ public class Main extends javax.swing.JFrame implements IObserver {
             errorDialog.showError("Error: Cannot modify word.", ex);
         }
         
-        if (!oldWordPath.equals(w.getMp3FilenameEn())) {
+        if (!oldWordPath.equals(w.getMp3FilenameEn(dict.getSetup().getFullMp3Path()))) {
             File f = new File(oldWordPath);
             f.delete();
             play(w);

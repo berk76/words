@@ -34,6 +34,7 @@ public class Dictionary {
     public static final String allCategoryName = "All";
     public static final String encoding = "UTF-8";
     
+    private Setup setup = null;
     private ArrayList<WordDto> dictAll = new ArrayList<>();
     private ArrayList<WordDto> dictFil = new ArrayList<>();
     private ArrayList<String> categoryList = new ArrayList<>();
@@ -71,14 +72,15 @@ public class Dictionary {
     
     /* Load / Save Dictionary */
     
-    public void loadDictionary(String file,
-            String separator, String dateFormat)
+    public void loadDictionary(Setup s)
             throws FileNotFoundException, UnsupportedEncodingException, IOException {
 
+        setup = s;
+        
         dictAll = new ArrayList<WordDto>();
-        SimpleDateFormat sdf = new SimpleDateFormat(dateFormat);
+        SimpleDateFormat sdf = new SimpleDateFormat(getSetup().getDictionaryDateFormat());
 
-        InputStream is = new FileInputStream(file);
+        InputStream is = new FileInputStream(getSetup().getFullDictionaryFilePath());
         BufferedReader reader = new BufferedReader(new InputStreamReader(is, encoding));
 
         boolean first = true;
@@ -94,7 +96,7 @@ public class Dictionary {
                 first = false;
             }
 
-            String arr[] = line.split(separator);
+            String arr[] = line.split(getSetup().getDictionarySeparator());
 
             if (arr.length < 2) {
                 continue;
@@ -141,17 +143,16 @@ public class Dictionary {
         setCurrnet(0);
     }
 
-    public void saveDictionary(String file,
-            String separator, String dateFormat)
+    public void saveDictionary()
             throws FileNotFoundException, UnsupportedEncodingException, IOException {
 
-        SimpleDateFormat sdf = new SimpleDateFormat(dateFormat);
+        SimpleDateFormat sdf = new SimpleDateFormat(getSetup().getDictionaryDateFormat());
         FileOutputStream fos = null;
         OutputStreamWriter osw = null;
         BufferedWriter bw = null;
 
         try {
-            fos = new FileOutputStream(file);
+            fos = new FileOutputStream(getSetup().getFullDictionaryFilePath());
             osw = new OutputStreamWriter(fos, encoding);
             bw = new BufferedWriter(osw);
 
@@ -159,6 +160,8 @@ public class Dictionary {
                 bw.write(Service.UTF8_BOM);
             }
 
+            String separator = getSetup().getDictionarySeparator();
+            
             for (WordDto w : dictAll) {
                 bw.write(Service.cleanAndAddSeparator(w.getEn(), separator));
                 bw.write(Service.cleanAndAddSeparator(w.getCz(), separator));
@@ -304,7 +307,7 @@ public class Dictionary {
     public void deleteCurrentWord() {
         WordDto w = getWord();
         
-        File f = new File(w.getMp3FilenameEn());
+        File f = new File(w.getMp3FilenameEn(setup.getFullMp3Path()));
         f.delete();
         dictFil.remove(w);
         dictAll.remove(w);
@@ -501,6 +504,13 @@ public class Dictionary {
     
     private void sortCategoryList() {
         Collections.sort(categoryList, Collator.getInstance(new Locale("cs", "CS"))); 
+    }
+
+    /**
+     * @return the setup
+     */
+    public Setup getSetup() {
+        return setup;
     }
 
 }
