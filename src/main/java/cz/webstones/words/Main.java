@@ -79,28 +79,9 @@ public class Main extends javax.swing.JFrame implements IObserver {
         findDialog.setText("");
 
         try {
-            String dictPath = Service.getHistory();
-            Setup setup = Service.getSetup(true, dictPath);
-            if ((setup.getLanguage() == null) || setup.getLanguage().equals("")) {
-                langDialog.setVisible(true);
-                setup.setLanguage(langDialog.getLangCode());
-                Service.saveSetup(setup);
-            }
-
             dict.attach(this);
-            dict.loadDictionary(setup);
-
-            String pron = setup.getLanguage();
-            if (pron != null) {
-                ArrayList<LanguageDto> lang = Service.getLanguageList();
-                for (LanguageDto ldto: lang) {
-                    if (pron.equals(ldto.getCode())) {
-                        aboutDialog.setPronunciation(ldto);
-                        break;
-                    }
-                }
-            }
-
+            String dictPath = Service.getHistory();
+            loadDirectory(dictPath);
         } catch (Exception ex) {
             errorDialog.showError("Error: Cannot init and load dictionary.", ex);
             onFinish();
@@ -230,6 +211,28 @@ public class Main extends javax.swing.JFrame implements IObserver {
         jComboBox1.setSelectedItem(dict.getCurrentCategory());
     }
 
+    private void loadDirectory(String dictPath) throws IOException {
+        Setup setup = Service.getSetup(true, dictPath);
+        if ((setup.getLanguage() == null) || setup.getLanguage().equals("")) {
+            langDialog.setVisible(true);
+            setup.setLanguage(langDialog.getLangCode());
+            Service.saveSetup(setup);
+        }
+
+        dict.loadDictionary(setup);
+
+        String pron = setup.getLanguage();
+        if (pron != null) {
+            ArrayList<LanguageDto> lang = Service.getLanguageList();
+            for (LanguageDto ldto: lang) {
+                if (pron.equals(ldto.getCode())) {
+                    aboutDialog.setPronunciation(ldto);
+                    break;
+                }
+            }
+        }
+    }
+    
     private void saveDirectory() throws IOException {
         dict.saveDictionary();
     }
@@ -509,6 +512,11 @@ public class Main extends javax.swing.JFrame implements IObserver {
         jMenuItem10.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_N, java.awt.event.InputEvent.CTRL_MASK));
         jMenuItem10.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
         jMenuItem10.setText("New...");
+        jMenuItem10.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem10ActionPerformed(evt);
+            }
+        });
         jMenu3.add(jMenuItem10);
 
         jMenuItem12.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_O, java.awt.event.InputEvent.CTRL_MASK));
@@ -778,6 +786,7 @@ public class Main extends javax.swing.JFrame implements IObserver {
     }//GEN-LAST:event_jMenuItem7ActionPerformed
 
     private void jMenuItem8ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem8ActionPerformed
+        // Delete Word
         int dialogResult = JOptionPane.showConfirmDialog(this, "Do you want to delete word: " + dict.getWord().getCz() + "?", "Question", JOptionPane.YES_NO_OPTION);
         if (dialogResult == JOptionPane.YES_OPTION) {
             dict.deleteCurrentWord();
@@ -785,6 +794,7 @@ public class Main extends javax.swing.JFrame implements IObserver {
     }//GEN-LAST:event_jMenuItem8ActionPerformed
 
     private void jMenuItem9ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem9ActionPerformed
+        // Delete Category
         int dialogResult = JOptionPane.showConfirmDialog(this, "Do you want to delete category: " + dict.getCurrentCategory() + "?", "Question", JOptionPane.YES_NO_OPTION);
         if (dialogResult == JOptionPane.YES_OPTION) {
             try {
@@ -796,16 +806,51 @@ public class Main extends javax.swing.JFrame implements IObserver {
     }//GEN-LAST:event_jMenuItem9ActionPerformed
 
     private void jMenuItem12ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem12ActionPerformed
+        // Open Dictionary
         JFileChooser fileChooser = new JFileChooser();
         fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
         int option = fileChooser.showOpenDialog(this);
         if(option == JFileChooser.APPROVE_OPTION){
-           File file = fileChooser.getSelectedFile();
-           JOptionPane.showMessageDialog(this, "Folder Selected: " + file.getAbsolutePath(), "Info", JOptionPane.INFORMATION_MESSAGE);
-        } else {
-            JOptionPane.showMessageDialog(this, "Open command canceled", "Info", JOptionPane.INFORMATION_MESSAGE);
-        }        // TODO add your handling code here:
+            File file = fileChooser.getSelectedFile();
+            
+            try {
+                saveDirectory();
+            } catch (IOException ex) {
+                errorDialog.showError("Error: Cannot save dictionary.", ex);
+            }
+            
+            try {
+                loadDirectory(file.getAbsolutePath());
+            } catch (IOException ex) {
+                errorDialog.showError("Error: Cannot load dictionary.", ex);
+            }
+        }
     }//GEN-LAST:event_jMenuItem12ActionPerformed
+
+    private void jMenuItem10ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem10ActionPerformed
+        // Create New Dictionary
+        JFileChooser fileChooser = new JFileChooser();
+        fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+        int option = fileChooser.showOpenDialog(this);
+        if(option == JFileChooser.APPROVE_OPTION){
+            File file = fileChooser.getSelectedFile();
+            
+            try {
+                saveDirectory();
+            } catch (IOException ex) {
+                errorDialog.showError("Error: Cannot save dictionary.", ex);
+            }
+            
+            try {
+                if (!file.exists()) {
+                    file.mkdir();
+                }
+                loadDirectory(file.getAbsolutePath());
+            } catch (IOException ex) {
+                errorDialog.showError("Error: Cannot load dictionary.", ex);
+            }
+        }
+    }//GEN-LAST:event_jMenuItem10ActionPerformed
 
     /**
      * @param args the command line arguments
