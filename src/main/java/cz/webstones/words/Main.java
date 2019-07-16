@@ -807,7 +807,7 @@ public class Main extends javax.swing.JFrame implements IObserver {
 
     private void jMenuItem12ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem12ActionPerformed
         // Open Dictionary
-        JFileChooser fileChooser = new JFileChooser();
+        JFileChooser fileChooser = new JFileChooser(dict.getSetup().getDataDir());
         fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
         int option = fileChooser.showOpenDialog(this);
         if(option == JFileChooser.APPROVE_OPTION){
@@ -829,7 +829,7 @@ public class Main extends javax.swing.JFrame implements IObserver {
 
     private void jMenuItem10ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem10ActionPerformed
         // Create New Dictionary
-        JFileChooser fileChooser = new JFileChooser();
+        JFileChooser fileChooser = new JFileChooser(dict.getSetup().getDataDir());
         fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
         int option = fileChooser.showOpenDialog(this);
         if(option == JFileChooser.APPROVE_OPTION){
