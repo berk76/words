@@ -805,9 +805,20 @@ public class Main extends javax.swing.JFrame implements IObserver {
         }
     }//GEN-LAST:event_jMenuItem9ActionPerformed
 
+    private String getPathToDataDir() {
+        String result = dict.getSetup().getDataDir();
+        int trimPos = result.lastIndexOf(File.separator);
+        
+        if (trimPos != -1) {
+            result = result.substring(0, trimPos);
+        }
+        
+        return result;
+    }
+    
     private void jMenuItem12ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem12ActionPerformed
         // Open Dictionary
-        JFileChooser fileChooser = new JFileChooser(dict.getSetup().getDataDir());
+        JFileChooser fileChooser = new JFileChooser(getPathToDataDir());
         fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
         int option = fileChooser.showOpenDialog(this);
         if(option == JFileChooser.APPROVE_OPTION){
@@ -829,7 +840,7 @@ public class Main extends javax.swing.JFrame implements IObserver {
 
     private void jMenuItem10ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem10ActionPerformed
         // Create New Dictionary
-        JFileChooser fileChooser = new JFileChooser(dict.getSetup().getDataDir());
+        JFileChooser fileChooser = new JFileChooser(getPathToDataDir());
         fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
         int option = fileChooser.showOpenDialog(this);
         if(option == JFileChooser.APPROVE_OPTION){
