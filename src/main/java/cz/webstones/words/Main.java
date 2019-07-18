@@ -17,6 +17,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.prefs.Preferences;
 import javax.swing.ImageIcon;
+import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 
 /**
@@ -26,7 +27,6 @@ import javax.swing.JOptionPane;
 public class Main extends javax.swing.JFrame implements IObserver {
 
     private Dictionary dict;
-    private Setup setup;
     private AddCategoryDialog addCatDialog;
     private RenameCategoryDialog renameCatDialog;
     private WordDialog wordDialog;
@@ -44,7 +44,7 @@ public class Main extends javax.swing.JFrame implements IObserver {
      * Creates new form Main
      */
     public Main() throws DictionaryException {
-
+        
         dict = new Dictionary();
         addCatDialog = new AddCategoryDialog(this, true);
         renameCatDialog = new RenameCategoryDialog(this, true);
@@ -79,30 +79,9 @@ public class Main extends javax.swing.JFrame implements IObserver {
         findDialog.setText("");
 
         try {
-            setup = Service.getSetup(true);
-            if ((setup.getLanguage() == null) || setup.getLanguage().equals("")) {
-                langDialog.setVisible(true);
-                setup.setLanguage(langDialog.getLangCode());
-                Service.saveSetup();
-            }
-
             dict.attach(this);
-            dict.loadDictionary(
-                    setup.getFullDictionaryFilePath(),
-                    setup.getDictionarySeparator(),
-                    setup.getDictionaryDateFormat());
-
-            String pron = setup.getLanguage();
-            if (pron != null) {
-                ArrayList<LanguageDto> lang = Service.getLanguageList();
-                for (LanguageDto ldto: lang) {
-                    if (pron.equals(ldto.getCode())) {
-                        aboutDialog.setPronunciation(ldto);
-                        break;
-                    }
-                }
-            }
-
+            String dictPath = Service.getHistory();
+            loadDirectory(dictPath);
         } catch (Exception ex) {
             errorDialog.showError("Error: Cannot init and load dictionary.", ex);
             onFinish();
@@ -154,7 +133,7 @@ public class Main extends javax.swing.JFrame implements IObserver {
     }
 
     private void play(WordDto w) {
-        String fName = w.getMp3FilenameEn();
+        String fName = w.getMp3FilenameEn(dict.getSetup().getFullMp3Path());
         File f = new File(fName);
 
         if (!f.exists() && !mp3DownloadConfirmed) {
@@ -172,7 +151,7 @@ public class Main extends javax.swing.JFrame implements IObserver {
             @Override
             public void run() {
 
-                String fName = wordToPlay.getMp3FilenameEn();
+                String fName = wordToPlay.getMp3FilenameEn(dict.getSetup().getFullMp3Path());
                 File f = new File(fName);
 
                 if (!f.exists() && mp3DownloadConfirmed) {
@@ -180,7 +159,7 @@ public class Main extends javax.swing.JFrame implements IObserver {
                     jLabel2.setText("Downloading ...");
 
                     try {
-                        Mp3Creator.createMp3(wordToPlay.getEn(), setup.getLanguage(), wordToPlay.getMp3FilenameEn());
+                        Mp3Creator.createMp3(wordToPlay.getEn(), dict.getSetup().getLanguage(), wordToPlay.getMp3FilenameEn(dict.getSetup().getFullMp3Path()));
                     } catch (Mp3CreatorException ex) {
                         errorDialog.showError("Error: Cannot download pronunciation.", ex);
                         mp3DownloadConfirmed = false;
@@ -232,9 +211,30 @@ public class Main extends javax.swing.JFrame implements IObserver {
         jComboBox1.setSelectedItem(dict.getCurrentCategory());
     }
 
+    private void loadDirectory(String dictPath) throws IOException {
+        Setup setup = Service.getSetup(true, dictPath);
+        if ((setup.getLanguage() == null) || setup.getLanguage().equals("")) {
+            langDialog.setVisible(true);
+            setup.setLanguage(langDialog.getLangCode());
+            Service.saveSetup(setup);
+        }
+
+        dict.loadDictionary(setup);
+
+        String pron = setup.getLanguage();
+        if (pron != null) {
+            ArrayList<LanguageDto> lang = Service.getLanguageList();
+            for (LanguageDto ldto: lang) {
+                if (pron.equals(ldto.getCode())) {
+                    aboutDialog.setPronunciation(ldto);
+                    break;
+                }
+            }
+        }
+    }
+    
     private void saveDirectory() throws IOException {
-        dict.saveDictionary(setup.getFullDictionaryFilePath(),
-                setup.getDictionarySeparator(), setup.getDictionaryDateFormat());
+        dict.saveDictionary();
     }
 
     private void next(int i) {
@@ -327,7 +327,6 @@ public class Main extends javax.swing.JFrame implements IObserver {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jMenuItem2 = new javax.swing.JMenuItem();
         jPanel1 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         jTextField1 = new javax.swing.JTextField();
@@ -344,6 +343,9 @@ public class Main extends javax.swing.JFrame implements IObserver {
         jLabel6 = new javax.swing.JLabel();
         jLabel7 = new javax.swing.JLabel();
         jMenuBar1 = new javax.swing.JMenuBar();
+        jMenu3 = new javax.swing.JMenu();
+        jMenuItem10 = new javax.swing.JMenuItem();
+        jMenuItem12 = new javax.swing.JMenuItem();
         jMenu1 = new javax.swing.JMenu();
         jMenuItem1 = new javax.swing.JMenuItem();
         jMenuItem7 = new javax.swing.JMenuItem();
@@ -355,8 +357,6 @@ public class Main extends javax.swing.JFrame implements IObserver {
         jMenuItem9 = new javax.swing.JMenuItem();
         jMenu4 = new javax.swing.JMenu();
         jMenuItem6 = new javax.swing.JMenuItem();
-
-        jMenuItem2.setText("jMenuItem2");
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         addWindowListener(new java.awt.event.WindowAdapter() {
@@ -506,6 +506,31 @@ public class Main extends javax.swing.JFrame implements IObserver {
 
         jMenuBar1.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
 
+        jMenu3.setText("Dictionary");
+        jMenu3.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+
+        jMenuItem10.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_N, java.awt.event.InputEvent.CTRL_MASK));
+        jMenuItem10.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        jMenuItem10.setText("New...");
+        jMenuItem10.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem10ActionPerformed(evt);
+            }
+        });
+        jMenu3.add(jMenuItem10);
+
+        jMenuItem12.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_O, java.awt.event.InputEvent.CTRL_MASK));
+        jMenuItem12.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        jMenuItem12.setText("Open...");
+        jMenuItem12.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem12ActionPerformed(evt);
+            }
+        });
+        jMenu3.add(jMenuItem12);
+
+        jMenuBar1.add(jMenu3);
+
         jMenu1.setText("Word");
         jMenu1.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
 
@@ -644,11 +669,12 @@ public class Main extends javax.swing.JFrame implements IObserver {
     private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
         try {
             saveDirectory();
+            Service.saveHistory(dict.getSetup().getDataDir());
         } catch (IOException ex) {
             errorDialog.showError("Error: Cannot save dictionary.", ex);
         } finally {
             onFinish();
-        }
+        }        
     }//GEN-LAST:event_formWindowClosing
 
     private void jComboBox1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBox1ActionPerformed
@@ -678,7 +704,7 @@ public class Main extends javax.swing.JFrame implements IObserver {
     private void jMenuItem3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem3ActionPerformed
         // Edit Word
         WordDto w = dict.getWord();
-        String oldWordPath = w.getMp3FilenameEn();
+        String oldWordPath = w.getMp3FilenameEn(dict.getSetup().getFullMp3Path());
         wordDialog.setWord(w);
         //wordDialog.setForeignWordEditable(false);
         wordDialog.setVisible(true);
@@ -689,7 +715,7 @@ public class Main extends javax.swing.JFrame implements IObserver {
             errorDialog.showError("Error: Cannot modify word.", ex);
         }
         
-        if (!oldWordPath.equals(w.getMp3FilenameEn())) {
+        if (!oldWordPath.equals(w.getMp3FilenameEn(dict.getSetup().getFullMp3Path()))) {
             File f = new File(oldWordPath);
             f.delete();
             play(w);
@@ -760,6 +786,7 @@ public class Main extends javax.swing.JFrame implements IObserver {
     }//GEN-LAST:event_jMenuItem7ActionPerformed
 
     private void jMenuItem8ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem8ActionPerformed
+        // Delete Word
         int dialogResult = JOptionPane.showConfirmDialog(this, "Do you want to delete word: " + dict.getWord().getCz() + "?", "Question", JOptionPane.YES_NO_OPTION);
         if (dialogResult == JOptionPane.YES_OPTION) {
             dict.deleteCurrentWord();
@@ -767,6 +794,7 @@ public class Main extends javax.swing.JFrame implements IObserver {
     }//GEN-LAST:event_jMenuItem8ActionPerformed
 
     private void jMenuItem9ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem9ActionPerformed
+        // Delete Category
         int dialogResult = JOptionPane.showConfirmDialog(this, "Do you want to delete category: " + dict.getCurrentCategory() + "?", "Question", JOptionPane.YES_NO_OPTION);
         if (dialogResult == JOptionPane.YES_OPTION) {
             try {
@@ -776,6 +804,64 @@ public class Main extends javax.swing.JFrame implements IObserver {
             }
         }
     }//GEN-LAST:event_jMenuItem9ActionPerformed
+
+    private String getPathToDataDir() {
+        String result = dict.getSetup().getDataDir();
+        int trimPos = result.lastIndexOf(File.separator);
+        
+        if (trimPos != -1) {
+            result = result.substring(0, trimPos);
+        }
+        
+        return result;
+    }
+    
+    private void jMenuItem12ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem12ActionPerformed
+        // Open Dictionary
+        JFileChooser fileChooser = new JFileChooser(getPathToDataDir());
+        fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+        int option = fileChooser.showOpenDialog(this);
+        if(option == JFileChooser.APPROVE_OPTION){
+            File file = fileChooser.getSelectedFile();
+            
+            try {
+                saveDirectory();
+            } catch (IOException ex) {
+                errorDialog.showError("Error: Cannot save dictionary.", ex);
+            }
+            
+            try {
+                loadDirectory(file.getAbsolutePath());
+            } catch (IOException ex) {
+                errorDialog.showError("Error: Cannot load dictionary.", ex);
+            }
+        }
+    }//GEN-LAST:event_jMenuItem12ActionPerformed
+
+    private void jMenuItem10ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem10ActionPerformed
+        // Create New Dictionary
+        JFileChooser fileChooser = new JFileChooser(getPathToDataDir());
+        fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+        int option = fileChooser.showOpenDialog(this);
+        if(option == JFileChooser.APPROVE_OPTION){
+            File file = fileChooser.getSelectedFile();
+            
+            try {
+                saveDirectory();
+            } catch (IOException ex) {
+                errorDialog.showError("Error: Cannot save dictionary.", ex);
+            }
+            
+            try {
+                if (!file.exists()) {
+                    file.mkdir();
+                }
+                loadDirectory(file.getAbsolutePath());
+            } catch (IOException ex) {
+                errorDialog.showError("Error: Cannot load dictionary.", ex);
+            }
+        }
+    }//GEN-LAST:event_jMenuItem10ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -831,10 +917,12 @@ public class Main extends javax.swing.JFrame implements IObserver {
     private javax.swing.JLabel jLabel7;
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenu jMenu2;
+    private javax.swing.JMenu jMenu3;
     private javax.swing.JMenu jMenu4;
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JMenuItem jMenuItem1;
-    private javax.swing.JMenuItem jMenuItem2;
+    private javax.swing.JMenuItem jMenuItem10;
+    private javax.swing.JMenuItem jMenuItem12;
     private javax.swing.JMenuItem jMenuItem3;
     private javax.swing.JMenuItem jMenuItem4;
     private javax.swing.JMenuItem jMenuItem5;

@@ -33,8 +33,8 @@ public class WordDto {
         this.category = category;
     }
     
-    public String getMp3FilenameEn() {
-        return String.format("%s" + File.separator + "%s.mp3", Service.getSetup(false).getFullMp3Path(), removeBadChars(this.getEn()));
+    public String getMp3FilenameEn(String mp3Path) {
+        return String.format("%s" + File.separator + "%s.mp3", mp3Path, removeBadChars(this.getEn()));
     }
     
     /**
