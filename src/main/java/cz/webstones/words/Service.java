@@ -57,6 +57,12 @@ public class Service {
             if (!f.isDirectory()) {
                 f.mkdir();
             }
+
+            // Fix setup.properties location from previous version
+            f = new File(System.getProperty("user.dir") + File.separator + setupFName);
+            if (f.canRead()) {
+                f.renameTo(new File(System.getProperty("user.dir") + File.separator + "Data" + File.separator + setupFName));
+            }
         }
         
         return result;
