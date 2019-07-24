@@ -141,6 +141,9 @@ public class Dictionary {
         updateCategoryList();
         current = -1;
         setCurrnet(0);
+
+        subjectState = DictionaryStateEnum.stateDictionaryLoaded;
+        notifyAllObservers();
     }
 
     public void saveDictionary()
@@ -179,6 +182,17 @@ public class Dictionary {
         }
     }
     
+    public String getDictionaryName() {
+        String result = setup.getDataDir();
+        int trimPos = result.lastIndexOf(File.separator);
+
+        if (trimPos != -1) {
+            result = result.substring(trimPos + 1);
+        }
+
+        return result;
+    }
+
     /* Dictionary manipulation */
     
     public int size() {

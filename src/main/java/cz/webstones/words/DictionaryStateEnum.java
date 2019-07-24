@@ -14,5 +14,6 @@ public enum DictionaryStateEnum {
     stateCurWordDeleted,
     stateCurCategoryChanged,
     stateCategoryListChanged,
-    stateWordAdded
+    stateWordAdded,
+    stateDictionaryLoaded
 }

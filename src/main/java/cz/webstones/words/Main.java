@@ -70,7 +70,7 @@ public class Main extends javax.swing.JFrame implements IObserver {
 
         initComponents();
         this.setLocationRelativeTo(null);
-        this.setTitle(Service.version);
+        setTitleText(Service.version, "");
         jLabel1.setText("");
         jLabel2.setText("");
         jLabel3.setText("");
@@ -129,7 +129,15 @@ public class Main extends javax.swing.JFrame implements IObserver {
 
             case stateWordAdded:
                 break;
+
+            case stateDictionaryLoaded:
+                this.setTitleText(Service.version, dict.getDictionaryName());
+                break;
         }
+    }
+
+    private void setTitleText(String name, String dictionary) {
+        setTitle(String.format("%s (%s)", name, dictionary));
     }
 
     private void play(WordDto w) {
