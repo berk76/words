@@ -17,17 +17,23 @@ import java.net.URISyntaxException;
  *
  * @author jaroslav_b
  */
-public class AboutDialog extends JEscapeableDialog {
+public class AboutDialog extends JEscapeableDialog implements IObserver {
     
     private final String urlGitHub = "https://github.com/berk76/words/wiki";
+    private Dictionary dict;
+    private ErrorDialog errorDialog;
 
     /**
      * Creates new form AboutDialog
      */
-    public AboutDialog(java.awt.Frame parent, boolean modal) {
+    public AboutDialog(java.awt.Frame parent, boolean modal, Dictionary dict) {
         super(parent, modal);
         initComponents();
         this.setLocationRelativeTo(null);
+        
+        this.dict = dict;
+        dict.attach(this);
+        errorDialog = new ErrorDialog(parent, true);
 
         jLabel1.setText(Service.version);
         jLabel4.setText(urlGitHub);
@@ -58,10 +64,31 @@ public class AboutDialog extends JEscapeableDialog {
         jLabel5.setText("JVM Vendor: " + System.getProperty("java.vm.vendor"));
         jLabel6.setText("JVM Version: " + System.getProperty("java.version"));
     }
+    
+    public void updateObserver() {
+        switch (dict.getSubjectState()) {
+            case stateDictionaryLoaded:
+                try {
+                    setPronunciation(dict.getLanguage());
+                } catch (IOException ex) {
+                    errorDialog.showError("Error: Cannot download pronunciation.", ex);
+                }
+                setDictionaryName(dict.getDictionaryName());
+                break;
+        }
+    }
 
-    public void setPronunciation(LanguageDto lang) {
-        String p = "Pronunciation: %s [%s]";
-        jLabel7.setText(String.format(p, lang.getName(), lang.getCode()));
+    private void setPronunciation(LanguageDto lang) {
+        if (lang != null) {
+            String p = "Pronunciation: %s [%s]";
+            jLabel8.setText(String.format(p, lang.getName(), lang.getCode()));
+        }
+    }
+    
+    private void setDictionaryName(String dictName) {
+        if (dictName != null) {
+            jLabel7.setText(String.format("Dictionary: %s", dictName));
+        }
     }
 
     /**
@@ -83,6 +110,7 @@ public class AboutDialog extends JEscapeableDialog {
         jLabel5 = new javax.swing.JLabel();
         jLabel6 = new javax.swing.JLabel();
         jLabel7 = new javax.swing.JLabel();
+        jLabel8 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("About");
@@ -119,6 +147,8 @@ public class AboutDialog extends JEscapeableDialog {
 
         jLabel7.setText("jLabel7");
 
+        jLabel8.setText("jLabel8");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -141,7 +171,8 @@ public class AboutDialog extends JEscapeableDialog {
                                     .addComponent(jLabel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                             .addComponent(jLabel5)
                             .addComponent(jLabel6)
-                            .addComponent(jLabel7))
+                            .addComponent(jLabel7)
+                            .addComponent(jLabel8))
                         .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
@@ -164,6 +195,8 @@ public class AboutDialog extends JEscapeableDialog {
                 .addComponent(jLabel6)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jLabel7)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jLabel8)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(jButton1)
                 .addContainerGap())
@@ -184,6 +217,7 @@ public class AboutDialog extends JEscapeableDialog {
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
+    private javax.swing.JLabel jLabel8;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTextArea jTextArea1;
     // End of variables declaration//GEN-END:variables

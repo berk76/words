@@ -11,7 +11,6 @@ import java.awt.Font;
 import java.awt.Point;
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -49,7 +48,7 @@ public class Main extends javax.swing.JFrame implements IObserver {
         addCatDialog = new AddCategoryDialog(this, true);
         renameCatDialog = new RenameCategoryDialog(this, true);
         wordDialog = new WordDialog(this, true, addCatDialog, dict);
-        aboutDialog = new AboutDialog(this, true);
+        aboutDialog = new AboutDialog(this, true, dict);
         findDialog = new FindDialog(this, false, dict);
 
         Point p = findDialog.getLocation();
@@ -228,17 +227,6 @@ public class Main extends javax.swing.JFrame implements IObserver {
         }
 
         dict.loadDictionary(setup);
-
-        String pron = setup.getLanguage();
-        if (pron != null) {
-            ArrayList<LanguageDto> lang = Service.getLanguageList();
-            for (LanguageDto ldto: lang) {
-                if (pron.equals(ldto.getCode())) {
-                    aboutDialog.setPronunciation(ldto);
-                    break;
-                }
-            }
-        }
     }
     
     private void saveDirectory() throws IOException {

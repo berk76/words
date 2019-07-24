@@ -192,6 +192,23 @@ public class Dictionary {
 
         return result;
     }
+    
+    public LanguageDto getLanguage() throws IOException {
+        LanguageDto result = null;
+        
+        String pron = setup.getLanguage();
+        if (pron != null) {
+            ArrayList<LanguageDto> lang = Service.getLanguageList();
+            for (LanguageDto ldto: lang) {
+                if (pron.equals(ldto.getCode())) {
+                    result = ldto;
+                    break;
+                }
+            }
+        }
+        
+        return result;
+    }
 
     /* Dictionary manipulation */
     
