@@ -69,7 +69,7 @@ public class Main extends javax.swing.JFrame implements IObserver {
 
         initComponents();
         this.setLocationRelativeTo(null);
-        setTitleText(Service.version, "");
+        setTitleText(Service.version, "", null);
         jLabel1.setText("");
         jLabel2.setText("");
         jLabel3.setText("");
@@ -130,13 +130,22 @@ public class Main extends javax.swing.JFrame implements IObserver {
                 break;
 
             case stateDictionaryLoaded:
-                this.setTitleText(Service.version, dict.getDictionaryName());
+                try {
+                    this.setTitleText(Service.version, dict.getDictionaryName(), dict.getLanguage());
+                } catch (IOException ex) {
+                    errorDialog.showError("Error: Cannot get language.", ex);
+                }
                 break;
+
         }
     }
 
-    private void setTitleText(String name, String dictionary) {
-        setTitle(String.format("%s (%s)", name, dictionary));
+    private void setTitleText(String name, String dictionary, LanguageDto lang) {
+        String langCode = "";
+        if (lang != null) {
+            langCode = lang.getCode();
+        }
+        setTitle(String.format("%s - %s [%s]", name, dictionary, langCode));
     }
 
     private void play(WordDto w) {
