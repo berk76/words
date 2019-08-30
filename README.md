@@ -18,7 +18,7 @@ Vocabulary enables you:
 ## How you can get started with Words
 
 Visit project [Wiki](https://github.com/berk76/words/wiki) pages for brief instructions.  
-Follow us at [Twitter](https://twitter.com/WordsVocabulary)
+Follow us at Twitter: [@WordsVocabulary](https://twitter.com/WordsVocabulary)
 
 ## How to build project
 
