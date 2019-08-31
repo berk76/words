@@ -4,3 +4,4 @@ target/
 .classpath
 Data/
 setup.properties
+history.properties

@@ -20,6 +20,7 @@ import java.net.URISyntaxException;
 public class AboutDialog extends JEscapeableDialog implements IObserver {
     
     private final String urlGitHub = "https://github.com/berk76/words/wiki";
+    private final String urlTwitter = "https://twitter.com/WordsVocabulary";
     private Dictionary dict;
     private ErrorDialog errorDialog;
 
@@ -39,12 +40,35 @@ public class AboutDialog extends JEscapeableDialog implements IObserver {
         jLabel4.setText(urlGitHub);
         jLabel4.setForeground(Color.BLUE.darker());
         jLabel4.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-
         jLabel4.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
                 try {
                     Desktop.getDesktop().browse(new URI(urlGitHub));
+                } catch (IOException | URISyntaxException e1) {
+                    e1.printStackTrace();
+                }
+            }
+
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                // the mouse has entered the label
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+                // the mouse has exited the label
+            }
+        });
+        
+        jLabel10.setText("@WordsVocabulary");
+        jLabel10.setForeground(Color.BLUE.darker());
+        jLabel10.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        jLabel10.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                try {
+                    Desktop.getDesktop().browse(new URI(urlTwitter));
                 } catch (IOException | URISyntaxException e1) {
                     e1.printStackTrace();
                 }
@@ -111,6 +135,8 @@ public class AboutDialog extends JEscapeableDialog implements IObserver {
         jLabel6 = new javax.swing.JLabel();
         jLabel7 = new javax.swing.JLabel();
         jLabel8 = new javax.swing.JLabel();
+        jLabel9 = new javax.swing.JLabel();
+        jLabel10 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("About");
@@ -129,7 +155,7 @@ public class AboutDialog extends JEscapeableDialog implements IObserver {
 
         jLabel2.setText("Written by Jaroslav Beran");
 
-        jLabel3.setText("Web:");
+        jLabel3.setText("Wiki:");
 
         jButton1.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
         jButton1.setText("Close");
@@ -149,6 +175,10 @@ public class AboutDialog extends JEscapeableDialog implements IObserver {
 
         jLabel8.setText("jLabel8");
 
+        jLabel9.setText("Twitter:");
+
+        jLabel10.setText("jLabel10");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -157,23 +187,26 @@ public class AboutDialog extends JEscapeableDialog implements IObserver {
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jScrollPane1)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(jButton1))
                     .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, 321, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(jButton1))
+                    .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                .addComponent(jLabel2)
-                                .addGroup(layout.createSequentialGroup()
-                                    .addComponent(jLabel3)
-                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                    .addComponent(jLabel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                             .addComponent(jLabel5)
                             .addComponent(jLabel6)
                             .addComponent(jLabel7)
+                            .addComponent(jLabel2)
                             .addComponent(jLabel8))
-                        .addGap(0, 0, Short.MAX_VALUE)))
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jLabel3)
+                        .addGap(18, 18, 18)
+                        .addComponent(jLabel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jLabel9)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jLabel10, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -190,14 +223,18 @@ public class AboutDialog extends JEscapeableDialog implements IObserver {
                     .addComponent(jLabel3)
                     .addComponent(jLabel4))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel9)
+                    .addComponent(jLabel10))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(jLabel5)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jLabel6)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGap(4, 4, 4)
                 .addComponent(jLabel7)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jLabel8)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGap(16, 16, 16)
                 .addComponent(jButton1)
                 .addContainerGap())
         );
@@ -211,6 +248,7 @@ public class AboutDialog extends JEscapeableDialog implements IObserver {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
@@ -218,6 +256,7 @@ public class AboutDialog extends JEscapeableDialog implements IObserver {
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
+    private javax.swing.JLabel jLabel9;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTextArea jTextArea1;
     // End of variables declaration//GEN-END:variables
