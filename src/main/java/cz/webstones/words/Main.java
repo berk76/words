@@ -18,6 +18,7 @@ import java.util.prefs.Preferences;
 import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
+import javax.swing.filechooser.FileView;
 
 /**
  *
@@ -836,6 +837,9 @@ public class Main extends javax.swing.JFrame implements IObserver {
         // Open Dictionary
         JFileChooser fileChooser = new JFileChooser(getPathToDataDir());
         fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+        FileView fv = new CustFileView();
+        fileChooser.setFileView(fv);
+
         int option = fileChooser.showOpenDialog(this);
         if(option == JFileChooser.APPROVE_OPTION){
             File file = fileChooser.getSelectedFile();
@@ -858,6 +862,9 @@ public class Main extends javax.swing.JFrame implements IObserver {
         // Create New Dictionary
         JFileChooser fileChooser = new JFileChooser(getPathToDataDir());
         fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+        FileView fv = new CustFileView();
+        fileChooser.setFileView(fv);
+
         int option = fileChooser.showOpenDialog(this);
         if(option == JFileChooser.APPROVE_OPTION){
             File file = fileChooser.getSelectedFile();
