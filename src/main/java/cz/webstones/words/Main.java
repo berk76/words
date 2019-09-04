@@ -348,6 +348,10 @@ public class Main extends javax.swing.JFrame implements IObserver {
         jLabel5 = new javax.swing.JLabel();
         jLabel6 = new javax.swing.JLabel();
         jLabel7 = new javax.swing.JLabel();
+        jToolBar1 = new javax.swing.JToolBar();
+        jButton6 = new javax.swing.JButton();
+        jButton7 = new javax.swing.JButton();
+        jButton8 = new javax.swing.JButton();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu3 = new javax.swing.JMenu();
         jMenuItem10 = new javax.swing.JMenuItem();
@@ -501,7 +505,7 @@ public class Main extends javax.swing.JFrame implements IObserver {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel2))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 18, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -510,6 +514,45 @@ public class Main extends javax.swing.JFrame implements IObserver {
                     .addComponent(jButton5))
                 .addContainerGap())
         );
+
+        jToolBar1.setFloatable(false);
+        jToolBar1.setRollover(true);
+
+        jButton6.setIcon(new javax.swing.ImageIcon(getClass().getResource("/page.png"))); // NOI18N
+        jButton6.setToolTipText("New");
+        jButton6.setFocusable(false);
+        jButton6.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        jButton6.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        jButton6.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton6ActionPerformed(evt);
+            }
+        });
+        jToolBar1.add(jButton6);
+
+        jButton7.setIcon(new javax.swing.ImageIcon(getClass().getResource("/folder.png"))); // NOI18N
+        jButton7.setToolTipText("Open");
+        jButton7.setFocusable(false);
+        jButton7.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        jButton7.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        jButton7.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton7ActionPerformed(evt);
+            }
+        });
+        jToolBar1.add(jButton7);
+
+        jButton8.setIcon(new javax.swing.ImageIcon(getClass().getResource("/disk.png"))); // NOI18N
+        jButton8.setToolTipText("Save");
+        jButton8.setFocusable(false);
+        jButton8.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        jButton8.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        jButton8.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton8ActionPerformed(evt);
+            }
+        });
+        jToolBar1.add(jButton8);
 
         jMenuBar1.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
 
@@ -645,11 +688,13 @@ public class Main extends javax.swing.JFrame implements IObserver {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(jToolBar1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(12, 12, 12)
+                .addComponent(jToolBar1, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -833,32 +878,7 @@ public class Main extends javax.swing.JFrame implements IObserver {
         return result;
     }
     
-    private void jMenuItem12ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem12ActionPerformed
-        // Open Dictionary
-        JFileChooser fileChooser = new JFileChooser(getPathToDataDir());
-        fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-        FileView fv = new CustFileView();
-        fileChooser.setFileView(fv);
-
-        int option = fileChooser.showOpenDialog(this);
-        if(option == JFileChooser.APPROVE_OPTION){
-            File file = fileChooser.getSelectedFile();
-            
-            try {
-                saveDirectory();
-            } catch (IOException ex) {
-                errorDialog.showError("Error: Cannot save dictionary.", ex);
-            }
-            
-            try {
-                loadDirectory(file.getAbsolutePath());
-            } catch (IOException ex) {
-                errorDialog.showError("Error: Cannot load dictionary.", ex);
-            }
-        }
-    }//GEN-LAST:event_jMenuItem12ActionPerformed
-
-    private void jMenuItem10ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem10ActionPerformed
+    private void newDictionary() {
         // Create New Dictionary
         JFileChooser fileChooser = new JFileChooser(getPathToDataDir());
         fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
@@ -884,9 +904,34 @@ public class Main extends javax.swing.JFrame implements IObserver {
                 errorDialog.showError("Error: Cannot load dictionary.", ex);
             }
         }
-    }//GEN-LAST:event_jMenuItem10ActionPerformed
+    }
+    
+    private void openDictionary() {
+        // Open Dictionary
+        JFileChooser fileChooser = new JFileChooser(getPathToDataDir());
+        fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+        FileView fv = new CustFileView();
+        fileChooser.setFileView(fv);
 
-    private void jMenuItem2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem2ActionPerformed
+        int option = fileChooser.showOpenDialog(this);
+        if(option == JFileChooser.APPROVE_OPTION){
+            File file = fileChooser.getSelectedFile();
+            
+            try {
+                saveDirectory();
+            } catch (IOException ex) {
+                errorDialog.showError("Error: Cannot save dictionary.", ex);
+            }
+            
+            try {
+                loadDirectory(file.getAbsolutePath());
+            } catch (IOException ex) {
+                errorDialog.showError("Error: Cannot load dictionary.", ex);
+            }
+        }
+    }
+    
+    private void saveDictionary() {
         // Save Dictionary
         try {
             saveDirectory();
@@ -894,7 +939,31 @@ public class Main extends javax.swing.JFrame implements IObserver {
         } catch (IOException ex) {
             errorDialog.showError("Error: Cannot save dictionary.", ex);
         }
+    }
+    
+    private void jMenuItem12ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem12ActionPerformed
+        openDictionary();
+    }//GEN-LAST:event_jMenuItem12ActionPerformed
+    
+    private void jMenuItem10ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem10ActionPerformed
+        newDictionary();
+    }//GEN-LAST:event_jMenuItem10ActionPerformed
+
+    private void jMenuItem2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem2ActionPerformed
+        saveDictionary();
     }//GEN-LAST:event_jMenuItem2ActionPerformed
+
+    private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
+        newDictionary();
+    }//GEN-LAST:event_jButton6ActionPerformed
+
+    private void jButton7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton7ActionPerformed
+        openDictionary();
+    }//GEN-LAST:event_jButton7ActionPerformed
+
+    private void jButton8ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton8ActionPerformed
+        saveDictionary();
+    }//GEN-LAST:event_jButton8ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -940,6 +1009,9 @@ public class Main extends javax.swing.JFrame implements IObserver {
     private javax.swing.JButton jButton3;
     private javax.swing.JButton jButton4;
     private javax.swing.JButton jButton5;
+    private javax.swing.JButton jButton6;
+    private javax.swing.JButton jButton7;
+    private javax.swing.JButton jButton8;
     private javax.swing.JComboBox jComboBox1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
@@ -966,5 +1038,6 @@ public class Main extends javax.swing.JFrame implements IObserver {
     private javax.swing.JMenuItem jMenuItem9;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JTextField jTextField1;
+    private javax.swing.JToolBar jToolBar1;
     // End of variables declaration//GEN-END:variables
 }
