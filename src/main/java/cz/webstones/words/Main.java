@@ -352,6 +352,10 @@ public class Main extends javax.swing.JFrame implements IObserver {
         jButton6 = new javax.swing.JButton();
         jButton7 = new javax.swing.JButton();
         jButton8 = new javax.swing.JButton();
+        jButton9 = new javax.swing.JButton();
+        jButton10 = new javax.swing.JButton();
+        jButton11 = new javax.swing.JButton();
+        jButton12 = new javax.swing.JButton();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu3 = new javax.swing.JMenu();
         jMenuItem10 = new javax.swing.JMenuItem();
@@ -519,7 +523,7 @@ public class Main extends javax.swing.JFrame implements IObserver {
         jToolBar1.setRollover(true);
 
         jButton6.setIcon(new javax.swing.ImageIcon(getClass().getResource("/page.png"))); // NOI18N
-        jButton6.setToolTipText("New");
+        jButton6.setToolTipText("New dictionary");
         jButton6.setFocusable(false);
         jButton6.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         jButton6.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
@@ -531,7 +535,7 @@ public class Main extends javax.swing.JFrame implements IObserver {
         jToolBar1.add(jButton6);
 
         jButton7.setIcon(new javax.swing.ImageIcon(getClass().getResource("/folder.png"))); // NOI18N
-        jButton7.setToolTipText("Open");
+        jButton7.setToolTipText("Open dictionary");
         jButton7.setFocusable(false);
         jButton7.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         jButton7.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
@@ -543,7 +547,7 @@ public class Main extends javax.swing.JFrame implements IObserver {
         jToolBar1.add(jButton7);
 
         jButton8.setIcon(new javax.swing.ImageIcon(getClass().getResource("/disk.png"))); // NOI18N
-        jButton8.setToolTipText("Save");
+        jButton8.setToolTipText("Save dictionary");
         jButton8.setFocusable(false);
         jButton8.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         jButton8.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
@@ -553,6 +557,54 @@ public class Main extends javax.swing.JFrame implements IObserver {
             }
         });
         jToolBar1.add(jButton8);
+
+        jButton9.setIcon(new javax.swing.ImageIcon(getClass().getResource("/find.png"))); // NOI18N
+        jButton9.setToolTipText("Find word");
+        jButton9.setFocusable(false);
+        jButton9.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        jButton9.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        jButton9.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton9ActionPerformed(evt);
+            }
+        });
+        jToolBar1.add(jButton9);
+
+        jButton10.setIcon(new javax.swing.ImageIcon(getClass().getResource("/application_add.png"))); // NOI18N
+        jButton10.setToolTipText("Add word");
+        jButton10.setFocusable(false);
+        jButton10.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        jButton10.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        jButton10.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton10ActionPerformed(evt);
+            }
+        });
+        jToolBar1.add(jButton10);
+
+        jButton11.setIcon(new javax.swing.ImageIcon(getClass().getResource("/application_edit.png"))); // NOI18N
+        jButton11.setToolTipText("Edit word");
+        jButton11.setFocusable(false);
+        jButton11.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        jButton11.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        jButton11.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton11ActionPerformed(evt);
+            }
+        });
+        jToolBar1.add(jButton11);
+
+        jButton12.setIcon(new javax.swing.ImageIcon(getClass().getResource("/application_delete.png"))); // NOI18N
+        jButton12.setToolTipText("Delete word");
+        jButton12.setFocusable(false);
+        jButton12.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        jButton12.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        jButton12.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton12ActionPerformed(evt);
+            }
+        });
+        jToolBar1.add(jButton12);
 
         jMenuBar1.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
 
@@ -764,24 +816,7 @@ public class Main extends javax.swing.JFrame implements IObserver {
     }//GEN-LAST:event_jMenuItem6ActionPerformed
 
     private void jMenuItem3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem3ActionPerformed
-        // Edit Word
-        WordDto w = dict.getWord();
-        String oldWordPath = w.getMp3FilenameEn(dict.getSetup().getFullMp3Path());
-        wordDialog.setWord(w);
-        //wordDialog.setForeignWordEditable(false);
-        wordDialog.setVisible(true);
-        
-        try {
-            dict.updateWord(w);
-        } catch (DictionaryException ex) {
-            errorDialog.showError("Error: Cannot modify word.", ex);
-        }
-        
-        if (!oldWordPath.equals(w.getMp3FilenameEn(dict.getSetup().getFullMp3Path()))) {
-            File f = new File(oldWordPath);
-            f.delete();
-            play(w);
-        }
+        editWord();
     }//GEN-LAST:event_jMenuItem3ActionPerformed
 
     private void jMenuItem4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem4ActionPerformed
@@ -803,7 +838,28 @@ public class Main extends javax.swing.JFrame implements IObserver {
         }
     }//GEN-LAST:event_jMenuItem5ActionPerformed
 
-    private void jMenuItem7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem7ActionPerformed
+    private void editWord() {
+        // Edit Word
+        WordDto w = dict.getWord();
+        String oldWordPath = w.getMp3FilenameEn(dict.getSetup().getFullMp3Path());
+        wordDialog.setWord(w);
+        //wordDialog.setForeignWordEditable(false);
+        wordDialog.setVisible(true);
+        
+        try {
+            dict.updateWord(w);
+        } catch (DictionaryException ex) {
+            errorDialog.showError("Error: Cannot modify word.", ex);
+        }
+        
+        if (!oldWordPath.equals(w.getMp3FilenameEn(dict.getSetup().getFullMp3Path()))) {
+            File f = new File(oldWordPath);
+            f.delete();
+            play(w);
+        }
+    }
+    
+    private void addWord() {
         // Add Word
         WordDto w = new WordDto();
         w.setCategory(jComboBox1.getSelectedItem().toString());
@@ -845,14 +901,22 @@ public class Main extends javax.swing.JFrame implements IObserver {
             
             play(w);
         }
-    }//GEN-LAST:event_jMenuItem7ActionPerformed
-
-    private void jMenuItem8ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem8ActionPerformed
+    }
+    
+    private void deleteWord() {
         // Delete Word
         int dialogResult = JOptionPane.showConfirmDialog(this, "Do you want to delete word: " + dict.getWord().getCz() + "?", "Question", JOptionPane.YES_NO_OPTION);
         if (dialogResult == JOptionPane.YES_OPTION) {
             dict.deleteCurrentWord();
         }
+    }
+    
+    private void jMenuItem7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem7ActionPerformed
+        addWord();
+    }//GEN-LAST:event_jMenuItem7ActionPerformed
+
+    private void jMenuItem8ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem8ActionPerformed
+        deleteWord();
     }//GEN-LAST:event_jMenuItem8ActionPerformed
 
     private void jMenuItem9ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem9ActionPerformed
@@ -882,6 +946,7 @@ public class Main extends javax.swing.JFrame implements IObserver {
         // Create New Dictionary
         JFileChooser fileChooser = new JFileChooser(getPathToDataDir());
         fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+        fileChooser.setDialogTitle("New dictionary");
         FileView fv = new CustFileView();
         fileChooser.setFileView(fv);
 
@@ -910,6 +975,7 @@ public class Main extends javax.swing.JFrame implements IObserver {
         // Open Dictionary
         JFileChooser fileChooser = new JFileChooser(getPathToDataDir());
         fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+        fileChooser.setDialogTitle("Open dictionary");
         FileView fv = new CustFileView();
         fileChooser.setFileView(fv);
 
@@ -965,6 +1031,22 @@ public class Main extends javax.swing.JFrame implements IObserver {
         saveDictionary();
     }//GEN-LAST:event_jButton8ActionPerformed
 
+    private void jButton9ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton9ActionPerformed
+        showFindDialog();
+    }//GEN-LAST:event_jButton9ActionPerformed
+
+    private void jButton10ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton10ActionPerformed
+        addWord();
+    }//GEN-LAST:event_jButton10ActionPerformed
+
+    private void jButton11ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton11ActionPerformed
+        editWord();
+    }//GEN-LAST:event_jButton11ActionPerformed
+
+    private void jButton12ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton12ActionPerformed
+        deleteWord();
+    }//GEN-LAST:event_jButton12ActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -1005,6 +1087,9 @@ public class Main extends javax.swing.JFrame implements IObserver {
     }
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;
+    private javax.swing.JButton jButton10;
+    private javax.swing.JButton jButton11;
+    private javax.swing.JButton jButton12;
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
     private javax.swing.JButton jButton4;
@@ -1012,6 +1097,7 @@ public class Main extends javax.swing.JFrame implements IObserver {
     private javax.swing.JButton jButton6;
     private javax.swing.JButton jButton7;
     private javax.swing.JButton jButton8;
+    private javax.swing.JButton jButton9;
     private javax.swing.JComboBox jComboBox1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
