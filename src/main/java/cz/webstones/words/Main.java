@@ -162,6 +162,7 @@ public class Main extends javax.swing.JFrame implements IObserver {
         }
 
         disableControls(true);
+        disableToolbarControls(true);
         wordToPlay = w;
 
         new Thread(new Runnable() {
@@ -183,9 +184,11 @@ public class Main extends javax.swing.JFrame implements IObserver {
                     }
 
                     disableControls(false);
+                    disableToolbarControls(false);
                     jLabel2.setIcon(null);
                     updateStatus();
                     disableControls(true);
+                    disableToolbarControls(true);
                 }
 
                 if (f.exists()) {
@@ -197,6 +200,7 @@ public class Main extends javax.swing.JFrame implements IObserver {
                 }
 
                 disableControls(false);
+                disableToolbarControls(false);
 
             }
         }).start();
@@ -306,6 +310,16 @@ public class Main extends javax.swing.JFrame implements IObserver {
         jButton5.setEnabled(!b);
         jComboBox1.setEnabled(!b);
         this.revalidate();
+    }
+    
+    private void disableToolbarControls(boolean b) {
+        jButton6.setEnabled(!b);
+        jButton7.setEnabled(!b);
+        jButton8.setEnabled(!b);
+        jButton9.setEnabled(!b);
+        jButton10.setEnabled(!b);
+        jButton11.setEnabled(!b);
+        jButton12.setEnabled(!b);
     }
 
     private void disableGoodWrong(boolean b) {
