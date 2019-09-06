@@ -29,12 +29,34 @@ public class Service {
     public static final String version = "Words 1.9.0 snapshot";
     public static final String setupFName = "setup.properties";
     private static final String historyFName = "history.properties";
+    private static final String appDataDir = "WordsData";
 
     
+    private static String getDataDir() {
+
+        //Is current dir writable?
+        String result = System.getProperty("user.dir");
+        File f = new File(result + File.separator + appDataDir + "test.txt");
+        try {
+            f.createNewFile();
+            f.delete();
+            return result;
+        } catch (Exception ex) {
+        }
+
+        //If not use local app data dir
+        result = System.getenv("LOCALAPPDATA") + File.separator + appDataDir;
+        f = new File(result);
+        if (!f.exists()) {
+            f.mkdir();
+        }
+        return result;
+    }
+
     public static String getHistory() throws IOException {
         String result = null;
         Properties p = new Properties();
-        String path = System.getProperty("user.dir") + File.separator + historyFName;
+        String path = getDataDir() + File.separator + historyFName;
         File f = new File(path);
         
         if (f.canRead()) {
@@ -52,16 +74,16 @@ public class Service {
         }
         
         if (result == null) {
-            result = System.getProperty("user.dir") + File.separator + "Data";
+            result = getDataDir() + File.separator + "Data";
             f = new File(result);
             if (!f.isDirectory()) {
                 f.mkdir();
             }
 
             // Fix setup.properties location from previous version
-            f = new File(System.getProperty("user.dir") + File.separator + setupFName);
+            f = new File(getDataDir() + File.separator + setupFName);
             if (f.canRead()) {
-                f.renameTo(new File(System.getProperty("user.dir") + File.separator + "Data" + File.separator + setupFName));
+                f.renameTo(new File(getDataDir() + File.separator + "Data" + File.separator + setupFName));
             }
         }
         
@@ -70,7 +92,7 @@ public class Service {
     
     public static void saveHistory(String dictPath) throws IOException {
         Properties p = new Properties();
-        String path = System.getProperty("user.dir") + File.separator + historyFName;
+        String path = getDataDir() + File.separator + historyFName;
         File f = new File(path);
         
         p.setProperty("dictPath", dictPath);
