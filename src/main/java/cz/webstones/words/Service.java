@@ -26,7 +26,7 @@ import java.util.Properties;
  */
 public class Service {
 
-    public static final String version = "Words 1.9.0 snapshot";
+    public static final String version = "Words 1.10.0 snapshot";
     public static final String setupFName = "setup.properties";
     private static final String historyFName = "history.properties";
     private static final String appDataDir = "WordsData";
