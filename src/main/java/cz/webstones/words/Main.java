@@ -235,7 +235,9 @@ public class Main extends javax.swing.JFrame implements IObserver {
     private void loadDirectory(String dictPath) throws IOException {
         Setup setup = Service.getSetup(true, dictPath);
         if ((setup.getLanguage() == null) || setup.getLanguage().equals("")) {
-            langDialog.setVisible(true);
+            do {
+                langDialog.setVisible(true);
+            } while (langDialog.getLangCode().equals(""));
             setup.setLanguage(langDialog.getLangCode());
             Service.saveSetup(setup);
         }

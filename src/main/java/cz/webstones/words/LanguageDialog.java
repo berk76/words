@@ -13,6 +13,7 @@ import java.util.ArrayList;
 public class LanguageDialog extends javax.swing.JDialog {
 
     private ArrayList<LanguageDto> langs;
+    private boolean selected = false;
     
     /**
      * Creates new form LanguageDialog
@@ -35,15 +36,17 @@ public class LanguageDialog extends javax.swing.JDialog {
     
     public String getLangCode() {
         String result = "";
-        String selected = (String) jComboBox1.getSelectedItem();
         
-        for (LanguageDto l : langs) {
-            if (selected.equals(l.getName())) {
-                result = l.getCode();
-                break;
+        if (selected) {
+            String option = (String) jComboBox1.getSelectedItem();
+
+            for (LanguageDto l : langs) {
+                if (option.equals(l.getName())) {
+                    result = l.getCode();
+                    break;
+                }
             }
         }
-        
         return result;
     }
 
@@ -108,6 +111,7 @@ public class LanguageDialog extends javax.swing.JDialog {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        this.selected = true;
         this.setVisible(false);
     }//GEN-LAST:event_jButton1ActionPerformed
 
