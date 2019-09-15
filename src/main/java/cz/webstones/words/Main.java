@@ -38,7 +38,7 @@ public class Main extends javax.swing.JFrame implements IObserver {
     private ImageIcon loadingIcon = new ImageIcon(this.getClass().getClassLoader().getResource("ajax-loader.gif"));
     protected WordDto wordToPlay = null;
     private boolean controlsEnabled = true;
-    private boolean mp3DownloadConfirmed = false;
+    private boolean mp3DownloadConfirmed = true;
 
     /**
      * Creates new form Main
@@ -137,7 +137,6 @@ public class Main extends javax.swing.JFrame implements IObserver {
                     errorDialog.showError("Error: Cannot get language.", ex);
                 }
                 break;
-
         }
     }
 
