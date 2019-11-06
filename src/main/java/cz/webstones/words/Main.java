@@ -34,6 +34,8 @@ public class Main extends javax.swing.JFrame implements IObserver {
     private FindDialog findDialog;
     private LanguageDialog langDialog;
     private ErrorDialog errorDialog;
+    private WordExistsDialog wordExistsDialog;
+
     private boolean disableCategotyChange = false;
     private ImageIcon loadingIcon = new ImageIcon(this.getClass().getClassLoader().getResource("ajax-loader.gif"));
     protected WordDto wordToPlay = null;
@@ -51,6 +53,7 @@ public class Main extends javax.swing.JFrame implements IObserver {
         wordDialog = new WordDialog(this, true, addCatDialog, dict);
         aboutDialog = new AboutDialog(this, true, dict);
         findDialog = new FindDialog(this, false, dict);
+        wordExistsDialog = new WordExistsDialog(this, true, dict);
 
         Point p = findDialog.getLocation();
         findDialog.setLocation(p.x + 500, p.y - 100);
@@ -110,6 +113,7 @@ public class Main extends javax.swing.JFrame implements IObserver {
     public void updateObserver() {
         switch (dict.getSubjectState()) {
 
+            case stateWordAdded:
             case stateCurWordChanged:
             case stateCurWordDeleted:
                 next(0);
@@ -125,9 +129,6 @@ public class Main extends javax.swing.JFrame implements IObserver {
                 disableCategotyChange = true;
                 updateCategoryCombo();
                 disableCategotyChange = false;
-                break;
-
-            case stateWordAdded:
                 break;
 
             case stateDictionaryLoaded:
@@ -884,23 +885,21 @@ public class Main extends javax.swing.JFrame implements IObserver {
         
         if (wordDialog.isCommited()) {
 
-            if (dict.findDuplicity(w) != null) {
-                JOptionPane.showMessageDialog(this, "Word " + w.getCz() + "/" + w.getEn() + " already exists!", "Error", JOptionPane.ERROR_MESSAGE);
+            WordDto wOld;
+
+            if ((wOld = dict.findDuplicity(w)) != null) {
+                wordExistsDialog.showDialog(w, wOld);
                 return;
             }
 
-            if (dict.findDuplicity(w.getCz()) != null) {
-                int dialogResult = JOptionPane.showConfirmDialog(this, "Word " + w.getCz() + " already exists. Do you want create it anyway?", "Question", JOptionPane.YES_NO_OPTION);
-                if (dialogResult == JOptionPane.NO_OPTION) {
-                    return;
-                }
+            if ((wOld = dict.findDuplicity(w.getCz())) != null) {
+                wordExistsDialog.showDialog(w, wOld);
+                return;
             }
 
-            if (dict.findDuplicity(w.getEn()) != null) {
-                int dialogResult = JOptionPane.showConfirmDialog(this, "Word " + w.getEn() + " already exists. Do you want create it anyway?", "Question", JOptionPane.YES_NO_OPTION);
-                if (dialogResult == JOptionPane.NO_OPTION) {
-                    return;
-                }
+            if ((wOld = dict.findDuplicity(w.getEn())) != null) {
+                wordExistsDialog.showDialog(w, wOld);
+                return;
             }
 
             try {

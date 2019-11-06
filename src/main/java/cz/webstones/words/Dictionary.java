@@ -312,6 +312,10 @@ public class Dictionary {
             dictFil.remove(w);
         }
         
+        if (!currentCategory.equals(Dictionary.allCategoryName) && currentCategory.equals(w.getCategory()) && !dictFil.contains(w)) {
+            dictFil.add(w);
+        }
+
         subjectState = DictionaryStateEnum.stateCurWordChanged;
         notifyAllObservers();
     }
