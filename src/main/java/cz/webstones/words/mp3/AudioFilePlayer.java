@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package cz.webstones.words;
+package cz.webstones.words.mp3;
 
 
 import java.io.File;

@@ -1,9 +1,19 @@
 /*
- * To change this template, choose Tools | Templates
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package cz.webstones.words;
+package cz.webstones.words.dictionary.impl;
 
+import cz.webstones.words.LanguageDto;
+import cz.webstones.words.Service;
+import cz.webstones.words.Setup;
+import static cz.webstones.words.dictionary.IDictionary.allCategoryName;
+import static cz.webstones.words.dictionary.IDictionary.encoding;
+import cz.webstones.words.dictionary.DictionaryException;
+import cz.webstones.words.dictionary.DictionaryStateEnum;
+import cz.webstones.words.dictionary.IObserver;
+import cz.webstones.words.dictionary.WordDto;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -18,44 +28,43 @@ import java.io.UnsupportedEncodingException;
 import java.text.Collator;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.List;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.List;
 import java.util.Locale;
 import java.util.Random;
+import cz.webstones.words.dictionary.IDictionary;
 
 /**
  *
- * @author jaroslav_b
+ * @author jarberan
  */
-public class Dictionary {
-    
-    public static final String allCategoryName = "All";
-    public static final String encoding = "UTF-8";
-    
+public class DictionaryImpl implements IDictionary {
     private Setup setup = null;
     private ArrayList<WordDto> dictAll = new ArrayList<>();
     private ArrayList<WordDto> dictFil = new ArrayList<>();
     private ArrayList<String> categoryList = new ArrayList<>();
-    private ArrayList<IObserver> observers = new ArrayList<>();
+    private final ArrayList<IObserver> observers = new ArrayList<>();
     private DictionaryStateEnum subjectState = DictionaryStateEnum.stateNoChabge;
     private int current = 0;
     private String currentCategory;
     
-    public Dictionary() throws DictionaryException {
+    public DictionaryImpl() throws DictionaryException {
         super();
         
-        currentCategory = Dictionary.allCategoryName;
+        currentCategory = IDictionary.allCategoryName;
     }
     
     
     /* Observer subject interface */
     
+    @Override
     public void attach(IObserver o) {
         observers.add(o);
     }
     
+    @Override
     public void detach(IObserver o) {
         observers.remove(o);
     }
@@ -66,12 +75,14 @@ public class Dictionary {
         }
     }
     
+    @Override
     public DictionaryStateEnum getSubjectState() {
         return subjectState;
     }
     
     /* Load / Save Dictionary */
     
+    @Override
     public void loadDictionary(Setup s)
             throws FileNotFoundException, UnsupportedEncodingException, IOException {
 
@@ -137,7 +148,7 @@ public class Dictionary {
         reader.close();
         is.close();
         
-        setCategory(Dictionary.allCategoryName);
+        setCategory(IDictionary.allCategoryName);
         updateCategoryList();
         current = -1;
         setCurrnet(0);
@@ -146,6 +157,7 @@ public class Dictionary {
         notifyAllObservers();
     }
 
+    @Override
     public void saveDictionary()
             throws FileNotFoundException, UnsupportedEncodingException, IOException {
 
@@ -182,6 +194,7 @@ public class Dictionary {
         }
     }
     
+    @Override
     public String getDictionaryName() {
         String result = setup.getDataDir();
         int trimPos = result.lastIndexOf(File.separator);
@@ -193,6 +206,7 @@ public class Dictionary {
         return result;
     }
     
+    @Override
     public LanguageDto getLanguage() throws IOException {
         LanguageDto result = null;
         
@@ -212,20 +226,24 @@ public class Dictionary {
 
     /* Dictionary manipulation */
     
+    @Override
     public int size() {
         return dictFil.size();
     }
     
+    @Override
     public int sizeOfAll() {
         return dictAll.size();
     }
     
+    @Override
     public List<WordDto> getDictionaryAsList() {
         return dictFil;
     }
     
     /* Word manipulation */
     
+    @Override
     public void setCurrnet(int i) {
 
         if (dictFil.size() == 0) {
@@ -244,10 +262,12 @@ public class Dictionary {
         }
     }
     
+    @Override
     public int getCurrnet() {
         return current;
     }
     
+    @Override
     public boolean setCurrent(WordDto w) {
         for (int i = 0; i < dictFil.size(); i++) {
             WordDto cw = dictFil.get(i);
@@ -260,6 +280,7 @@ public class Dictionary {
         return false;
     }
     
+    @Override
     public void validateWord(WordDto w) throws DictionaryException {
         
         if ((w.getEn() == null) || w.getEn().trim().equals("")) {
@@ -274,14 +295,15 @@ public class Dictionary {
             throw new DictionaryException("Category cannot be empty.");
         }
         
-        if (w.getCategory().equals(Dictionary.allCategoryName)) {
-            throw new DictionaryException("Category name cannot be " + Dictionary.allCategoryName + " !");
+        if (w.getCategory().equals(IDictionary.allCategoryName)) {
+            throw new DictionaryException("Category name cannot be " + IDictionary.allCategoryName + " !");
         }
         
         w.setCz(w.getCz().trim());
         w.setEn(w.getEn().trim());
     }
     
+    @Override
     public void addWord(WordDto w) throws DictionaryException {
         
         validateWord(w);
@@ -295,7 +317,7 @@ public class Dictionary {
 
         dictAll.add(w);
         
-        if (currentCategory.equals(Dictionary.allCategoryName) || currentCategory.equals(w.getCategory())) {
+        if (currentCategory.equals(IDictionary.allCategoryName) || currentCategory.equals(w.getCategory())) {
             dictFil.add(w);
         }
         
@@ -304,15 +326,16 @@ public class Dictionary {
     }
     
     
+    @Override
     public void updateWord(WordDto w) throws DictionaryException {
         
         validateWord(w);
         
-        if (!currentCategory.equals(Dictionary.allCategoryName) && !currentCategory.equals(w.getCategory())) {
+        if (!currentCategory.equals(IDictionary.allCategoryName) && !currentCategory.equals(w.getCategory())) {
             dictFil.remove(w);
         }
         
-        if (!currentCategory.equals(Dictionary.allCategoryName) && currentCategory.equals(w.getCategory()) && !dictFil.contains(w)) {
+        if (!currentCategory.equals(IDictionary.allCategoryName) && currentCategory.equals(w.getCategory()) && !dictFil.contains(w)) {
             dictFil.add(w);
         }
 
@@ -321,6 +344,7 @@ public class Dictionary {
     }
 
     
+    @Override
     public WordDto findDuplicity(String s) {
         for (WordDto t : dictAll) {
             if (t.getCz().equals(s) || t.getEn().equals(s)) {
@@ -330,6 +354,7 @@ public class Dictionary {
         return null;
     }
 
+    @Override
     public WordDto findDuplicity(WordDto w) {
         for (WordDto t : dictAll) {
             if (t.getCz().equals(w.getCz()) && t.getEn().equals(w.getEn())) {
@@ -339,6 +364,7 @@ public class Dictionary {
         return null;
     }
 
+    @Override
     public void deleteCurrentWord() {
         WordDto w = getWord();
         
@@ -351,14 +377,17 @@ public class Dictionary {
         notifyAllObservers();
     }
     
+    @Override
     public WordDto getWord() {
         return dictFil.get(current);
     }
     
+    @Override
     public WordDto getWord(int i) {
         return dictFil.get(i);
     }
     
+    @Override
     public boolean searchInCurrentCategory(String what, boolean caseSensitive, boolean exactMatch) {
         
         if (what.equals("")) {
@@ -412,12 +441,13 @@ public class Dictionary {
     
     /* Category manipulation */
     
+    @Override
     public void setCategory(String category) {
         dictFil = new ArrayList<WordDto>();
         Random rand = new Random();
 
         for (WordDto w : dictAll) {
-            if (category.equals(Dictionary.allCategoryName) || category.equals(w.getCategory())) {
+            if (category.equals(IDictionary.allCategoryName) || category.equals(w.getCategory())) {
                 dictFil.add(w);
             }
         }
@@ -476,10 +506,12 @@ public class Dictionary {
         notifyAllObservers();
     }
     
+    @Override
     public ArrayList<String> getCategoryList(){
         return categoryList;
     }
     
+    @Override
     public void renameCategory(String oldCat, String newCat) {
         if ((newCat == null) || newCat.trim().equals("")) {
             return;
@@ -493,18 +525,20 @@ public class Dictionary {
         updateCategoryList();
     }       
 
+    @Override
     public String getCurrentCategory() {
         return currentCategory;
     }
     
+    @Override
     public void addCategory(String category) throws DictionaryException {
         
         if ((category == null) || category.trim().equals("")) {
             return;
         }
         
-        if (category.equals(Dictionary.allCategoryName)) {
-            throw new DictionaryException("Category name cannot be " + Dictionary.allCategoryName + " !");
+        if (category.equals(IDictionary.allCategoryName)) {
+            throw new DictionaryException("Category name cannot be " + IDictionary.allCategoryName + " !");
         }
         
         for (String c: categoryList) {
@@ -520,6 +554,7 @@ public class Dictionary {
         notifyAllObservers();
     }
     
+    @Override
     public void deleteCurrentCategory() throws DictionaryException {
         if (currentCategory.equals(allCategoryName)) {
             throw new DictionaryException("Cannot delete category: " + allCategoryName);
@@ -544,8 +579,8 @@ public class Dictionary {
     /**
      * @return the setup
      */
+    @Override
     public Setup getSetup() {
         return setup;
     }
-
 }

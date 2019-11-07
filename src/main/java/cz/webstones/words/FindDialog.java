@@ -4,10 +4,12 @@
  */
 package cz.webstones.words;
 
+import cz.webstones.words.dictionary.IObserver;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
+import cz.webstones.words.dictionary.IDictionary;
 
 /**
  *
@@ -15,12 +17,12 @@ import javax.swing.JTextField;
  */
 public class FindDialog extends JEscapeableDialog implements IObserver {
     
-    private Dictionary dict = null;
+    private IDictionary dict = null;
 
     /**
      * Creates new form FindDialog
      */
-    public FindDialog(java.awt.Frame parent, boolean modal, Dictionary d) {
+    public FindDialog(java.awt.Frame parent, boolean modal, IDictionary d) {
         super(parent, modal);
         initComponents();
         jTextField1.addFocusListener(new FocusListener()

@@ -2,9 +2,11 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package cz.webstones.words;
+package cz.webstones.words.dictionary;
 
-import static cz.webstones.words.DictionaryStateEnum.*;
+import cz.webstones.words.dictionary.IObserver;
+import static cz.webstones.words.dictionary.DictionaryStateEnum.*;
+import cz.webstones.words.dictionary.IDictionary;
 
 /**
  *
@@ -12,7 +14,7 @@ import static cz.webstones.words.DictionaryStateEnum.*;
  */
 public class ObserverTestHelper implements IObserver {
     
-    private Dictionary dict;
+    private IDictionary dict;
     private int noChange;
     private int curWordChanged;
     private int curWordDeleted;
@@ -22,7 +24,7 @@ public class ObserverTestHelper implements IObserver {
     private int unknown;
     
 
-    public ObserverTestHelper(Dictionary d) {
+    public ObserverTestHelper(IDictionary d) {
         super();
         dict = d;
         reset();

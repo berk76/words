@@ -4,7 +4,12 @@
  */
 package cz.webstones.words;
 
-import static cz.webstones.words.DictionaryStateEnum.stateCurWordChanged;
+import cz.webstones.words.mp3.AudioFilePlayer;
+import cz.webstones.words.dictionary.IObserver;
+import cz.webstones.words.dictionary.WordDto;
+import cz.webstones.words.dictionary.DictionaryException;
+import static cz.webstones.words.dictionary.DictionaryStateEnum.stateCurWordChanged;
+import cz.webstones.words.dictionary.impl.DictionaryImpl;
 import cz.webstones.words.mp3.Mp3Creator;
 import cz.webstones.words.mp3.Mp3CreatorException;
 import java.awt.Font;
@@ -19,6 +24,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.filechooser.FileView;
+import cz.webstones.words.dictionary.IDictionary;
 
 /**
  *
@@ -26,7 +32,7 @@ import javax.swing.filechooser.FileView;
  */
 public class Main extends javax.swing.JFrame implements IObserver {
 
-    private Dictionary dict;
+    private IDictionary dict;
     private AddCategoryDialog addCatDialog;
     private RenameCategoryDialog renameCatDialog;
     private WordDialog wordDialog;
@@ -47,7 +53,7 @@ public class Main extends javax.swing.JFrame implements IObserver {
      */
     public Main() throws DictionaryException {
         
-        dict = new Dictionary();
+        dict = new DictionaryImpl();
         addCatDialog = new AddCategoryDialog(this, true);
         renameCatDialog = new RenameCategoryDialog(this, true);
         wordDialog = new WordDialog(this, true, addCatDialog, dict);

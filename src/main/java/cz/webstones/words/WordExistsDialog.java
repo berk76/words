@@ -5,8 +5,11 @@
  */
 package cz.webstones.words;
 
+import cz.webstones.words.dictionary.WordDto;
+import cz.webstones.words.dictionary.DictionaryException;
 import java.awt.Color;
 import javax.swing.JOptionPane;
+import cz.webstones.words.dictionary.IDictionary;
 
 /**
  *
@@ -14,13 +17,13 @@ import javax.swing.JOptionPane;
  */
 public class WordExistsDialog extends JEscapeableDialog {
 
-    private Dictionary dict;
+    private IDictionary dict;
     private WordDto newWord;
     private WordDto oldWord;
     /**
      * Creates new form WordExistsDialog
      */
-    public WordExistsDialog(java.awt.Frame parent, boolean modal, Dictionary dictionary) {
+    public WordExistsDialog(java.awt.Frame parent, boolean modal, IDictionary dictionary) {
         super(parent, modal);
         initComponents();
         this.setLocationRelativeTo(null);

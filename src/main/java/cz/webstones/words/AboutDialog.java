@@ -4,6 +4,7 @@
  */
 package cz.webstones.words;
 
+import cz.webstones.words.dictionary.IObserver;
 import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.Desktop;
@@ -12,6 +13,7 @@ import java.awt.event.MouseEvent;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import cz.webstones.words.dictionary.IDictionary;
 
 /**
  *
@@ -21,13 +23,13 @@ public class AboutDialog extends JEscapeableDialog implements IObserver {
     
     private final String urlGitHub = "https://github.com/berk76/words/wiki";
     private final String urlTwitter = "https://twitter.com/WordsVocabulary";
-    private Dictionary dict;
+    private IDictionary dict;
     private ErrorDialog errorDialog;
 
     /**
      * Creates new form AboutDialog
      */
-    public AboutDialog(java.awt.Frame parent, boolean modal, Dictionary dict) {
+    public AboutDialog(java.awt.Frame parent, boolean modal, IDictionary dict) {
         super(parent, modal);
         initComponents();
         this.setLocationRelativeTo(null);

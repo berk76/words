@@ -4,9 +4,13 @@
  */
 package cz.webstones.words;
 
+import cz.webstones.words.dictionary.IObserver;
+import cz.webstones.words.dictionary.WordDto;
+import cz.webstones.words.dictionary.DictionaryException;
 import java.awt.Font;
 import java.text.SimpleDateFormat;
 import javax.swing.JOptionPane;
+import cz.webstones.words.dictionary.IDictionary;
 
 /**
  *
@@ -17,12 +21,12 @@ public class WordDialog extends JEscapeableDialog implements IObserver {
     private boolean commited;
     private WordDto word;
     private AddCategoryDialog addCatDialog;
-    private Dictionary dict;
+    private IDictionary dict;
 
     /**
      * Creates new form WordDialog
      */
-    public WordDialog(java.awt.Frame parent, boolean modal, AddCategoryDialog d, Dictionary dic) {
+    public WordDialog(java.awt.Frame parent, boolean modal, AddCategoryDialog d, IDictionary dic) {
         super(parent, modal);
         initComponents();
         this.setLocationRelativeTo(null);

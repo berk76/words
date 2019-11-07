@@ -2,11 +2,16 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package cz.webstones.words;
+package cz.webstones.words.dictionary;
 
+import cz.webstones.words.Service;
+import cz.webstones.words.dictionary.WordDto;
+import cz.webstones.words.dictionary.DictionaryException;
+import cz.webstones.words.dictionary.impl.DictionaryImpl;
 import java.io.IOException;
 import static org.junit.Assert.assertEquals;
 import org.junit.Test;
+import cz.webstones.words.dictionary.IDictionary;
 
 /**
  *
@@ -16,7 +21,7 @@ public class DictionaryTest {
     
     @Test
     public void testWords() throws IOException, DictionaryException {
-        Dictionary d = new Dictionary();
+        IDictionary d = new DictionaryImpl();
         String dictPath = Service.getHistory();
         d.loadDictionary(Service.getSetup(true, dictPath));
         ObserverTestHelper o = new ObserverTestHelper(d);
@@ -62,7 +67,7 @@ public class DictionaryTest {
         assertEquals("Fil dictionary size:", 3, d.size());
         assertEquals("All dictionary size:", 3, d.sizeOfAll());
         assertEquals("Category list size:", 3, d.getCategoryList().size());
-        assertEquals("Curr cat:",Dictionary.allCategoryName , d.getCurrentCategory());
+        assertEquals("Curr cat:",IDictionary.allCategoryName , d.getCurrentCategory());
         
         /* Filter category */
         o.reset();
@@ -100,7 +105,7 @@ public class DictionaryTest {
         
         /* Unfilter category */
         o.reset();
-        d.setCategory(Dictionary.allCategoryName);
+        d.setCategory(IDictionary.allCategoryName);
         
         assertEquals("Observer getNoChange:", 0, o.getNoChange());
         assertEquals("Observer getCurWordChanged:", 1, o.getCurWordChanged());
@@ -113,7 +118,7 @@ public class DictionaryTest {
         assertEquals("Fil dictionary size:", 2, d.size());
         assertEquals("All dictionary size:", 2, d.sizeOfAll());
         assertEquals("Category list size:", 3, d.getCategoryList().size());
-        assertEquals("Curr cat:", Dictionary.allCategoryName, d.getCurrentCategory());
+        assertEquals("Curr cat:", IDictionary.allCategoryName, d.getCurrentCategory());
         
         /* Delete last word in category */
         /* updateCategory list will remove all unused categories */
@@ -138,11 +143,11 @@ public class DictionaryTest {
     
     @Test
     public void testCategories() throws DictionaryException {
-        Dictionary d = new Dictionary();
+        IDictionary d = new DictionaryImpl();
         ObserverTestHelper o = new ObserverTestHelper(d);
         d.attach(o);
         
-        assertEquals("Curr cat:", Dictionary.allCategoryName, d.getCurrentCategory());
+        assertEquals("Curr cat:", IDictionary.allCategoryName, d.getCurrentCategory());
         
         /* Fill category list */
         o.reset();
@@ -195,7 +200,7 @@ public class DictionaryTest {
     
     @Test
     public void testSearchCSensitive() throws DictionaryException {    
-        Dictionary d = new Dictionary();
+        IDictionary d = new DictionaryImpl();
         
         d.addCategory("TestCat1");
         d.addWord(new WordDto("maminka", "mum", "TestCat1"));
@@ -225,7 +230,7 @@ public class DictionaryTest {
     
     @Test
     public void testSearchCInSensitive() throws DictionaryException {    
-        Dictionary d = new Dictionary();
+        IDictionary d = new DictionaryImpl();
         
         d.addCategory("TestCat1");
         d.addWord(new WordDto("maminka", "mum", "TestCat1"));
@@ -265,7 +270,7 @@ public class DictionaryTest {
     
     @Test
     public void testSearchExactMatch() throws DictionaryException {    
-        Dictionary d = new Dictionary();
+        IDictionary d = new DictionaryImpl();
         
         d.addCategory("TestCat1");
         d.addWord(new WordDto("maminka", "mum", "TestCat1"));
@@ -304,7 +309,7 @@ public class DictionaryTest {
 
     @Test
     public void testSearchNotExactMatch() throws DictionaryException {    
-        Dictionary d = new Dictionary();
+        IDictionary d = new DictionaryImpl();
         
         d.addCategory("TestCat1");
         d.addWord(new WordDto("maminka", "mum", "TestCat1"));
