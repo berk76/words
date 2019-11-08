@@ -5,13 +5,10 @@
 package cz.webstones.words.dictionary;
 
 import cz.webstones.words.Service;
-import cz.webstones.words.dictionary.WordDto;
-import cz.webstones.words.dictionary.DictionaryException;
 import cz.webstones.words.dictionary.impl.DictionaryImpl;
 import java.io.IOException;
 import static org.junit.Assert.assertEquals;
 import org.junit.Test;
-import cz.webstones.words.dictionary.IDictionary;
 
 /**
  *
@@ -57,7 +54,7 @@ public class DictionaryTest {
         d.addWord(new WordDto("test3cz", "test3en", "TestCat2"));
         
         assertEquals("Observer getNoChange:", 0, o.getNoChange());
-        assertEquals("Observer getCurWordChanged:", 0, o.getCurWordChanged());
+        assertEquals("Observer getCurWordChanged:", 2, o.getCurWordChanged());
         assertEquals("Observer getCurWordDeleted:", 0, o.getCurWordDeleted());
         assertEquals("Observer getCurCategoryChanged:", 0, o.getCurCategoryChanged());
         assertEquals("Observer getCategoryListChanged:", 0, o.getCategoryListChanged());
@@ -172,7 +169,7 @@ public class DictionaryTest {
         d.addWord(new WordDto("test3cz", "test3en", "TestCat2"));
         
         assertEquals("Observer getNoChange:", 0, o.getNoChange());
-        assertEquals("Observer getCurWordChanged:", 0, o.getCurWordChanged());
+        assertEquals("Observer getCurWordChanged:", 2, o.getCurWordChanged());
         assertEquals("Observer getCurWordDeleted:", 0, o.getCurWordDeleted());
         assertEquals("Observer getCurCategoryChanged:", 0, o.getCurCategoryChanged());
         assertEquals("Observer getCategoryListChanged:", 0, o.getCategoryListChanged());

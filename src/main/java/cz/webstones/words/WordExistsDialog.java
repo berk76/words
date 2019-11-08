@@ -50,6 +50,14 @@ public class WordExistsDialog extends JEscapeableDialog {
             this.jLabel5.setForeground(Color.BLACK);
         }
         
+        if (oldWord.getCategory().equals(newWord.getCategory())) {
+            this.jLabel7.setForeground(Color.RED);
+            this.jButton2.setEnabled(false);
+        } else {
+            this.jLabel7.setForeground(Color.BLACK);
+            this.jButton2.setEnabled(true);
+        }
+
         if (oldWord.getCz().equals(newWord.getCz()) && oldWord.getEn().equals(newWord.getEn())) {
             this.jButton1.setEnabled(false);
         } else {

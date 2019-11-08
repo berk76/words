@@ -4,9 +4,7 @@
  */
 package cz.webstones.words.dictionary;
 
-import cz.webstones.words.dictionary.IObserver;
 import static cz.webstones.words.dictionary.DictionaryStateEnum.*;
-import cz.webstones.words.dictionary.IDictionary;
 
 /**
  *

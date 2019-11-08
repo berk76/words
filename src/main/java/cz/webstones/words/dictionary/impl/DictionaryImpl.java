@@ -319,6 +319,7 @@ public class DictionaryImpl implements IDictionary {
         
         if (currentCategory.equals(IDictionary.allCategoryName) || currentCategory.equals(w.getCategory())) {
             dictFil.add(w);
+            setCurrent(w);
         }
         
         subjectState = DictionaryStateEnum.stateWordAdded;
@@ -337,6 +338,7 @@ public class DictionaryImpl implements IDictionary {
         
         if (!currentCategory.equals(IDictionary.allCategoryName) && currentCategory.equals(w.getCategory()) && !dictFil.contains(w)) {
             dictFil.add(w);
+            setCurrent(w);
         }
 
         subjectState = DictionaryStateEnum.stateCurWordChanged;
