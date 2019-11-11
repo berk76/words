@@ -7,8 +7,9 @@ package cz.webstones.words.dictionary;
 import cz.webstones.words.Service;
 import cz.webstones.words.dictionary.impl.DictionaryImpl;
 import java.io.IOException;
-import static org.junit.Assert.assertEquals;
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 
 /**
  *
@@ -17,6 +18,7 @@ import org.junit.Test;
 public class DictionaryTest {
     
     @Test
+    @DisplayName("Words (add, filter, delete, unfilter, delete last)")
     public void testWords() throws IOException, DictionaryException {
         IDictionary d = new DictionaryImpl();
         String dictPath = Service.getHistory();
@@ -25,9 +27,9 @@ public class DictionaryTest {
         d.attach(o);
         
         /* Test initial values */
-        assertEquals("Fil dictionary size:", 0, d.size());
-        assertEquals("All dictionary size:", 0, d.sizeOfAll());
-        assertEquals("Category list size:", 0, d.getCategoryList().size());
+        assertEquals(0, d.size(), "Fil dictionary size");
+        assertEquals(0, d.sizeOfAll(), "All dictionary size");
+        assertEquals(0, d.getCategoryList().size(), "Category list size");
         
         /* Fill category list */
         o.reset();
@@ -35,17 +37,17 @@ public class DictionaryTest {
         d.addCategory("TestCat2");
         d.addCategory("TestCat3");
         
-        assertEquals("Observer getNoChange:", 0, o.getNoChange());
-        assertEquals("Observer getCurWordChanged:", 0, o.getCurWordChanged());
-        assertEquals("Observer getCurWordDeleted:", 0, o.getCurWordDeleted());
-        assertEquals("Observer getCurCategoryChanged:", 0, o.getCurCategoryChanged());
-        assertEquals("Observer getCategoryListChanged:", 3, o.getCategoryListChanged());
-        assertEquals("Observer getWordAdded:", 0, o.getWordAdded());
-        assertEquals("Observer getUnknown:", 0, o.getUnknown());
+        assertEquals(0, o.getNoChange(), "Observer getNoChange");
+        assertEquals(0, o.getCurWordChanged(), "Observer getCurWordChanged");
+        assertEquals(0, o.getCurWordDeleted(), "Observer getCurWordDeleted");
+        assertEquals(0, o.getCurCategoryChanged(), "Observer getCurCategoryChanged");
+        assertEquals(3, o.getCategoryListChanged(), "Observer getCategoryListChanged");
+        assertEquals(0, o.getWordAdded(), "Observer getWordAdded");
+        assertEquals(0, o.getUnknown(), "Observer getUnknown");
         
-        assertEquals("Fil dictionary size:", 0, d.size());
-        assertEquals("All dictionary size:", 0, d.sizeOfAll());
-        assertEquals("Category list size:", 3, d.getCategoryList().size());
+        assertEquals(0, d.size(), "Fil dictionary size");
+        assertEquals(0, d.sizeOfAll(), "All dictionary size");
+        assertEquals(3, d.getCategoryList().size(), "Category list size");
         
         /* Fill some words */
         o.reset();
@@ -53,69 +55,69 @@ public class DictionaryTest {
         d.addWord(new WordDto("test2cz", "test2en", "TestCat1"));
         d.addWord(new WordDto("test3cz", "test3en", "TestCat2"));
         
-        assertEquals("Observer getNoChange:", 0, o.getNoChange());
-        assertEquals("Observer getCurWordChanged:", 2, o.getCurWordChanged());
-        assertEquals("Observer getCurWordDeleted:", 0, o.getCurWordDeleted());
-        assertEquals("Observer getCurCategoryChanged:", 0, o.getCurCategoryChanged());
-        assertEquals("Observer getCategoryListChanged:", 0, o.getCategoryListChanged());
-        assertEquals("Observer getWordAdded:", 3, o.getWordAdded());
-        assertEquals("Observer getUnknown:", 0, o.getUnknown());
+        assertEquals(0, o.getNoChange(), "Observer getNoChange");
+        assertEquals(2, o.getCurWordChanged(), "Observer getCurWordChanged");
+        assertEquals(0, o.getCurWordDeleted(), "Observer getCurWordDeleted");
+        assertEquals(0, o.getCurCategoryChanged(), "Observer getCurCategoryChanged");
+        assertEquals(0, o.getCategoryListChanged(), "Observer getCategoryListChanged");
+        assertEquals(3, o.getWordAdded(), "Observer getWordAdded");
+        assertEquals(0, o.getUnknown(), "Observer getUnknown");
         
-        assertEquals("Fil dictionary size:", 3, d.size());
-        assertEquals("All dictionary size:", 3, d.sizeOfAll());
-        assertEquals("Category list size:", 3, d.getCategoryList().size());
-        assertEquals("Curr cat:",IDictionary.allCategoryName , d.getCurrentCategory());
+        assertEquals(3, d.size(), "Fil dictionary size");
+        assertEquals(3, d.sizeOfAll(), "All dictionary size");
+        assertEquals(3, d.getCategoryList().size(), "Category list size");
+        assertEquals(IDictionary.allCategoryName, d.getCurrentCategory(), "Curr cat");
         
         /* Filter category */
         o.reset();
         d.setCategory("TestCat1");
         
-        assertEquals("Observer getNoChange:", 0, o.getNoChange());
-        assertEquals("Observer getCurWordChanged:", 1, o.getCurWordChanged());
-        assertEquals("Observer getCurWordDeleted:", 0, o.getCurWordDeleted());
-        assertEquals("Observer getCurCategoryChanged:", 1, o.getCurCategoryChanged());
-        assertEquals("Observer getCategoryListChanged:", 0, o.getCategoryListChanged());
-        assertEquals("Observer getWordAdded:", 0, o.getWordAdded());
-        assertEquals("Observer getUnknown:", 0, o.getUnknown());
+        assertEquals(0, o.getNoChange(), "Observer getNoChange");
+        assertEquals(1, o.getCurWordChanged(), "Observer getCurWordChanged");
+        assertEquals(0, o.getCurWordDeleted(), "Observer getCurWordDeleted");
+        assertEquals(1, o.getCurCategoryChanged(), "Observer getCurCategoryChanged");
+        assertEquals(0, o.getCategoryListChanged(), "Observer getCategoryListChanged");
+        assertEquals(0, o.getWordAdded(), "Observer getWordAdded");
+        assertEquals(0, o.getUnknown(), "Observer getUnknown");
         
-        assertEquals("Fil dictionary size:", 2, d.size());
-        assertEquals("All dictionary size:", 3, d.sizeOfAll());
-        assertEquals("Category list size:", 3, d.getCategoryList().size());
-        assertEquals("Curr cat:", "TestCat1", d.getCurrentCategory());
+        assertEquals(2, d.size(), "Fil dictionary size");
+        assertEquals(3, d.sizeOfAll(), "All dictionary size");
+        assertEquals(3, d.getCategoryList().size(), "Category list size");
+        assertEquals("TestCat1", d.getCurrentCategory(), "Curr cat");
         
         /* Delete word */
         o.reset();
         d.deleteCurrentWord();
         
-        assertEquals("Observer getNoChange:", 0, o.getNoChange());
-        assertEquals("Observer getCurWordChanged:", 0, o.getCurWordChanged());
-        assertEquals("Observer getCurWordDeleted:", 1, o.getCurWordDeleted());
-        assertEquals("Observer getCurCategoryChanged:", 0, o.getCurCategoryChanged());
-        assertEquals("Observer getCategoryListChanged:", 0, o.getCategoryListChanged());
-        assertEquals("Observer getWordAdded:", 0, o.getWordAdded());
-        assertEquals("Observer getUnknown:", 0, o.getUnknown());
+        assertEquals(0, o.getNoChange(), "Observer getNoChange");
+        assertEquals(0, o.getCurWordChanged(), "Observer getCurWordChanged");
+        assertEquals(1, o.getCurWordDeleted(), "Observer getCurWordDeleted");
+        assertEquals(0, o.getCurCategoryChanged(), "Observer getCurCategoryChanged");
+        assertEquals(0, o.getCategoryListChanged(), "Observer getCategoryListChanged");
+        assertEquals(0, o.getWordAdded(), "Observer getWordAdded");
+        assertEquals(0, o.getUnknown(), "Observer getUnknown");
         
-        assertEquals("Fil dictionary size:", 1, d.size());
-        assertEquals("All dictionary size:", 2, d.sizeOfAll());
-        assertEquals("Category list size:", 3, d.getCategoryList().size());
-        assertEquals("Curr cat:", "TestCat1", d.getCurrentCategory());
+        assertEquals(1, d.size(), "Fil dictionary size");
+        assertEquals(2, d.sizeOfAll(), "All dictionary size");
+        assertEquals(3, d.getCategoryList().size(), "Category list size");
+        assertEquals("TestCat1", d.getCurrentCategory(), "Curr cat");
         
         /* Unfilter category */
         o.reset();
         d.setCategory(IDictionary.allCategoryName);
         
-        assertEquals("Observer getNoChange:", 0, o.getNoChange());
-        assertEquals("Observer getCurWordChanged:", 1, o.getCurWordChanged());
-        assertEquals("Observer getCurWordDeleted:", 0, o.getCurWordDeleted());
-        assertEquals("Observer getCurCategoryChanged:", 1, o.getCurCategoryChanged());
-        assertEquals("Observer getCategoryListChanged:", 0, o.getCategoryListChanged());
-        assertEquals("Observer getWordAdded:", 0, o.getWordAdded());
-        assertEquals("Observer getUnknown:", 0, o.getUnknown());
+        assertEquals(0, o.getNoChange(), "Observer getNoChange");
+        assertEquals(1, o.getCurWordChanged(), "Observer getCurWordChanged");
+        assertEquals(0, o.getCurWordDeleted(), "Observer getCurWordDeleted");
+        assertEquals(1, o.getCurCategoryChanged(), "Observer getCurCategoryChanged");
+        assertEquals(0, o.getCategoryListChanged(), "Observer getCategoryListChanged");
+        assertEquals(0, o.getWordAdded(), "Observer getWordAdded");
+        assertEquals(0, o.getUnknown(), "Observer getUnknown");
         
-        assertEquals("Fil dictionary size:", 2, d.size());
-        assertEquals("All dictionary size:", 2, d.sizeOfAll());
-        assertEquals("Category list size:", 3, d.getCategoryList().size());
-        assertEquals("Curr cat:", IDictionary.allCategoryName, d.getCurrentCategory());
+        assertEquals(2, d.size(), "Fil dictionary size");
+        assertEquals(2, d.sizeOfAll(), "All dictionary size");
+        assertEquals(3, d.getCategoryList().size(), "Category list size");
+        assertEquals(IDictionary.allCategoryName, d.getCurrentCategory(), "Curr cat");
         
         /* Delete last word in category */
         /* updateCategory list will remove all unused categories */
@@ -123,28 +125,29 @@ public class DictionaryTest {
         o.reset();
         d.deleteCurrentWord();
         
-        assertEquals("Observer getNoChange:", 0, o.getNoChange());
-        assertEquals("Observer getCurWordChanged:", 0, o.getCurWordChanged());
-        assertEquals("Observer getCurWordDeleted:", 1, o.getCurWordDeleted());
-        assertEquals("Observer getCurCategoryChanged:", 0, o.getCurCategoryChanged());
-        assertEquals("Observer getCategoryListChanged:", 0, o.getCategoryListChanged());
-        assertEquals("Observer getWordAdded:", 0, o.getWordAdded());
-        assertEquals("Observer getUnknown:", 0, o.getUnknown());
+        assertEquals(0, o.getNoChange(), "Observer getNoChange");
+        assertEquals(0, o.getCurWordChanged(), "Observer getCurWordChanged");
+        assertEquals(1, o.getCurWordDeleted(), "Observer getCurWordDeleted");
+        assertEquals(0, o.getCurCategoryChanged(), "Observer getCurCategoryChanged");
+        assertEquals(0, o.getCategoryListChanged(), "Observer getCategoryListChanged");
+        assertEquals(0, o.getWordAdded(), "Observer getWordAdded");
+        assertEquals(0, o.getUnknown(), "Observer getUnknown");
         
-        assertEquals("Fil dictionary size:", 0, d.size());
-        assertEquals("All dictionary size:", 1, d.sizeOfAll());
-        assertEquals("Category list size:", 3, d.getCategoryList().size());
-        assertEquals("Curr cat:", "TestCat1", d.getCurrentCategory());
+        assertEquals(0, d.size(), "Fil dictionary size");
+        assertEquals(1, d.sizeOfAll(), "All dictionary size");
+        assertEquals(3, d.getCategoryList().size(), "Category list size");
+        assertEquals("TestCat1", d.getCurrentCategory(), "Curr cat");
         
     }
     
     @Test
+    @DisplayName("Categories (add, rename)")
     public void testCategories() throws DictionaryException {
         IDictionary d = new DictionaryImpl();
         ObserverTestHelper o = new ObserverTestHelper(d);
         d.attach(o);
         
-        assertEquals("Curr cat:", IDictionary.allCategoryName, d.getCurrentCategory());
+        assertEquals(IDictionary.allCategoryName, d.getCurrentCategory(), "Curr cat");
         
         /* Fill category list */
         o.reset();
@@ -152,15 +155,15 @@ public class DictionaryTest {
         d.addCategory("TestCat2");
         d.addCategory("TestCat3");
         
-        assertEquals("Observer getNoChange:", 0, o.getNoChange());
-        assertEquals("Observer getCurWordChanged:", 0, o.getCurWordChanged());
-        assertEquals("Observer getCurWordDeleted:", 0, o.getCurWordDeleted());
-        assertEquals("Observer getCurCategoryChanged:", 0, o.getCurCategoryChanged());
-        assertEquals("Observer getCategoryListChanged:", 3, o.getCategoryListChanged());
-        assertEquals("Observer getWordAdded:", 0, o.getWordAdded());
-        assertEquals("Observer getUnknown:", 0, o.getUnknown());
+        assertEquals(0, o.getNoChange(), "Observer getNoChange");
+        assertEquals(0, o.getCurWordChanged(), "Observer getCurWordChanged");
+        assertEquals(0, o.getCurWordDeleted(), "Observer getCurWordDeleted");
+        assertEquals(0, o.getCurCategoryChanged(), "Observer getCurCategoryChanged");
+        assertEquals(3, o.getCategoryListChanged(), "Observer getCategoryListChanged");
+        assertEquals(0, o.getWordAdded(), "Observer getWordAdded");
+        assertEquals(0, o.getUnknown(), "Observer getUnknown");
         
-        assertEquals("Category list size:", 3, d.getCategoryList().size());
+        assertEquals(3, d.getCategoryList().size(), "Category list size");
         
         /* Fill some words */
         o.reset();
@@ -168,34 +171,35 @@ public class DictionaryTest {
         d.addWord(new WordDto("test2cz", "test2en", "TestCat1"));
         d.addWord(new WordDto("test3cz", "test3en", "TestCat2"));
         
-        assertEquals("Observer getNoChange:", 0, o.getNoChange());
-        assertEquals("Observer getCurWordChanged:", 2, o.getCurWordChanged());
-        assertEquals("Observer getCurWordDeleted:", 0, o.getCurWordDeleted());
-        assertEquals("Observer getCurCategoryChanged:", 0, o.getCurCategoryChanged());
-        assertEquals("Observer getCategoryListChanged:", 0, o.getCategoryListChanged());
-        assertEquals("Observer getWordAdded:", 3, o.getWordAdded());
-        assertEquals("Observer getUnknown:", 0, o.getUnknown());
+        assertEquals(0, o.getNoChange(), "Observer getNoChange");
+        assertEquals(2, o.getCurWordChanged(), "Observer getCurWordChanged");
+        assertEquals(0, o.getCurWordDeleted(), "Observer getCurWordDeleted");
+        assertEquals(0, o.getCurCategoryChanged(), "Observer getCurCategoryChanged");
+        assertEquals(0, o.getCategoryListChanged(), "Observer getCategoryListChanged");
+        assertEquals(3, o.getWordAdded(), "Observer getWordAdded");
+        assertEquals(0, o.getUnknown(), "Observer getUnknown");
         
         /* Rename category */
         o.reset();
         d.renameCategory("TestCat1", "TestCat4");
         
-        assertEquals("Observer getNoChange:", 0, o.getNoChange());
-        assertEquals("Observer getCurWordChanged:", 0, o.getCurWordChanged());
-        assertEquals("Observer getCurWordDeleted:", 0, o.getCurWordDeleted());
-        assertEquals("Observer getCurCategoryChanged:", 0, o.getCurCategoryChanged());
-        assertEquals("Observer getCategoryListChanged:", 1, o.getCategoryListChanged());
-        assertEquals("Observer getWordAdded:", 0, o.getWordAdded());
-        assertEquals("Observer getUnknown:", 0, o.getUnknown());
+        assertEquals(0, o.getNoChange(), "Observer getNoChange");
+        assertEquals(0, o.getCurWordChanged(), "Observer getCurWordChanged");
+        assertEquals(0, o.getCurWordDeleted(), "Observer getCurWordDeleted");
+        assertEquals(0, o.getCurCategoryChanged(), "Observer getCurCategoryChanged");
+        assertEquals(1, o.getCategoryListChanged(), "Observer getCategoryListChanged");
+        assertEquals(0, o.getWordAdded(), "Observer getWordAdded");
+        assertEquals(0, o.getUnknown(), "Observer getUnknown");
         
-        assertEquals("Category list size:", 2, d.getCategoryList().size());
+        assertEquals(2, d.getCategoryList().size(), "Category list size");
         
         d.setCategory("TestCat4");
-        assertEquals("Fil dictionary size:", 2, d.size());
-        assertEquals("All dictionary size:", 3, d.sizeOfAll());
+        assertEquals(2, d.size(), "Fil dictionary size");
+        assertEquals(3, d.sizeOfAll(), "All dictionary size");
     }
     
     @Test
+    @DisplayName("Search case sensitive")
     public void testSearchCSensitive() throws DictionaryException {    
         IDictionary d = new DictionaryImpl();
         
@@ -206,26 +210,27 @@ public class DictionaryTest {
         d.addWord(new WordDto("Tatínek", "Dad", "TestCat1"));
         
         boolean result = d.searchInCurrentCategory("dědeček", true, false);
-        assertEquals("Not found:", false, result);
+        assertEquals(false, result, "Not found");
         
         /* CZ */
         result = d.searchInCurrentCategory("tatínek", true, false);
-        assertEquals("Found tatínek:", true, result);
-        assertEquals("Found tatínek:", "tatínek", d.getWord().getCz());
+        assertEquals(true, result, "Found tatínek");
+        assertEquals("tatínek", d.getWord().getCz(), "Found tatínek");
         
         result = d.searchInCurrentCategory("tatínek", true, false);
-        assertEquals("Not found tatínek:", false, result);
+        assertEquals(false, result, "Not found tatínek");
         
         /* EN */
         result = d.searchInCurrentCategory("mum", true, false);
-        assertEquals("Found mum:", true, result);
-        assertEquals("Found mum:", "mum", d.getWord().getEn());
+        assertEquals(true, result, "Found mum");
+        assertEquals("mum", d.getWord().getEn(), "Found mum");
         
         result = d.searchInCurrentCategory("mum", true, false);
-        assertEquals("Not found mum:", false, result);
+        assertEquals(false, result, "Not found mum");
     }
     
     @Test
+    @DisplayName("Search case insensitive")
     public void testSearchCInSensitive() throws DictionaryException {    
         IDictionary d = new DictionaryImpl();
         
@@ -236,36 +241,37 @@ public class DictionaryTest {
         d.addWord(new WordDto("Tatínek", "Dad", "TestCat1"));
         
         boolean result = d.searchInCurrentCategory("dědeček", true, false);
-        assertEquals("Not found:", false, result);
+        assertEquals(false, result, "Not found");
         
         /* CZ */
         result = d.searchInCurrentCategory("tatínek", false, false);
-        assertEquals("Found tatínek:", true, result);
-        assertEquals("Found tatínek:", "tatínek", d.getWord().getCz());
+        assertEquals(true, result, "Found tatínek");
+        assertEquals("tatínek", d.getWord().getCz(), "Found tatínek");
         
         result = d.searchInCurrentCategory("tatínek", false, false);
-        assertEquals("Found Tatínek:", true, result);
-        assertEquals("Found Tatínek:", "Tatínek", d.getWord().getCz());
+        assertEquals(true, result, "Found Tatínek");
+        assertEquals("Tatínek", d.getWord().getCz(), "Found Tatínek");
         
         result = d.searchInCurrentCategory("tatínek", false, false);
-        assertEquals("Found tatínek:", true, result);
-        assertEquals("Found tatínek:", "tatínek", d.getWord().getCz());
+        assertEquals(true, result, "Found tatínek");
+        assertEquals("tatínek", d.getWord().getCz(), "Found tatínek");
         
         /* EN */
         result = d.searchInCurrentCategory("mum", false, false);
-        assertEquals("Found mum:", true, result);
-        assertEquals("Found mum:", "mum", d.getWord().getEn());
+        assertEquals(true, result, "Found mum");
+        assertEquals("mum", d.getWord().getEn(), "Found mum");
         
         result = d.searchInCurrentCategory("mum", false, false);
-        assertEquals("Found Mum:", true, result);
-        assertEquals("Found Mum:", "Mum", d.getWord().getEn());
+        assertEquals(true, result, "Found Mum");
+        assertEquals("Mum", d.getWord().getEn(), "Found Mum");
         
         result = d.searchInCurrentCategory("mum", false, false);
-        assertEquals("Found mum:", true, result);
-        assertEquals("Found mum:", "mum", d.getWord().getEn());
+        assertEquals(true, result, "Found mum");
+        assertEquals("mum", d.getWord().getEn(), "Found mum");
     }
     
     @Test
+    @DisplayName("Search exact match")
     public void testSearchExactMatch() throws DictionaryException {    
         IDictionary d = new DictionaryImpl();
         
@@ -279,32 +285,33 @@ public class DictionaryTest {
         
         /* CZ */
         boolean result = d.searchInCurrentCategory("tatínek", false, true);
-        assertEquals("Found tatínek:", true, result);
-        assertEquals("Found tatínek:", "tatínek", d.getWord().getCz());
+        assertEquals(true, result, "Found tatínek");
+        assertEquals("tatínek", d.getWord().getCz(), "Found tatínek");
         
         result = d.searchInCurrentCategory("tatínek", false, true);
-        assertEquals("Found Tatínek:", true, result);
-        assertEquals("Found Tatínek:", "Tatínek", d.getWord().getCz());
+        assertEquals(true, result, "Found Tatínek");
+        assertEquals("Tatínek", d.getWord().getCz(), "Found Tatínek");
         
         result = d.searchInCurrentCategory("tatínek", false, true);
-        assertEquals("Found tatínek:", true, result);
-        assertEquals("Found tatínek:", "tatínek", d.getWord().getCz());
+        assertEquals(true, result, "Found tatínek");
+        assertEquals("tatínek", d.getWord().getCz(), "Found tatínek");
         
         /* EN */
         result = d.searchInCurrentCategory("mum", false, true);
-        assertEquals("Found mum:", true, result);
-        assertEquals("Found mum:", "mum", d.getWord().getEn());
+        assertEquals(true, result, "Found mum");
+        assertEquals("mum", d.getWord().getEn(), "Found mum");
         
         result = d.searchInCurrentCategory("mum", false, true);
-        assertEquals("Found Mum:", true, result);
-        assertEquals("Found Mum:", "Mum", d.getWord().getEn());
+        assertEquals(true, result, "Found Mum");
+        assertEquals("Mum", d.getWord().getEn(), "Found Mum");
         
         result = d.searchInCurrentCategory("mum", false, true);
-        assertEquals("Found mum:", true, result);
-        assertEquals("Found mum:", "mum", d.getWord().getEn());
+        assertEquals(true, result, "Found mum");
+        assertEquals("mum", d.getWord().getEn(), "Found mum");
     }
 
     @Test
+    @DisplayName("Search not exact match")
     public void testSearchNotExactMatch() throws DictionaryException {    
         IDictionary d = new DictionaryImpl();
         
@@ -318,37 +325,37 @@ public class DictionaryTest {
         
         /* CZ */
         boolean result = d.searchInCurrentCategory("tatínek", false, false);
-        assertEquals("Found tatínek:", true, result);
-        assertEquals("Found tatínek:", "tatínek", d.getWord().getCz());
+        assertEquals(true, result, "Found tatínek");
+        assertEquals("tatínek", d.getWord().getCz(), "Found tatínek");
         
         result = d.searchInCurrentCategory("tatínek", false, false);
-        assertEquals("Found Tatínek:", true, result);
-        assertEquals("Found Tatínek:", "Tatínek", d.getWord().getCz());
+        assertEquals(true, result, "Found Tatínek");
+        assertEquals("Tatínek", d.getWord().getCz(), "Found Tatínek");
         
         result = d.searchInCurrentCategory("tatínek", false, false);
-        assertEquals("Found Tatínek:", true, result);
-        assertEquals("Found Tatínek:", "Tatínek je bílý.", d.getWord().getCz());
+        assertEquals(true, result, "Found Tatínek");
+        assertEquals("Tatínek je bílý.", d.getWord().getCz(), "Found Tatínek");
         
         result = d.searchInCurrentCategory("tatínek", false, false);
-        assertEquals("Found tatínek:", true, result);
-        assertEquals("Found tatínek:", "tatínek", d.getWord().getCz());
+        assertEquals(true, result, "Found tatínek");
+        assertEquals("tatínek", d.getWord().getCz(), "Found tatínek");
         
         /* EN */
         result = d.searchInCurrentCategory("mum", false, false);
-        assertEquals("Found mum:", true, result);
-        assertEquals("Found mum:", "mum", d.getWord().getEn());
+        assertEquals(true, result, "Found mum");
+        assertEquals("mum", d.getWord().getEn(), "Found mum");
         
         result = d.searchInCurrentCategory("mum", false, false);
-        assertEquals("Found Mum:", true, result);
-        assertEquals("Found Mum:", "Mum", d.getWord().getEn());
+        assertEquals(true, result, "Found Mum");
+        assertEquals("Mum", d.getWord().getEn(), "Found Mum");
         
         result = d.searchInCurrentCategory("mum", false, false);
-        assertEquals("Found Mum:", true, result);
-        assertEquals("Found Mum:", "Mum is red.", d.getWord().getEn());
+        assertEquals(true, result, "Found Mum");
+        assertEquals("Mum is red.", d.getWord().getEn(), "Found Mum");
         
         result = d.searchInCurrentCategory("mum", false, false);
-        assertEquals("Found mum:", true, result);
-        assertEquals("Found mum:", "mum", d.getWord().getEn());
+        assertEquals(true, result, "Found mum");
+        assertEquals("mum", d.getWord().getEn(), "Found mum");
     }
 
 }
