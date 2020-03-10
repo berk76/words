@@ -1,6 +1,6 @@
 # Words
 
-[![Build Status](https://travis-ci.com/berk76/words.svg?branch=master)](https://travis-ci.com/berk76/words)
+![build](https://github.com/berk76/words/workflows/build/badge.svg)
 
 Words is small vocabulary I made for my little schoolgirl. It enables you put in foreign words and sentences, categorize them and download voice pronunciation. 
 
