@@ -47,6 +47,7 @@ public class Mp3Creator {
                 Thread.sleep(500);
             } catch (InterruptedException ex) {
                 Logger.getLogger(Mp3Creator.class.getName()).log(Level.SEVERE, null, ex);
+                Thread.currentThread().interrupt();
             }
             resp = HttpUtils.sendGet(endpoint + "/sounds/" + id);
         } while (resp.getString("status").equals("Pending"));

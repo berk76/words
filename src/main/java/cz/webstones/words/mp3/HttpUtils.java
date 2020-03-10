@@ -158,11 +158,11 @@ public class HttpUtils {
                 int n;
                 InputStream input = conn.getInputStream();
                
-                FileOutputStream output = new FileOutputStream(f);
-                while ((n = input.read(buffer)) != -1) {
-                    output.write(buffer, 0, n);
+                try (FileOutputStream output = new FileOutputStream(f)) {
+                    while ((n = input.read(buffer)) != -1) {
+                        output.write(buffer, 0, n);
+                    }
                 }
-                output.close();
             } else {
                 throw new Mp3CreatorException("Request to server returned " + responseCode);
             }

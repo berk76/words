@@ -49,6 +49,7 @@ public class DictionaryImpl implements IDictionary {
     private DictionaryStateEnum subjectState = DictionaryStateEnum.stateNoChabge;
     private int current = 0;
     private String currentCategory;
+    private Random rand = new Random();
     
     public DictionaryImpl() throws DictionaryException {
         super();
@@ -91,62 +92,61 @@ public class DictionaryImpl implements IDictionary {
         dictAll = new ArrayList<WordDto>();
         SimpleDateFormat sdf = new SimpleDateFormat(getSetup().getDictionaryDateFormat());
 
-        InputStream is = new FileInputStream(getSetup().getFullDictionaryFilePath());
-        BufferedReader reader = new BufferedReader(new InputStreamReader(is, encoding));
-
-        boolean first = true;
-        String line;
-        while ((line = reader.readLine()) != null) {
-
-            if (first) {
-                Service.bomPresent = false;
-                if (Service.isUTF8BOMPresent(line)) {
-                    line = Service.removeUTF8BOM(line);
-                    Service.bomPresent = true;
+        try (InputStream is = new FileInputStream(getSetup().getFullDictionaryFilePath()); 
+                BufferedReader reader = new BufferedReader(new InputStreamReader(is, encoding))) {
+            
+            boolean first = true;
+            String line;
+            while ((line = reader.readLine()) != null) {
+                
+                if (first) {
+                    Service.bomPresent = false;
+                    if (Service.isUTF8BOMPresent(line)) {
+                        line = Service.removeUTF8BOM(line);
+                        Service.bomPresent = true;
+                    }
+                    first = false;
                 }
-                first = false;
-            }
-
-            String arr[] = line.split(getSetup().getDictionarySeparator());
-
-            if (arr.length < 2) {
-                continue;
-            }
-
-            WordDto w = new WordDto();
-            w.setEn(arr[0]);
-            w.setCz(arr[1]);
-            w.setCategory(arr[2]);
-
-            if (arr.length > 3) {
-                w.setGoodHits(Integer.valueOf(arr[3]));
-            }
-
-            if (arr.length > 4) {
-                try {
-                    w.setLastGoodHit(sdf.parse(arr[4]));
-                } catch (ParseException ex) {
-                    w.setLastGoodHit(null);
+                
+                String arr[] = line.split(getSetup().getDictionarySeparator());
+                
+                if (arr.length < 2) {
+                    continue;
                 }
-            }
-
-            if (arr.length > 5) {
-                w.setWrongHits(Integer.valueOf(arr[5]));
-            }
-
-            if (arr.length > 6) {
-                try {
-                    w.setLastWrongHit(sdf.parse(arr[6]));
-                } catch (ParseException ex) {
-                    w.setLastWrongHit(null);
+                
+                WordDto w = new WordDto();
+                w.setEn(arr[0]);
+                w.setCz(arr[1]);
+                w.setCategory(arr[2]);
+                
+                if (arr.length > 3) {
+                    w.setGoodHits(Integer.valueOf(arr[3]));
                 }
+                
+                if (arr.length > 4) {
+                    try {
+                        w.setLastGoodHit(sdf.parse(arr[4]));
+                    } catch (ParseException ex) {
+                        w.setLastGoodHit(null);
+                    }
+                }
+                
+                if (arr.length > 5) {
+                    w.setWrongHits(Integer.valueOf(arr[5]));
+                }
+                
+                if (arr.length > 6) {
+                    try {
+                        w.setLastWrongHit(sdf.parse(arr[6]));
+                    } catch (ParseException ex) {
+                        w.setLastWrongHit(null);
+                    }
+                }
+                
+                dictAll.add(w);
+                
             }
-
-            dictAll.add(w);
-
         }
-        reader.close();
-        is.close();
         
         setCategory(IDictionary.allCategoryName);
         updateCategoryList();
@@ -162,19 +162,15 @@ public class DictionaryImpl implements IDictionary {
             throws FileNotFoundException, UnsupportedEncodingException, IOException {
 
         SimpleDateFormat sdf = new SimpleDateFormat(getSetup().getDictionaryDateFormat());
-        FileOutputStream fos = null;
-        OutputStreamWriter osw = null;
-        BufferedWriter bw = null;
 
-        try {
-            fos = new FileOutputStream(getSetup().getFullDictionaryFilePath());
-            osw = new OutputStreamWriter(fos, encoding);
-            bw = new BufferedWriter(osw);
-
+        try (FileOutputStream fos = new FileOutputStream(getSetup().getFullDictionaryFilePath()); 
+                OutputStreamWriter osw = new OutputStreamWriter(fos, encoding); 
+                BufferedWriter bw = new BufferedWriter(osw)) {
+            
             if (Service.bomPresent) {
                 bw.write(Service.UTF8_BOM);
             }
-
+            
             String separator = getSetup().getDictionarySeparator();
             
             for (WordDto w : dictAll) {
@@ -187,10 +183,6 @@ public class DictionaryImpl implements IDictionary {
                 bw.write(Service.cleanAndAddSeparator(((w.getLastWrongHit() != null) ? sdf.format(w.getLastWrongHit()) : ""), separator));
                 bw.newLine();
             }
-        } finally {
-            bw.close();
-            osw.close();
-            fos.close();
         }
     }
     
@@ -446,7 +438,6 @@ public class DictionaryImpl implements IDictionary {
     @Override
     public void setCategory(String category) {
         dictFil = new ArrayList<WordDto>();
-        Random rand = new Random();
 
         for (WordDto w : dictAll) {
             if (category.equals(IDictionary.allCategoryName) || category.equals(w.getCategory())) {
