@@ -1,6 +1,6 @@
 # Words
 
-![build](https://github.com/berk76/words/workflows/build/badge.svg)
+![build](https://github.com/berk76/words/workflows/build/badge.svg) [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=berk76_words&metric=alert_status)](https://sonarcloud.io/dashboard?id=berk76_words)  
 
 Words is small vocabulary I made for my little schoolgirl. It enables you put in foreign words and sentences, categorize them and download voice pronunciation. 
 
