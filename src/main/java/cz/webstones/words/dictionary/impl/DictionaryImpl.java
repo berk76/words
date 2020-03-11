@@ -35,6 +35,7 @@ import java.util.Locale;
 import java.util.Random;
 import cz.webstones.words.dictionary.IDictionary;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -368,9 +369,12 @@ public class DictionaryImpl implements IDictionary {
         WordDto w = getWord();
         
         File f = new File(w.getMp3FilenameEn(setup.getFullMp3Path()));
-        if (!f.delete()) {
-            LOGGER.log(Level.WARNING, "Cannot delete file {}", f.toString());
+        try {
+            Files.delete(f.toPath());
+        } catch (IOException ex) {
+            LOGGER.log(Level.SEVERE, null, ex);
         }
+        
         dictFil.remove(w);
         dictAll.remove(w);
         
