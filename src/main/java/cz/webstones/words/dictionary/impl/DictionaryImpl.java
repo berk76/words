@@ -9,7 +9,6 @@ import cz.webstones.words.LanguageDto;
 import cz.webstones.words.Service;
 import cz.webstones.words.Setup;
 import static cz.webstones.words.dictionary.IDictionary.allCategoryName;
-import static cz.webstones.words.dictionary.IDictionary.encoding;
 import cz.webstones.words.dictionary.DictionaryException;
 import cz.webstones.words.dictionary.DictionaryStateEnum;
 import cz.webstones.words.dictionary.IObserver;
@@ -35,6 +34,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Random;
 import cz.webstones.words.dictionary.IDictionary;
+import java.nio.charset.StandardCharsets;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -94,11 +94,11 @@ public class DictionaryImpl implements IDictionary {
 
         setup = s;
         
-        dictAll = new ArrayList<WordDto>();
+        dictAll = new ArrayList<>();
         SimpleDateFormat sdf = new SimpleDateFormat(getSetup().getDictionaryDateFormat());
 
         try (InputStream is = new FileInputStream(getSetup().getFullDictionaryFilePath()); 
-                BufferedReader reader = new BufferedReader(new InputStreamReader(is, encoding))) {
+                BufferedReader reader = new BufferedReader(new InputStreamReader(is, StandardCharsets.UTF_8))) {
             
             boolean first = true;
             String line;
@@ -169,7 +169,7 @@ public class DictionaryImpl implements IDictionary {
         SimpleDateFormat sdf = new SimpleDateFormat(getSetup().getDictionaryDateFormat());
 
         try (FileOutputStream fos = new FileOutputStream(getSetup().getFullDictionaryFilePath()); 
-                OutputStreamWriter osw = new OutputStreamWriter(fos, encoding); 
+                OutputStreamWriter osw = new OutputStreamWriter(fos, StandardCharsets.UTF_8); 
                 BufferedWriter bw = new BufferedWriter(osw)) {
             
             if (Service.bomPresent) {

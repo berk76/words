@@ -25,6 +25,7 @@ import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.filechooser.FileView;
 import cz.webstones.words.dictionary.IDictionary;
+import java.nio.file.Files;
 
 /**
  *
@@ -878,9 +879,11 @@ public class Main extends javax.swing.JFrame implements IObserver {
         
         if (!oldWordPath.equals(w.getMp3FilenameEn(dict.getSetup().getFullMp3Path()))) {
             File f = new File(oldWordPath);
-             if (!f.delete()) {
-                 LOGGER.log(Level.WARNING, "Cannot delete file {}", f);
-             }
+            try {
+                Files.delete(f.toPath());
+            } catch (IOException ex) {
+                LOGGER.log(Level.SEVERE, null, ex);
+            }
             play(w);
         }
     }

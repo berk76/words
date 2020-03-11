@@ -17,6 +17,8 @@ import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Properties;
 import java.util.logging.Level;
@@ -43,11 +45,9 @@ public class Service {
         File f = new File(result + File.separator + APP_DATA_DIR + "test.txt");
         try {
             if (!f.createNewFile()) {
-                LOGGER.log(Level.WARNING, "Cannot create file {}", f.toString());
+                LOGGER.log(Level.WARNING, "Cannot create file {}", f);
             }
-            if (!f.delete()) {
-                LOGGER.log(Level.WARNING, "Cannot delete file {}", f.toString());
-            }
+            Files.delete(f.toPath());
             return result;
         } catch (IOException ex) {
             LOGGER.log(Level.SEVERE, null, ex);
@@ -58,7 +58,7 @@ public class Service {
         f = new File(result);
         if (!f.exists()) {
             if (!f.mkdir()) {
-                LOGGER.log(Level.WARNING, "Cannot create directory {}", f.toString());
+                LOGGER.log(Level.WARNING, "Cannot create directory {}", f);
             }
         }
         return result;
@@ -84,7 +84,7 @@ public class Service {
             f = new File(result);
             if (!f.isDirectory()) {
                 if (!f.mkdir()) {
-                    LOGGER.log(Level.WARNING, "Cannot create directory {}", f.toString());
+                    LOGGER.log(Level.WARNING, "Cannot create directory {}", f);
                 }
             }
 
@@ -92,7 +92,7 @@ public class Service {
             f = new File(getDataDir() + File.separator + SETUP_FNAME);
             if (f.canRead()) {
                 if (!f.renameTo(new File(getDataDir() + File.separator + "Data" + File.separator + SETUP_FNAME))) {
-                    LOGGER.log(Level.WARNING, "Cannot rename file {}", f.toString());
+                    LOGGER.log(Level.WARNING, "Cannot rename file {}", f);
                 }
             }
         }
@@ -211,7 +211,7 @@ public class Service {
         File f = new File(dir);
         if (!f.isDirectory()) {
             if (!f.mkdir()) {
-                LOGGER.log(Level.WARNING, "Cannot create directory {}", f.toString());
+                LOGGER.log(Level.WARNING, "Cannot create directory {}", f);
             }
         }
     }
@@ -220,7 +220,7 @@ public class Service {
         File f = new File(file);
         if (!f.isFile()) {
             if (!f.createNewFile()){
-                LOGGER.log(Level.WARNING, "Cannot create file {}", f.toString());
+                LOGGER.log(Level.WARNING, "Cannot create file {}", f);
             }
         }
     }
@@ -312,7 +312,7 @@ public class Service {
         Class cls = Setup.class;
         ClassLoader cLoader = cls.getClassLoader();
         try (InputStream is = cLoader.getResourceAsStream("languages.txt");
-                BufferedReader reader = new BufferedReader(new InputStreamReader(is, "UTF-8"))) {
+                BufferedReader reader = new BufferedReader(new InputStreamReader(is, StandardCharsets.UTF_8))) {
             String line;
             while ((is != null) && ((line = reader.readLine()) != null)) {
                 String a[] = line.split(";");

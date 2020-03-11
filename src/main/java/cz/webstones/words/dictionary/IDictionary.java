@@ -19,7 +19,6 @@ import java.util.ArrayList;
 public interface IDictionary {
     
     public static final String allCategoryName = "All";
-    public static final String encoding = "UTF-8";
     
     /* Observer subject interface */
     
