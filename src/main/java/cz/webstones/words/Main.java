@@ -31,6 +31,8 @@ import cz.webstones.words.dictionary.IDictionary;
  * @author jaroslav_b
  */
 public class Main extends javax.swing.JFrame implements IObserver {
+    
+    private static final Logger LOGGER = Logger.getLogger(Main.class.getName());
 
     private IDictionary dict;
     private AddCategoryDialog addCatDialog;
@@ -79,7 +81,7 @@ public class Main extends javax.swing.JFrame implements IObserver {
 
         initComponents();
         this.setLocationRelativeTo(null);
-        setTitleText(Service.version, "", null);
+        setTitleText(Service.VERSION, "", null);
         jLabel1.setText("");
         jLabel2.setText("");
         jLabel3.setText("");
@@ -139,7 +141,7 @@ public class Main extends javax.swing.JFrame implements IObserver {
 
             case stateDictionaryLoaded:
                 try {
-                    this.setTitleText(Service.version, dict.getDictionaryName(), dict.getLanguage());
+                    this.setTitleText(Service.VERSION, dict.getDictionaryName(), dict.getLanguage());
                 } catch (IOException ex) {
                     errorDialog.showError("Error: Cannot get language.", ex);
                 }
@@ -876,7 +878,9 @@ public class Main extends javax.swing.JFrame implements IObserver {
         
         if (!oldWordPath.equals(w.getMp3FilenameEn(dict.getSetup().getFullMp3Path()))) {
             File f = new File(oldWordPath);
-            f.delete();
+             if (!f.delete()) {
+                 LOGGER.log(Level.WARNING, "Cannot delete file {}", f);
+             }
             play(w);
         }
     }

@@ -14,12 +14,16 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import cz.webstones.words.dictionary.IDictionary;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
  * @author jaroslav_b
  */
 public class AboutDialog extends JEscapeableDialog implements IObserver {
+    
+    private static final Logger LOGGER = Logger.getLogger(AboutDialog.class.getName());
     
     private final String urlGitHub = "https://github.com/berk76/words/wiki";
     private final String urlTwitter = "https://twitter.com/WordsVocabulary";
@@ -38,7 +42,7 @@ public class AboutDialog extends JEscapeableDialog implements IObserver {
         dict.attach(this);
         errorDialog = new ErrorDialog(parent, true);
 
-        jLabel1.setText(Service.version);
+        jLabel1.setText(Service.VERSION);
         jLabel4.setText(urlGitHub);
         jLabel4.setForeground(Color.BLUE.darker());
         jLabel4.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
@@ -48,7 +52,7 @@ public class AboutDialog extends JEscapeableDialog implements IObserver {
                 try {
                     Desktop.getDesktop().browse(new URI(urlGitHub));
                 } catch (IOException | URISyntaxException e1) {
-                    e1.printStackTrace();
+                    LOGGER.log(Level.SEVERE, null, e1);
                 }
             }
 
@@ -72,7 +76,7 @@ public class AboutDialog extends JEscapeableDialog implements IObserver {
                 try {
                     Desktop.getDesktop().browse(new URI(urlTwitter));
                 } catch (IOException | URISyntaxException e1) {
-                    e1.printStackTrace();
+                    LOGGER.log(Level.SEVERE, null, e1);
                 }
             }
 

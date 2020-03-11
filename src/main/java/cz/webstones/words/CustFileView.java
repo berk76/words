@@ -23,7 +23,7 @@ public class CustFileView extends FileView {
     public Icon getIcon(File f) {
         
         if (f.isDirectory()) {
-            File fi = new File(f.getAbsoluteFile() + File.separator + Service.setupFName);
+            File fi = new File(f.getAbsoluteFile() + File.separator + Service.SETUP_FNAME);
             if (fi.exists()) {
                 return bookIcon;
             }

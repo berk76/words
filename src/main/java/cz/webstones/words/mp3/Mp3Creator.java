@@ -14,6 +14,8 @@ import org.json.JSONObject;
  */
 public class Mp3Creator {
     
+    private static final Logger LOGGER = Logger.getLogger(Mp3Creator.class.getName());
+    
     /* https://soundoftext.com/docs */
     private static String endpoint = "https://api.soundoftext.com";
     private static boolean trustedInstalled = false;
@@ -46,7 +48,7 @@ public class Mp3Creator {
             try {
                 Thread.sleep(500);
             } catch (InterruptedException ex) {
-                Logger.getLogger(Mp3Creator.class.getName()).log(Level.SEVERE, null, ex);
+                LOGGER.log(Level.SEVERE, null, ex);
                 Thread.currentThread().interrupt();
             }
             resp = HttpUtils.sendGet(endpoint + "/sounds/" + id);

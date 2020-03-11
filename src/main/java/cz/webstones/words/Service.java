@@ -19,36 +19,47 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Properties;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
  * @author jaroslav_b
  */
 public class Service {
+    
+    private static final Logger LOGGER = Logger.getLogger(Service.class.getName());
 
-    public static final String version = "Words 1.10.0 snapshot";
-    public static final String setupFName = "setup.properties";
-    private static final String historyFName = "history.properties";
-    private static final String appDataDir = "WordsData";
+    public static final String VERSION = "Words 1.10.0 snapshot";
+    public static final String SETUP_FNAME = "setup.properties";
+    private static final String HISTORY_FNAME = "history.properties";
+    private static final String APP_DATA_DIR = "WordsData";
 
     
     private static String getDataDir() {
-
+        
         //Is current dir writable?
         String result = System.getProperty("user.dir");
-        File f = new File(result + File.separator + appDataDir + "test.txt");
+        File f = new File(result + File.separator + APP_DATA_DIR + "test.txt");
         try {
-            f.createNewFile();
-            f.delete();
+            if (!f.createNewFile()) {
+                LOGGER.log(Level.WARNING, "Cannot create file {}", f.toString());
+            }
+            if (!f.delete()) {
+                LOGGER.log(Level.WARNING, "Cannot delete file {}", f.toString());
+            }
             return result;
-        } catch (Exception ex) {
+        } catch (IOException ex) {
+            LOGGER.log(Level.SEVERE, null, ex);
         }
 
         //If not use local app data dir
-        result = System.getenv("LOCALAPPDATA") + File.separator + appDataDir;
+        result = System.getenv("LOCALAPPDATA") + File.separator + APP_DATA_DIR;
         f = new File(result);
         if (!f.exists()) {
-            f.mkdir();
+            if (!f.mkdir()) {
+                LOGGER.log(Level.WARNING, "Cannot create directory {}", f.toString());
+            }
         }
         return result;
     }
@@ -56,20 +67,15 @@ public class Service {
     public static String getHistory() throws IOException {
         String result = null;
         Properties p = new Properties();
-        String path = getDataDir() + File.separator + historyFName;
+        String path = getDataDir() + File.separator + HISTORY_FNAME;
         File f = new File(path);
         
         if (f.canRead()) {
-            InputStream is = null;
-            try {
-                is = new FileInputStream(f);
+            try (InputStream is = new FileInputStream(f)) {
                 p.load(is);
                 result = p.getProperty("dictPath");
             } catch(Exception ex) {
-                ex.printStackTrace();
-            } finally {
-                if (is != null)
-                    is.close();
+                LOGGER.log(Level.SEVERE, null, ex);
             }
         }
         
@@ -77,13 +83,17 @@ public class Service {
             result = getDataDir() + File.separator + "Data";
             f = new File(result);
             if (!f.isDirectory()) {
-                f.mkdir();
+                if (!f.mkdir()) {
+                    LOGGER.log(Level.WARNING, "Cannot create directory {}", f.toString());
+                }
             }
 
             // Fix setup.properties location from previous version
-            f = new File(getDataDir() + File.separator + setupFName);
+            f = new File(getDataDir() + File.separator + SETUP_FNAME);
             if (f.canRead()) {
-                f.renameTo(new File(getDataDir() + File.separator + "Data" + File.separator + setupFName));
+                if (!f.renameTo(new File(getDataDir() + File.separator + "Data" + File.separator + SETUP_FNAME))) {
+                    LOGGER.log(Level.WARNING, "Cannot rename file {}", f.toString());
+                }
             }
         }
         
@@ -92,20 +102,15 @@ public class Service {
     
     public static void saveHistory(String dictPath) throws IOException {
         Properties p = new Properties();
-        String path = getDataDir() + File.separator + historyFName;
+        String path = getDataDir() + File.separator + HISTORY_FNAME;
         File f = new File(path);
         
         p.setProperty("dictPath", dictPath);
         
-        OutputStream os = null;
-        try {
-            os = new FileOutputStream(f);
+        try (OutputStream os = new FileOutputStream(f)) {
             p.store(os, null);
         } catch(Exception ex) {
-            ex.printStackTrace();
-        } finally {
-            if (os != null)
-                os.close();
+            LOGGER.log(Level.SEVERE, null, ex);
         }
     }
     
@@ -114,7 +119,7 @@ public class Service {
         
         try {
             /* Load user setup */
-            File s = new File(dictPath + File.separator + setupFName);
+            File s = new File(dictPath + File.separator + SETUP_FNAME);
             if (s.canRead()) {
                 setup = loadSetup(s, dictPath, setup);
             }
@@ -127,14 +132,14 @@ public class Service {
                 saveSetup(setup);
             }
         } catch (IOException ex) {
-            ex.printStackTrace();
+            LOGGER.log(Level.SEVERE, null, ex);
         }
 
         return setup;
     }
 
     private static Setup loadSetup(File f, String dictPath, Setup setup) throws IOException {
-        InputStream is = null;
+        InputStream is;
         Properties props = new Properties();
 
         if (setup == null) {
@@ -186,9 +191,8 @@ public class Service {
     }
 
     public static void saveSetup(Setup setup) throws IOException {
-        OutputStream output = null;
         Properties props = new Properties();
-        File f = new File(setup.getDataDir() + File.separator + setupFName);
+        File f = new File(setup.getDataDir() + File.separator + SETUP_FNAME);
 
         props.setProperty("data.dir", setup.getDataDir());
         props.setProperty("mp3.dir", setup.getMp3Dir());
@@ -198,31 +202,26 @@ public class Service {
         props.setProperty("dictionary.date.format", setup.getDictionaryDateFormat());
         props.setProperty("language.id", setup.getLanguage());
 
-        try {
-            output = new FileOutputStream(f);
+        try (OutputStream output = new FileOutputStream(f)) {
             props.store(output, null);
-        } finally {
-            if (output != null) {
-                try {
-                    output.close();
-                } catch (IOException ex) {
-                    ex.printStackTrace();
-                }
-            }
         }
     }
 
     public static void checkOrCreateDirectory(String dir) {
         File f = new File(dir);
         if (!f.isDirectory()) {
-            f.mkdir();
+            if (!f.mkdir()) {
+                LOGGER.log(Level.WARNING, "Cannot create directory {}", f.toString());
+            }
         }
     }
 
     public static void checkOrCreateFile(String file) throws IOException {
         File f = new File(file);
         if (!f.isFile()) {
-            f.createNewFile();
+            if (!f.createNewFile()){
+                LOGGER.log(Level.WARNING, "Cannot create file {}", f.toString());
+            }
         }
     }
 
@@ -308,27 +307,24 @@ public class Service {
     }
     
     public static ArrayList<LanguageDto> getLanguageList() throws UnsupportedEncodingException, IOException {
-        ArrayList<LanguageDto> result = new ArrayList<LanguageDto>();
+        ArrayList<LanguageDto> result = new ArrayList<>();
 
         Class cls = Setup.class;
         ClassLoader cLoader = cls.getClassLoader();
-        InputStream is = cLoader.getResourceAsStream("languages.txt");
-        BufferedReader reader = new BufferedReader(new InputStreamReader(is, "UTF-8"));
-
-        String line;
-        while ((is != null) && ((line = reader.readLine()) != null)) {
-            String a[] = line.split(";");
-            if (a.length == 2) {
-                LanguageDto l = new LanguageDto();
-                l.setCode(a[0]);
-                l.setName(a[1]);
-                result.add(l);
+        try (InputStream is = cLoader.getResourceAsStream("languages.txt");
+                BufferedReader reader = new BufferedReader(new InputStreamReader(is, "UTF-8"))) {
+            String line;
+            while ((is != null) && ((line = reader.readLine()) != null)) {
+                String a[] = line.split(";");
+                if (a.length == 2) {
+                    LanguageDto l = new LanguageDto();
+                    l.setCode(a[0]);
+                    l.setName(a[1]);
+                    result.add(l);
+                }
             }
         }
-        reader.close();
-        if (is != null) {
-            is.close();
-        }
+
         
         return result;
     }

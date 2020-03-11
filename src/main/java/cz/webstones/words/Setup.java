@@ -4,11 +4,18 @@
  */
 package cz.webstones.words;
 
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 /**
  *
  * @author jaroslav_b
  */
 public class Setup {
+    
+    private static final Logger LOGGER = Logger.getLogger(Setup.class.getName());
+    
     private String dataDir;
     private String mp3Dir;
     private String directoryFile;
@@ -93,8 +100,8 @@ public class Setup {
         try {
             Service.checkOrCreateDirectory(getDataDir());
             Service.checkOrCreateFile(result);
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (IOException e) {
+            LOGGER.log(Level.SEVERE, null, e);
         }
         return result;
     }
@@ -104,8 +111,8 @@ public class Setup {
         try {
             Service.checkOrCreateDirectory(getDataDir());
             Service.checkOrCreateFile(result);
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (IOException e) {
+            LOGGER.log(Level.SEVERE, null, e);
         }
         return result;
     }
@@ -116,7 +123,7 @@ public class Setup {
             Service.checkOrCreateDirectory(getDataDir());
             Service.checkOrCreateDirectory(result);
         } catch (Exception e) {
-            e.printStackTrace();
+            LOGGER.log(Level.SEVERE, null, e);
         }
         return result;
     }
