@@ -18,16 +18,16 @@ public class Mp3Creator {
     
     /* https://soundoftext.com/docs */
     private static String endpoint = "https://api.soundoftext.com";
-    private static boolean trustedInstalled = false;
+    //private static boolean trustedInstalled = false;
     
     
     public static void createMp3(String text, String lang, String file) throws Mp3CreatorException {
         
         /* Install trusted manager to avoid problems with https certificate */
-        if (!trustedInstalled) {
-            HttpUtils.installTrustManager();
-            trustedInstalled = true;
-        }
+        //if (!trustedInstalled) {
+        //    HttpUtils.installTrustManager();
+        //    trustedInstalled = true;
+        //}
         
         /* Send text and get voice ID */
         JSONObject object = new JSONObject();

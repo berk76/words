@@ -14,10 +14,6 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import javax.net.ssl.HttpsURLConnection;
-import javax.net.ssl.SSLContext;
-import javax.net.ssl.TrustManager;
-import javax.net.ssl.X509TrustManager;
 import org.json.JSONObject;
 
 /**
@@ -26,7 +22,7 @@ import org.json.JSONObject;
  */
 public class HttpUtils {
 
-    
+    /*
     public static void installTrustManager() throws Mp3CreatorException {
         TrustManager[] trustAllCerts = new TrustManager[]{
             new X509TrustManager() {
@@ -56,7 +52,7 @@ public class HttpUtils {
             throw new Mp3CreatorException(ex.getMessage());
         }
     }
-    
+    */
     
     public static JSONObject sendPost(String requestUrl, JSONObject requestData) throws Mp3CreatorException {
         JSONObject result = null;
