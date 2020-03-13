@@ -251,7 +251,6 @@ public class Service {
     // http://www.rgagnon.com/javadetails/java-handle-utf8-file-with-bom.html
     // FEFF because this is the Unicode char represented by the UTF-8 byte order mark (EF BB BF).
     public static final String UTF8_BOM = "\uFEFF";
-    public static boolean bomPresent = false;
 
     public static boolean isUTF8BOMPresent(String s) {
         boolean result = false;

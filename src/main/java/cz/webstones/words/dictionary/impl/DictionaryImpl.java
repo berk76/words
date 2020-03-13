@@ -56,6 +56,7 @@ public class DictionaryImpl implements IDictionary {
     private int current = 0;
     private String currentCategory;
     private Random rand = new Random();
+    private boolean bomPresent = false;
     
     public DictionaryImpl() throws DictionaryException {
         super();
@@ -106,10 +107,10 @@ public class DictionaryImpl implements IDictionary {
             while ((line = reader.readLine()) != null) {
                 
                 if (first) {
-                    Service.bomPresent = false;
+                    bomPresent = false;
                     if (Service.isUTF8BOMPresent(line)) {
                         line = Service.removeUTF8BOM(line);
-                        Service.bomPresent = true;
+                        bomPresent = true;
                     }
                     first = false;
                 }
@@ -173,7 +174,7 @@ public class DictionaryImpl implements IDictionary {
                 OutputStreamWriter osw = new OutputStreamWriter(fos, StandardCharsets.UTF_8); 
                 BufferedWriter bw = new BufferedWriter(osw)) {
             
-            if (Service.bomPresent) {
+            if (bomPresent) {
                 bw.write(Service.UTF8_BOM);
             }
             
