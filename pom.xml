@@ -8,11 +8,12 @@
     <packaging>jar</packaging>
 
     <name>Words</name>
-    <url>http://maven.apache.org</url>
+    <url>https://github.com/berk76/words/wiki</url>
     
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <targetJdk>1.6</targetJdk>
+        <maven.compiler.source>8</maven.compiler.source>
+        <maven.compiler.target>8</maven.compiler.target>
         <sonar.projectKey>berk76_words</sonar.projectKey>
         <sonar.organization>berk76</sonar.organization>
         <sonar.host.url>https://sonarcloud.io</sonar.host.url>
