@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package cz.webstones.words.mp3;
 
 import java.io.BufferedReader;
@@ -9,120 +5,77 @@ import java.io.BufferedWriter;
 import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
+import org.json.JSONException;
 import org.json.JSONObject;
 
-/**
- *
- * @author jaroslav_b
- */
+
 public class HttpUtils {
-
-    /*
-    public static void installTrustManager() throws Mp3CreatorException {
-        TrustManager[] trustAllCerts = new TrustManager[]{
-            new X509TrustManager() {
-                @Override
-                public java.security.cert.X509Certificate[] getAcceptedIssuers() {
-                    return null;
-                }
-
-                @Override
-                public void checkClientTrusted(java.security.cert.X509Certificate[] certs, String authType) {
-                    //No need to implement.
-                }
-
-                @Override
-                public void checkServerTrusted(java.security.cert.X509Certificate[] certs, String authType) {
-                    //No need to implement.
-                }
-            }
-        };
-
-        // Install the all-trusting trust manager
-        try {
-            SSLContext sc = SSLContext.getInstance("TLSv1.2");
-            sc.init(null, trustAllCerts, new java.security.SecureRandom());
-            HttpsURLConnection.setDefaultSSLSocketFactory(sc.getSocketFactory());
-        } catch (Exception ex) {
-            throw new Mp3CreatorException(ex.getMessage());
-        }
-    }
-    */
+    
+    private static final int GET = 0;
+    private static final int POST = 1;
+    
+    private HttpUtils() {}
+    
     
     public static JSONObject sendPost(String requestUrl, JSONObject requestData) throws Mp3CreatorException {
-        JSONObject result = null;
-        String output;
-        HttpURLConnection conn = null;
-        
-        try {
-            URL url = new URL(requestUrl);
-            conn = (HttpURLConnection) url.openConnection();
-            conn.setRequestProperty("Content-Type", "application/json; charset=utf-8");
-            conn.setRequestMethod("POST");
-            conn.setDoOutput(true);
-
-            DataOutputStream wr = new DataOutputStream(conn.getOutputStream());
-            BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(wr, "UTF-8"));
-            writer.write(requestData.toString());
-            writer.close();
-
-            int responseCode = conn.getResponseCode();
-            if (responseCode == HttpURLConnection.HTTP_OK) {
-                BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-                StringBuilder response = new StringBuilder();
-                while ((output = reader.readLine()) != null) {
-                    response.append(output);
-                }
-                reader.close();
-                result = new JSONObject(response.toString());
-            } else {
-                throw new Mp3CreatorException("Request to server returned " + responseCode);
-            }
-            
-        } catch (Exception ex) {
-            throw new Mp3CreatorException(ex.getMessage());
-        } finally {
-            if (conn != null) {
-                conn.disconnect();
-                conn = null;
-            }
-        }
-        
-        return result;
+        return send(HttpUtils.POST, requestUrl, requestData);
     }
     
     
     public static JSONObject sendGet(String requestUrl) throws Mp3CreatorException {
+        return send(HttpUtils.GET, requestUrl, new JSONObject());
+    }
+    
+    
+    private static JSONObject send(int method, String requestUrl, JSONObject requestData) throws Mp3CreatorException {
         JSONObject result = null;
-        
         String output;
         HttpURLConnection conn = null;
         
         try {
             URL url = new URL(requestUrl);
             conn = (HttpURLConnection) url.openConnection();
-            conn.setRequestMethod("GET");
+            
+            switch (method) {
+                case HttpUtils.POST:
+                    conn.setRequestProperty("Content-Type", "application/json; charset=utf-8");
+                    conn.setRequestMethod("POST");
+                    conn.setDoOutput(true);
+
+                    try (DataOutputStream wr = new DataOutputStream(conn.getOutputStream()); 
+                        BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(wr, StandardCharsets.UTF_8))) {
+                        writer.write(requestData.toString());
+                    }
+                    break;
+                case HttpUtils.GET:
+                    conn.setRequestMethod("GET");
+                    break;
+                default:
+                    throw new Mp3CreatorException("Bad method " + method);
+            }
 
             int responseCode = conn.getResponseCode();
             if (responseCode == HttpURLConnection.HTTP_OK) {
-                BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-                StringBuilder response = new StringBuilder();
-                while ((output = reader.readLine()) != null) {
-                    response.append(output);
+                StringBuilder response;
+                try (BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream()))) {
+                    response = new StringBuilder();
+                    while ((output = reader.readLine()) != null) {
+                        response.append(output);
+                    }
                 }
-                reader.close();
-
                 result = new JSONObject(response.toString());
             } else {
                 throw new Mp3CreatorException("Request to server returned " + responseCode);
             }
             
-        } catch (Exception ex) {
+        } catch (Mp3CreatorException | IOException | JSONException ex) {
             throw new Mp3CreatorException(ex.getMessage());
         } finally {
             if (conn != null) {
@@ -152,9 +105,8 @@ public class HttpUtils {
             if (responseCode == HttpURLConnection.HTTP_OK) {
                 byte[] buffer = new byte[4096];
                 int n;
-                InputStream input = conn.getInputStream();
-               
-                try (FileOutputStream output = new FileOutputStream(f)) {
+
+                try (InputStream input = conn.getInputStream(); FileOutputStream output = new FileOutputStream(f)) {
                     while ((n = input.read(buffer)) != -1) {
                         output.write(buffer, 0, n);
                     }
@@ -163,7 +115,7 @@ public class HttpUtils {
                 throw new Mp3CreatorException("Request to server returned " + responseCode);
             }
             
-        } catch (Exception ex) {
+        } catch (Mp3CreatorException | IOException ex) {
             throw new Mp3CreatorException(ex.getMessage());
         } finally {
             if (conn != null) {

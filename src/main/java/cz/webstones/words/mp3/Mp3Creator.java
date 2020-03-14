@@ -1,34 +1,22 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package cz.webstones.words.mp3;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.json.JSONObject;
 
-/**
- *
- * @author jaroslav_b
- */
+
 public class Mp3Creator {
     
     private static final Logger LOGGER = Logger.getLogger(Mp3Creator.class.getName());
     
+    private Mp3Creator() {}
+    
     /* https://soundoftext.com/docs */
     private static String endpoint = "https://api.soundoftext.com";
-    //private static boolean trustedInstalled = false;
     
     
     public static void createMp3(String text, String lang, String file) throws Mp3CreatorException {
-        
-        /* Install trusted manager to avoid problems with https certificate */
-        //if (!trustedInstalled) {
-        //    HttpUtils.installTrustManager();
-        //    trustedInstalled = true;
-        //}
-        
+
         /* Send text and get voice ID */
         JSONObject object = new JSONObject();
         object.put("engine", "Google");
@@ -49,6 +37,7 @@ public class Mp3Creator {
                 Thread.sleep(500);
             } catch (InterruptedException ex) {
                 LOGGER.log(Level.SEVERE, null, ex);
+                // Restore interrupted state...
                 Thread.currentThread().interrupt();
             }
             resp = HttpUtils.sendGet(endpoint + "/sounds/" + id);
