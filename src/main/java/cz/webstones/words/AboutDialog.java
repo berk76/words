@@ -4,6 +4,7 @@
  */
 package cz.webstones.words;
 
+import cz.webstones.words.dictionary.DictionaryStateEnum;
 import cz.webstones.words.dictionary.IObserver;
 import java.awt.Color;
 import java.awt.Cursor;
@@ -25,8 +26,8 @@ public class AboutDialog extends JEscapeableDialog implements IObserver {
     
     private static final Logger LOGGER = Logger.getLogger(AboutDialog.class.getName());
     
-    private final String urlGitHub = "https://github.com/berk76/words/wiki";
-    private final String urlTwitter = "https://twitter.com/WordsVocabulary";
+    private final static String URL_GITHUB = "https://github.com/berk76/words/wiki";
+    private final static String URL_TWITTER = "https://twitter.com/WordsVocabulary";
     private IDictionary dict;
     private ErrorDialog errorDialog;
 
@@ -43,14 +44,14 @@ public class AboutDialog extends JEscapeableDialog implements IObserver {
         errorDialog = new ErrorDialog(parent, true);
 
         jLabel1.setText(Service.VERSION);
-        jLabel4.setText(urlGitHub);
+        jLabel4.setText(URL_GITHUB);
         jLabel4.setForeground(Color.BLUE.darker());
         jLabel4.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         jLabel4.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
                 try {
-                    Desktop.getDesktop().browse(new URI(urlGitHub));
+                    Desktop.getDesktop().browse(new URI(URL_GITHUB));
                 } catch (IOException | URISyntaxException e1) {
                     LOGGER.log(Level.SEVERE, null, e1);
                 }
@@ -74,7 +75,7 @@ public class AboutDialog extends JEscapeableDialog implements IObserver {
             @Override
             public void mouseClicked(MouseEvent e) {
                 try {
-                    Desktop.getDesktop().browse(new URI(urlTwitter));
+                    Desktop.getDesktop().browse(new URI(URL_TWITTER));
                 } catch (IOException | URISyntaxException e1) {
                     LOGGER.log(Level.SEVERE, null, e1);
                 }
@@ -95,16 +96,15 @@ public class AboutDialog extends JEscapeableDialog implements IObserver {
         jLabel6.setText("JVM Version: " + System.getProperty("java.version"));
     }
     
+    @Override
     public void updateObserver() {
-        switch (dict.getSubjectState()) {
-            case stateDictionaryLoaded:
-                try {
-                    setPronunciation(dict.getLanguage());
-                } catch (IOException ex) {
-                    errorDialog.showError("Error: Cannot download pronunciation.", ex);
-                }
-                setDictionaryName(dict.getDictionaryName());
-                break;
+        if (dict.getSubjectState() == DictionaryStateEnum.stateDictionaryLoaded) {
+            try {
+                setPronunciation(dict.getLanguage());
+            } catch (IOException ex) {
+                errorDialog.showError("Error: Cannot download pronunciation.", ex);
+            }
+            setDictionaryName(dict.getDictionaryName());
         }
     }
 

@@ -8,7 +8,7 @@ package cz.webstones.words.dictionary.impl;
 import cz.webstones.words.LanguageDto;
 import cz.webstones.words.Service;
 import cz.webstones.words.Setup;
-import static cz.webstones.words.dictionary.IDictionary.allCategoryName;
+import static cz.webstones.words.dictionary.IDictionary.ALL_CATEGORY;
 import cz.webstones.words.dictionary.DictionaryException;
 import cz.webstones.words.dictionary.DictionaryStateEnum;
 import cz.webstones.words.dictionary.IObserver;
@@ -34,6 +34,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Random;
 import cz.webstones.words.dictionary.IDictionary;
+import java.io.Serializable;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.logging.Level;
@@ -43,7 +44,7 @@ import java.util.logging.Logger;
  *
  * @author jarberan
  */
-public class DictionaryImpl implements IDictionary {
+public class DictionaryImpl implements IDictionary, Serializable {
     
     private static final Logger LOGGER = Logger.getLogger(DictionaryImpl.class.getName());
     
@@ -61,7 +62,7 @@ public class DictionaryImpl implements IDictionary {
     public DictionaryImpl() throws DictionaryException {
         super();
         
-        currentCategory = IDictionary.allCategoryName;
+        currentCategory = IDictionary.ALL_CATEGORY;
     }
     
     
@@ -155,7 +156,7 @@ public class DictionaryImpl implements IDictionary {
             }
         }
         
-        setCategory(IDictionary.allCategoryName);
+        setCategory(IDictionary.ALL_CATEGORY);
         updateCategoryList();
         current = -1;
         setCurrnet(0);
@@ -245,7 +246,7 @@ public class DictionaryImpl implements IDictionary {
     @Override
     public void setCurrnet(int i) {
 
-        if (dictFil.size() == 0) {
+        if (dictFil.isEmpty()) {
             current = 0;
             subjectState = DictionaryStateEnum.stateCurWordChanged;
             notifyAllObservers();
@@ -294,8 +295,8 @@ public class DictionaryImpl implements IDictionary {
             throw new DictionaryException("Category cannot be empty.");
         }
         
-        if (w.getCategory().equals(IDictionary.allCategoryName)) {
-            throw new DictionaryException("Category name cannot be " + IDictionary.allCategoryName + " !");
+        if (w.getCategory().equals(IDictionary.ALL_CATEGORY)) {
+            throw new DictionaryException("Category name cannot be " + IDictionary.ALL_CATEGORY + " !");
         }
         
         w.setCz(w.getCz().trim());
@@ -316,7 +317,7 @@ public class DictionaryImpl implements IDictionary {
 
         dictAll.add(w);
         
-        if (currentCategory.equals(IDictionary.allCategoryName) || currentCategory.equals(w.getCategory())) {
+        if (currentCategory.equals(IDictionary.ALL_CATEGORY) || currentCategory.equals(w.getCategory())) {
             dictFil.add(w);
             setCurrent(w);
         }
@@ -331,11 +332,11 @@ public class DictionaryImpl implements IDictionary {
         
         validateWord(w);
         
-        if (!currentCategory.equals(IDictionary.allCategoryName) && !currentCategory.equals(w.getCategory())) {
+        if (!currentCategory.equals(IDictionary.ALL_CATEGORY) && !currentCategory.equals(w.getCategory())) {
             dictFil.remove(w);
         }
         
-        if (!currentCategory.equals(IDictionary.allCategoryName) && currentCategory.equals(w.getCategory()) && !dictFil.contains(w)) {
+        if (!currentCategory.equals(IDictionary.ALL_CATEGORY) && currentCategory.equals(w.getCategory()) && !dictFil.contains(w)) {
             dictFil.add(w);
             setCurrent(w);
         }
@@ -449,10 +450,10 @@ public class DictionaryImpl implements IDictionary {
     
     @Override
     public void setCategory(String category) {
-        dictFil = new ArrayList<WordDto>();
+        dictFil = new ArrayList<>();
 
         for (WordDto w : dictAll) {
-            if (category.equals(IDictionary.allCategoryName) || category.equals(w.getCategory())) {
+            if (category.equals(IDictionary.ALL_CATEGORY) || category.equals(w.getCategory())) {
                 dictFil.add(w);
             }
         }
@@ -488,7 +489,7 @@ public class DictionaryImpl implements IDictionary {
     }
     
     private void updateCategoryList() {
-        categoryList = new ArrayList<String>();
+        categoryList = new ArrayList<>();
         
         for (WordDto w : dictAll) {
             boolean alreadyExists = false;
@@ -542,8 +543,8 @@ public class DictionaryImpl implements IDictionary {
             return;
         }
         
-        if (category.equals(IDictionary.allCategoryName)) {
-            throw new DictionaryException("Category name cannot be " + IDictionary.allCategoryName + " !");
+        if (category.equals(IDictionary.ALL_CATEGORY)) {
+            throw new DictionaryException("Category name cannot be " + IDictionary.ALL_CATEGORY + " !");
         }
         
         for (String c: categoryList) {
@@ -561,11 +562,11 @@ public class DictionaryImpl implements IDictionary {
     
     @Override
     public void deleteCurrentCategory() throws DictionaryException {
-        if (currentCategory.equals(allCategoryName)) {
-            throw new DictionaryException("Cannot delete category: " + allCategoryName);
+        if (currentCategory.equals(ALL_CATEGORY)) {
+            throw new DictionaryException("Cannot delete category: " + ALL_CATEGORY);
         }
         
-        if (dictFil.size() != 0) {
+        if (!dictFil.isEmpty()) {
             throw new DictionaryException("Category " + currentCategory + " is not empty.");
         }
         
@@ -574,7 +575,7 @@ public class DictionaryImpl implements IDictionary {
         subjectState = DictionaryStateEnum.stateCategoryListChanged;
         notifyAllObservers();
         
-        setCategory(allCategoryName);
+        setCategory(ALL_CATEGORY);
     }
     
     private void sortCategoryList() {

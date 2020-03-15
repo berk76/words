@@ -66,7 +66,7 @@ public class DictionaryTest {
         assertEquals(3, d.size(), "Fil dictionary size");
         assertEquals(3, d.sizeOfAll(), "All dictionary size");
         assertEquals(3, d.getCategoryList().size(), "Category list size");
-        assertEquals(IDictionary.allCategoryName, d.getCurrentCategory(), "Curr cat");
+        assertEquals(IDictionary.ALL_CATEGORY, d.getCurrentCategory(), "Curr cat");
         
         /* Filter category */
         o.reset();
@@ -104,7 +104,7 @@ public class DictionaryTest {
         
         /* Unfilter category */
         o.reset();
-        d.setCategory(IDictionary.allCategoryName);
+        d.setCategory(IDictionary.ALL_CATEGORY);
         
         assertEquals(0, o.getNoChange(), "Observer getNoChange");
         assertEquals(1, o.getCurWordChanged(), "Observer getCurWordChanged");
@@ -117,7 +117,7 @@ public class DictionaryTest {
         assertEquals(2, d.size(), "Fil dictionary size");
         assertEquals(2, d.sizeOfAll(), "All dictionary size");
         assertEquals(3, d.getCategoryList().size(), "Category list size");
-        assertEquals(IDictionary.allCategoryName, d.getCurrentCategory(), "Curr cat");
+        assertEquals(IDictionary.ALL_CATEGORY, d.getCurrentCategory(), "Curr cat");
         
         /* Delete last word in category */
         /* updateCategory list will remove all unused categories */
@@ -147,7 +147,7 @@ public class DictionaryTest {
         ObserverTestHelper o = new ObserverTestHelper(d);
         d.attach(o);
         
-        assertEquals(IDictionary.allCategoryName, d.getCurrentCategory(), "Curr cat");
+        assertEquals(IDictionary.ALL_CATEGORY, d.getCurrentCategory(), "Curr cat");
         
         /* Fill category list */
         o.reset();

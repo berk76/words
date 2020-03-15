@@ -7,6 +7,8 @@ package cz.webstones.words;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -14,6 +16,7 @@ import java.io.StringWriter;
  */
 public class ErrorDialog extends JEscapeableDialog {
 
+    private static final Logger LOGGER = Logger.getLogger(ErrorDialog.class.getName());
     /**
      * Creates new form ErrorDialog
      */
@@ -29,13 +32,12 @@ public class ErrorDialog extends JEscapeableDialog {
     
         String result = "";
         try {
-            StringWriter sw = new StringWriter();
-            PrintWriter pw = new PrintWriter(sw);
-            ex.printStackTrace(pw);
-            result = sw.toString();
-            pw.close();
-            sw.close();
+            try (StringWriter sw = new StringWriter(); PrintWriter pw = new PrintWriter(sw)) {
+                ex.printStackTrace(pw);
+                result = sw.toString();
+            }
         } catch (IOException e) {
+            LOGGER.log(Level.SEVERE, null, ex);
         }
         this.jTextArea1.setText(result);
         this.jTextArea1.setCaretPosition(0);
@@ -107,7 +109,6 @@ public class ErrorDialog extends JEscapeableDialog {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jToggleButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jToggleButton1ActionPerformed
-        // TODO add your handling code here:
         this.setVisible(false);
     }//GEN-LAST:event_jToggleButton1ActionPerformed
 
