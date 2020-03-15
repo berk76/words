@@ -4,6 +4,7 @@
  */
 package cz.webstones.words;
 
+import cz.webstones.words.dictionary.DictionaryStateEnum;
 import cz.webstones.words.dictionary.IObserver;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
@@ -45,11 +46,10 @@ public class FindDialog extends JEscapeableDialog implements IObserver {
         setLabel(d.getCurrentCategory());
     }
     
+    @Override
     public void updateObserver() {
-        switch (dict.getSubjectState()) {
-            case stateCurCategoryChanged:
-                setLabel(dict.getCurrentCategory());
-                    break;
+        if (dict.getSubjectState() == DictionaryStateEnum.stateCurCategoryChanged) {
+            setLabel(dict.getCurrentCategory());
         }
     }
 

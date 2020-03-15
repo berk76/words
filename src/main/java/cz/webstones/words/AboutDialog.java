@@ -26,8 +26,8 @@ public class AboutDialog extends JEscapeableDialog implements IObserver {
     
     private static final Logger LOGGER = Logger.getLogger(AboutDialog.class.getName());
     
-    private final static String URL_GITHUB = "https://github.com/berk76/words/wiki";
-    private final static String URL_TWITTER = "https://twitter.com/WordsVocabulary";
+    private static final String URL_GITHUB = "https://github.com/berk76/words/wiki";
+    private static final String URL_TWITTER = "https://twitter.com/WordsVocabulary";
     private IDictionary dict;
     private ErrorDialog errorDialog;
 

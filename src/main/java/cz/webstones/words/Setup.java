@@ -5,6 +5,7 @@
 package cz.webstones.words;
 
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -12,7 +13,7 @@ import java.util.logging.Logger;
  *
  * @author jaroslav_b
  */
-public class Setup {
+public class Setup implements Serializable {
     
     private static final Logger LOGGER = Logger.getLogger(Setup.class.getName());
     
