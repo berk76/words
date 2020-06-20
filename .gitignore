@@ -1,8 +1,19 @@
-.settings/
-bin/
-target/
-.project
-.classpath
 Data/
 setup.properties
 history.properties
+
+# Maven
+target/
+
+# NetBeans
+nb-configuration.xml
+
+# Eclipse
+bin/
+.settings/
+.project
+.classpath
+
+# Idea
+.idea/
+*.iml
