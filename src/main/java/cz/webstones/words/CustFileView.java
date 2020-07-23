@@ -17,7 +17,7 @@ import javax.swing.filechooser.FileView;
  */
 public class CustFileView extends FileView {
     
-    private ImageIcon bookIcon = new ImageIcon(this.getClass().getClassLoader().getResource("book.png"));
+    private ImageIcon bookIcon = new ImageIcon(this.getClass().getClassLoader().getResource("open_book.png"));
     
     @Override
     public Icon getIcon(File f) {
