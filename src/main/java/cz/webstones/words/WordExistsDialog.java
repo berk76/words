@@ -20,6 +20,7 @@ public class WordExistsDialog extends JEscapeableDialog {
     private IDictionary dict;
     private WordDto newWord;
     private WordDto oldWord;
+    private boolean cancelled;
     /**
      * Creates new form WordExistsDialog
      */
@@ -33,6 +34,7 @@ public class WordExistsDialog extends JEscapeableDialog {
     public void showDialog(WordDto newWord, WordDto oldWord) {
         this.newWord = newWord;
         this.oldWord = oldWord;
+        this.cancelled = false;
         
         this.jLabel3.setText(oldWord.getCz());
         this.jLabel5.setText(oldWord.getEn());
@@ -194,6 +196,7 @@ public class WordExistsDialog extends JEscapeableDialog {
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
         // cancel
+        cancelled = true;
         this.setVisible(false);
     }//GEN-LAST:event_jButton3ActionPerformed
 
@@ -228,4 +231,11 @@ public class WordExistsDialog extends JEscapeableDialog {
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
     // End of variables declaration//GEN-END:variables
+
+    /**
+     * @return the play
+     */
+    public boolean isCancelled() {
+        return cancelled;
+    }
 }

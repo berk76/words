@@ -902,16 +902,22 @@ public class Main extends javax.swing.JFrame implements IObserver {
 
             if ((wOld = dict.findDuplicity(w)) != null) {
                 wordExistsDialog.showDialog(w, wOld);
+                if (!wordExistsDialog.isCancelled())
+                    play(w);
                 return;
             }
 
             if ((wOld = dict.findDuplicity(w.getCz())) != null) {
                 wordExistsDialog.showDialog(w, wOld);
+                if (!wordExistsDialog.isCancelled())
+                    play(w);
                 return;
             }
 
             if ((wOld = dict.findDuplicity(w.getEn())) != null) {
                 wordExistsDialog.showDialog(w, wOld);
+                if (!wordExistsDialog.isCancelled())
+                    play(w);
                 return;
             }
 
