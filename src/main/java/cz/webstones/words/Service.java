@@ -139,7 +139,6 @@ public class Service {
     }
 
     private static Setup loadSetup(File f, String dictPath, Setup setup) throws IOException {
-        InputStream is;
         Properties props = new Properties();
 
         if (setup == null) {
@@ -147,15 +146,16 @@ public class Service {
         }
         
         if (f != null) {
-            is = new FileInputStream(f);
+            try (InputStream is = new FileInputStream(f)) {
+                props.load(is);
+            }
         } else {
             Class cls = Setup.class;
             ClassLoader cLoader = cls.getClassLoader();
-            is = cLoader.getResourceAsStream("setup.properties");
+            try (InputStream is = cLoader.getResourceAsStream("setup.properties")) {
+                props.load(is);
+            }
         }
-
-        props.load(is);
-        is.close();
         
         setup.setDataDir(dictPath);
 
