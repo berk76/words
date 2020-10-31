@@ -52,13 +52,13 @@ public class WordDialog extends JEscapeableDialog implements IObserver {
         this.word = w;
     
         Font f;
-        f = Service.findFont(this.word.getCz(), jTextField1.getFont());
+        f = Service.findFont(this.word.getCz(), jTextField2.getFont());
         jTextField1.setFont(f);
-        f = Service.findFont(this.word.getEn(), jTextField2.getFont());
+        f = Service.findFont(this.word.getEn(), jTextField1.getFont());
         jTextField2.setFont(f);
         
-        jTextField1.setText(this.word.getCz());
-        jTextField2.setText(this.word.getEn());
+        jTextField2.setText(this.word.getCz());
+        jTextField1.setText(this.word.getEn());
 
         updateCategoryCombo();
         jComboBox1.setSelectedItem(this.word.getCategory());
@@ -72,9 +72,9 @@ public class WordDialog extends JEscapeableDialog implements IObserver {
     }
     
     public void setForeignWordEditable(boolean b) {
-        jTextField2.setEditable(b);
-        jTextField2.setEnabled(b);
-        jTextField2.setFocusable(b);
+        jTextField1.setEditable(b);
+        jTextField1.setEnabled(b);
+        jTextField1.setFocusable(b);
     }
     
     private void updateCategoryCombo() {
@@ -138,13 +138,13 @@ public class WordDialog extends JEscapeableDialog implements IObserver {
         setTitle("Edit word");
 
         jLabel1.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
-        jLabel1.setText("Native word");
+        jLabel1.setText("Foreign word");
 
         jTextField1.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
         jTextField1.setText("jTextField1");
 
         jLabel2.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
-        jLabel2.setText("Foreign word");
+        jLabel2.setText("Native word");
 
         jTextField2.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
         jTextField2.setText("jTextField2");
@@ -293,8 +293,8 @@ public class WordDialog extends JEscapeableDialog implements IObserver {
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         WordDto tmp = new WordDto();
-        tmp.setCz(jTextField1.getText().trim());
-        tmp.setEn(jTextField2.getText().trim());
+        tmp.setCz(jTextField2.getText().trim());
+        tmp.setEn(jTextField1.getText().trim());
         tmp.setCategory(jComboBox1.getSelectedItem().toString());
         
         try {
