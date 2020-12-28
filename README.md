@@ -17,7 +17,8 @@ Vocabulary enables you:
 
 ## How you can get started with Words
 
-Visit project [Wiki](https://github.com/berk76/words/wiki) pages for brief instructions.  
+Read project [Wiki](https://github.com/berk76/words/wiki) pages for brief instructions.  
+Visit project [Discussions](https://github.com/berk76/words/discussions) where you can ask questions or tell your ideas.  
 Follow us at Twitter: [@WordsVocabulary](https://twitter.com/WordsVocabulary)
 
 ## How to build project
@@ -28,4 +29,8 @@ Follow us at Twitter: [@WordsVocabulary](https://twitter.com/WordsVocabulary)
  1. Change directory `cd target` and find Words.jar
  1. Create new directory somewhere on your disc. For example `WordsEn` and copy Words.jar in it. 
  1. Run Words application `java -jar Words.jar`
+
+ ## Contributing
+
+All contributions are welcome. :blue_heart:. Please read [CONTRIBUTING.md](.github/CONTRIBUTING.md). :octocat:.
  
