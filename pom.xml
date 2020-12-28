@@ -79,6 +79,9 @@
                             <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
                             <addClasspath>true</addClasspath>
                         </manifest>
+                        <manifestEntries>
+                            <SplashScreen-Image>splash.gif</SplashScreen-Image>
+                        </manifestEntries>
                     </archive>
                 </configuration>
             </plugin>
@@ -90,6 +93,9 @@
                             <mainClass>cz.webstones.words.Main</mainClass>
                             <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
                         </manifest>
+                        <manifestEntries>
+                            <SplashScreen-Image>splash.gif</SplashScreen-Image>
+                        </manifestEntries>
                     </archive>
                     <descriptorRefs>
                         <descriptorRef>jar-with-dependencies</descriptorRef>
