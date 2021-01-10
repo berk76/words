@@ -5,6 +5,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.URLEncoder;
 import java.util.Base64;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -39,6 +40,7 @@ public class Mp3Creator {
                 output.write(buffer);
             }
         } catch(Mp3CreatorException | IOException | JSONException ex) {
+            LOGGER.log(Level.SEVERE, null, ex);
             throw new Mp3CreatorException(ex.getMessage());
         }
     }
