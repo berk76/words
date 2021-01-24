@@ -56,6 +56,7 @@ public class Main extends javax.swing.JFrame implements IObserver {
      */
     public Main() throws DictionaryException {
         
+        super();
         dict = new DictionaryImpl();
         addCatDialog = new AddCategoryDialog(this, true);
         renameCatDialog = new RenameCategoryDialog(this, true);
@@ -82,6 +83,7 @@ public class Main extends javax.swing.JFrame implements IObserver {
 
         initComponents();
         this.setLocationRelativeTo(null);
+        this.setMinimumSize(this.getSize());
         setTitleText(Service.VERSION, "", null);
         jLabel1.setText("");
         jLabel2.setText("");
