@@ -56,6 +56,7 @@ public class Main extends javax.swing.JFrame implements IObserver {
      */
     public Main() throws DictionaryException {
         
+        super();
         dict = new DictionaryImpl();
         addCatDialog = new AddCategoryDialog(this, true);
         renameCatDialog = new RenameCategoryDialog(this, true);
@@ -82,6 +83,7 @@ public class Main extends javax.swing.JFrame implements IObserver {
 
         initComponents();
         this.setLocationRelativeTo(null);
+        this.setMinimumSize(this.getSize());
         setTitleText(Service.VERSION, "", null);
         jLabel1.setText("");
         jLabel2.setText("");
@@ -125,7 +127,7 @@ public class Main extends javax.swing.JFrame implements IObserver {
             case stateWordAdded:
             case stateCurWordChanged:
             case stateCurWordDeleted:
-                next(0);
+                nextRelative(0);
                 break;
 
             case stateCurCategoryChanged:
@@ -258,8 +260,8 @@ public class Main extends javax.swing.JFrame implements IObserver {
         dict.saveDictionary();
     }
 
-    private void next(int i) {
-        if (dict.size() == 0) {
+    private void nextAbsolute(int i) {
+            if (dict.size() == 0) {
             this.jLabel1.setText("<category is empty>");
             this.jLabel3.setText("");
             this.jLabel2.setText("0 / 0 words");
@@ -269,9 +271,8 @@ public class Main extends javax.swing.JFrame implements IObserver {
         }
         disableControls(false);
 
-        int dictCurrnt = dict.getCurrnet();
+        int dictCurrnt = i;
 
-        dictCurrnt += i;
         if (dictCurrnt >= dict.size()) {
             dictCurrnt = dict.size() - 1;
         }
@@ -301,6 +302,10 @@ public class Main extends javax.swing.JFrame implements IObserver {
         updateStatus();
         disableGoodWrong(true);
     }
+    
+    private void nextRelative(int i) {
+        nextAbsolute(dict.getCurrnet() + i);
+    }
 
     private void showFindDialog() {
         findDialog.setVisible(true);
@@ -319,6 +324,7 @@ public class Main extends javax.swing.JFrame implements IObserver {
         jButton3.setEnabled(!b);
         jButton4.setEnabled(!b);
         jButton5.setEnabled(!b);
+        jButton14.setEnabled(!b);
         jComboBox1.setEnabled(!b);
         this.revalidate();
     }
@@ -373,6 +379,7 @@ public class Main extends javax.swing.JFrame implements IObserver {
         jLabel5 = new javax.swing.JLabel();
         jLabel6 = new javax.swing.JLabel();
         jLabel7 = new javax.swing.JLabel();
+        jButton14 = new javax.swing.JButton();
         jToolBar1 = new javax.swing.JToolBar();
         jButton6 = new javax.swing.JButton();
         jButton7 = new javax.swing.JButton();
@@ -459,6 +466,7 @@ public class Main extends javax.swing.JFrame implements IObserver {
         jLabel3.setText("jLabel3");
         jLabel3.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
 
+        jButton4.setToolTipText("Back");
         jButton4.setLabel("<");
         jButton4.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -466,6 +474,7 @@ public class Main extends javax.swing.JFrame implements IObserver {
             }
         });
 
+        jButton5.setToolTipText("Next");
         jButton5.setLabel(">");
         jButton5.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -481,6 +490,14 @@ public class Main extends javax.swing.JFrame implements IObserver {
 
         jLabel7.setText("Choose category");
 
+        jButton14.setText("|<");
+        jButton14.setToolTipText("Rewind");
+        jButton14.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton14ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -490,14 +507,16 @@ public class Main extends javax.swing.JFrame implements IObserver {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jTextField1, javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jLabel3, javax.swing.GroupLayout.DEFAULT_SIZE, 487, Short.MAX_VALUE)
+                    .addComponent(jLabel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(jButton3)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jButton1)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jButton2)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 40, Short.MAX_VALUE)
+                        .addComponent(jButton14)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jButton4)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jButton5))
@@ -540,7 +559,8 @@ public class Main extends javax.swing.JFrame implements IObserver {
                     .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jButton2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jButton4)
-                    .addComponent(jButton5))
+                    .addComponent(jButton5)
+                    .addComponent(jButton14))
                 .addContainerGap())
         );
 
@@ -636,7 +656,7 @@ public class Main extends javax.swing.JFrame implements IObserver {
         jMenu3.setText("Dictionary");
         jMenu3.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
 
-        jMenuItem10.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_N, java.awt.event.InputEvent.CTRL_MASK));
+        jMenuItem10.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_N, java.awt.event.InputEvent.CTRL_DOWN_MASK));
         jMenuItem10.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
         jMenuItem10.setText("New...");
         jMenuItem10.addActionListener(new java.awt.event.ActionListener() {
@@ -646,7 +666,7 @@ public class Main extends javax.swing.JFrame implements IObserver {
         });
         jMenu3.add(jMenuItem10);
 
-        jMenuItem12.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_O, java.awt.event.InputEvent.CTRL_MASK));
+        jMenuItem12.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_O, java.awt.event.InputEvent.CTRL_DOWN_MASK));
         jMenuItem12.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
         jMenuItem12.setText("Open...");
         jMenuItem12.addActionListener(new java.awt.event.ActionListener() {
@@ -656,7 +676,7 @@ public class Main extends javax.swing.JFrame implements IObserver {
         });
         jMenu3.add(jMenuItem12);
 
-        jMenuItem2.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_S, java.awt.event.InputEvent.CTRL_MASK));
+        jMenuItem2.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_S, java.awt.event.InputEvent.CTRL_DOWN_MASK));
         jMenuItem2.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
         jMenuItem2.setText("Save");
         jMenuItem2.addActionListener(new java.awt.event.ActionListener() {
@@ -671,7 +691,7 @@ public class Main extends javax.swing.JFrame implements IObserver {
         jMenu1.setText("Word");
         jMenu1.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
 
-        jMenuItem1.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F, java.awt.event.InputEvent.CTRL_MASK));
+        jMenuItem1.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F, java.awt.event.InputEvent.CTRL_DOWN_MASK));
         jMenuItem1.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
         jMenuItem1.setText("Find...");
         jMenuItem1.addActionListener(new java.awt.event.ActionListener() {
@@ -681,7 +701,7 @@ public class Main extends javax.swing.JFrame implements IObserver {
         });
         jMenu1.add(jMenuItem1);
 
-        jMenuItem7.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_D, java.awt.event.InputEvent.CTRL_MASK));
+        jMenuItem7.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_D, java.awt.event.InputEvent.CTRL_DOWN_MASK));
         jMenuItem7.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
         jMenuItem7.setText("Add...");
         jMenuItem7.addActionListener(new java.awt.event.ActionListener() {
@@ -691,7 +711,7 @@ public class Main extends javax.swing.JFrame implements IObserver {
         });
         jMenu1.add(jMenuItem7);
 
-        jMenuItem3.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_E, java.awt.event.InputEvent.CTRL_MASK));
+        jMenuItem3.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_E, java.awt.event.InputEvent.CTRL_DOWN_MASK));
         jMenuItem3.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
         jMenuItem3.setText("Edit...");
         jMenuItem3.addActionListener(new java.awt.event.ActionListener() {
@@ -783,7 +803,7 @@ public class Main extends javax.swing.JFrame implements IObserver {
         if (compareTexts()) {
             dict.getWord().incGoodHits();
             dict.getWord().setLastGoodHit(new Date());
-            next(1);
+            nextRelative(1);
         }
     }//GEN-LAST:event_jButton1ActionPerformed
 
@@ -792,7 +812,7 @@ public class Main extends javax.swing.JFrame implements IObserver {
         if (compareTexts()) {
             dict.getWord().incWrongHits();
             dict.getWord().setLastWrongHit(new Date());
-            next(1);
+            nextRelative(1);
         }
     }//GEN-LAST:event_jButton2ActionPerformed
 
@@ -825,11 +845,11 @@ public class Main extends javax.swing.JFrame implements IObserver {
     }//GEN-LAST:event_jComboBox1ActionPerformed
 
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
-        next(-1);
+        nextRelative(-1);
     }//GEN-LAST:event_jButton4ActionPerformed
 
     private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
-        next(1);
+        nextRelative(1);
     }//GEN-LAST:event_jButton5ActionPerformed
 
     private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
@@ -1080,6 +1100,10 @@ public class Main extends javax.swing.JFrame implements IObserver {
         deleteWord();
     }//GEN-LAST:event_jButton12ActionPerformed
 
+    private void jButton14ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton14ActionPerformed
+        nextAbsolute(0);
+    }//GEN-LAST:event_jButton14ActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -1123,6 +1147,7 @@ public class Main extends javax.swing.JFrame implements IObserver {
     private javax.swing.JButton jButton10;
     private javax.swing.JButton jButton11;
     private javax.swing.JButton jButton12;
+    private javax.swing.JButton jButton14;
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
     private javax.swing.JButton jButton4;
