@@ -53,9 +53,9 @@ public class WordDialog extends JEscapeableDialog implements IObserver {
     
         Font f;
         f = Service.findFont(this.word.getCz(), jTextField2.getFont());
-        jTextField1.setFont(f);
-        f = Service.findFont(this.word.getEn(), jTextField1.getFont());
         jTextField2.setFont(f);
+        f = Service.findFont(this.word.getEn(), jTextField1.getFont());
+        jTextField1.setFont(f);
         
         jTextField2.setText(this.word.getCz());
         jTextField1.setText(this.word.getEn());
