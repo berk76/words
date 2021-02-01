@@ -40,6 +40,7 @@ public class FindDialog extends JEscapeableDialog implements IObserver {
                 field.selectAll();
             }
         });
+        jTextField1.getDocument().addDocumentListener(new TextFieldFontChangeListener(jTextField1));
         this.setLocationRelativeTo(null);
         dict = d;
         dict.attach(this);

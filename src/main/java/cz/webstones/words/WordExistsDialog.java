@@ -27,8 +27,11 @@ public class WordExistsDialog extends JEscapeableDialog {
     public WordExistsDialog(java.awt.Frame parent, boolean modal, IDictionary dictionary) {
         super(parent, modal);
         initComponents();
+        this.jLabel3.addPropertyChangeListener(new LabelFontChangeListener(jLabel3));
+        this.jLabel5.addPropertyChangeListener(new LabelFontChangeListener(jLabel5));        
         this.setLocationRelativeTo(null);
         this.dict = dictionary;
+        
     }
     
     public void showDialog(WordDto newWord, WordDto oldWord) {

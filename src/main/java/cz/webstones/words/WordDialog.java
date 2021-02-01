@@ -7,7 +7,6 @@ package cz.webstones.words;
 import cz.webstones.words.dictionary.IObserver;
 import cz.webstones.words.dictionary.WordDto;
 import cz.webstones.words.dictionary.DictionaryException;
-import java.awt.Font;
 import java.text.SimpleDateFormat;
 import javax.swing.JOptionPane;
 import cz.webstones.words.dictionary.IDictionary;
@@ -33,6 +32,8 @@ public class WordDialog extends JEscapeableDialog implements IObserver {
         addCatDialog = d;
         dict = dic;
         dict.attach(this);
+        jTextField1.getDocument().addDocumentListener(new TextFieldFontChangeListener(jTextField1));
+        jTextField2.getDocument().addDocumentListener(new TextFieldFontChangeListener(jTextField2));
     }
     
     public void updateObserver() {
@@ -50,12 +51,6 @@ public class WordDialog extends JEscapeableDialog implements IObserver {
         
         setCommited(false);
         this.word = w;
-    
-        Font f;
-        f = Service.findFont(this.word.getCz(), jTextField2.getFont());
-        jTextField2.setFont(f);
-        f = Service.findFont(this.word.getEn(), jTextField1.getFont());
-        jTextField1.setFont(f);
         
         jTextField2.setText(this.word.getCz());
         jTextField1.setText(this.word.getEn());

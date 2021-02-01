@@ -12,7 +12,6 @@ import static cz.webstones.words.dictionary.DictionaryStateEnum.stateCurWordChan
 import cz.webstones.words.dictionary.impl.DictionaryImpl;
 import cz.webstones.words.mp3.Mp3Creator;
 import cz.webstones.words.mp3.Mp3CreatorException;
-import java.awt.Font;
 import java.awt.Point;
 import java.io.File;
 import java.io.IOException;
@@ -86,9 +85,12 @@ public class Main extends javax.swing.JFrame implements IObserver {
         this.setMinimumSize(this.getSize());
         setTitleText(Service.VERSION, "", null);
         jLabel1.setText("");
+        jLabel1.addPropertyChangeListener(new LabelFontChangeListener(jLabel1));
         jLabel2.setText("");
         jLabel3.setText("");
+        jLabel3.addPropertyChangeListener(new LabelFontChangeListener(jLabel3));
         jTextField1.setText("");
+        jTextField1.getDocument().addDocumentListener(new TextFieldFontChangeListener(jTextField1));
 
         findDialog.setText("");
 
@@ -281,14 +283,7 @@ public class Main extends javax.swing.JFrame implements IObserver {
         }
         dict.setCurrnet(dictCurrnt);
 
-        Font f;
         WordDto w = dict.getWord();
-        f = Service.findFont(w.getCz(), this.jLabel1.getFont());
-        this.jLabel1.setFont(f);
-        f = Service.findFont(w.getEn(), this.jLabel3.getFont());
-        this.jLabel3.setFont(f);
-        f = Service.findFont(w.getEn(), this.jTextField1.getFont());
-        this.jTextField1.setFont(f);
 
         this.jLabel1.setText(w.getCz());
         if (findDialog.isShowing()) {
