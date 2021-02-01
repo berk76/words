@@ -17,10 +17,12 @@ import javax.swing.text.JTextComponent;
  */
 public class TextFieldFontChangeListener implements DocumentListener {
     private JTextComponent c;
+    private Font originalFont;
     
     public TextFieldFontChangeListener(JTextComponent c) {
         super();
         this.c = c;
+        this.originalFont = c.getFont();
     }
     
     @Override
@@ -39,6 +41,13 @@ public class TextFieldFontChangeListener implements DocumentListener {
     }
     
     private void setFont(JTextComponent c) {
+        if ((originalFont.canDisplayUpTo(c.getText()) == -1) && (c.getFont() != originalFont)) {
+            c.setFont(originalFont);
+            return;
+        }
+        if (c.getFont().canDisplayUpTo(c.getText()) == -1) {
+            return;
+        }
         Font f = findFont(c.getText(), c.getFont());
         if (c.getFont() != f) {
             c.setFont(f);

@@ -5,6 +5,7 @@
  */
 package cz.webstones.words;
 
+import static cz.webstones.words.Service.findFont;
 import java.awt.Font;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -16,16 +17,25 @@ import javax.swing.JLabel;
  */
 public class LabelFontChangeListener implements PropertyChangeListener {
     private JLabel c;
+    private Font originalFont;
     
     public LabelFontChangeListener(JLabel c) {
         super();
         this.c = c;
+        this.originalFont = c.getFont();
     }
     
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
         if ("text".equals(evt.getPropertyName())) {
-            Font f = Service.findFont(c.getText(), c.getFont());
+            if ((originalFont.canDisplayUpTo(c.getText()) == -1) && (c.getFont() != originalFont)) {
+                c.setFont(originalFont);
+                return;
+            }
+            if (c.getFont().canDisplayUpTo(c.getText()) == -1) {
+                return;
+            }
+            Font f = findFont(c.getText(), c.getFont());
             if (c.getFont() != f) {
                 c.setFont(f);
             }

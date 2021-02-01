@@ -269,36 +269,20 @@ public class Service {
 
     public static Font findFont(String text, Font currentFont) {
         Font result = currentFont;
-        boolean ok = true;
-
+        
         if (text == null) {
             return result;
         }
 
-        for (int n = 0; n < text.length(); n++) {
-            if (!currentFont.canDisplay(text.charAt(n))) {
-                ok = false;
-                break;
-            }
+        if (currentFont.canDisplayUpTo(text) == -1) {
+            return result;
         }
 
-        if (!ok) {
-
-            Font[] fonts = GraphicsEnvironment.getLocalGraphicsEnvironment().getAllFonts();
-            for (Font font : fonts) {
-
-                for (int n = 0; n < text.length(); n++) {
-                    if (!font.canDisplay(text.charAt(n))) {
-                        ok = false;
-                        break;
-                    }
-                    ok = true;
-                }
-
-                if (ok) {
-                    result = new Font(font.getName(), Font.PLAIN, currentFont.getSize());
-                    break;
-                }
+        Font[] fonts = GraphicsEnvironment.getLocalGraphicsEnvironment().getAllFonts();
+        for (Font font : fonts) {
+            if (font.canDisplayUpTo(text) == -1) {
+                result = new Font(font.getName(), Font.PLAIN, currentFont.getSize());
+                break;
             }
         }
 
