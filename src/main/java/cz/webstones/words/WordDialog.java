@@ -34,6 +34,7 @@ public class WordDialog extends JEscapeableDialog implements IObserver {
         dict.attach(this);
         jTextField1.getDocument().addDocumentListener(new TextFieldFontChangeListener(jTextField1));
         jTextField2.getDocument().addDocumentListener(new TextFieldFontChangeListener(jTextField2));
+        jComboBox1.addItemListener(new ComboFontChangeListener(jComboBox1));
     }
     
     public void updateObserver() {

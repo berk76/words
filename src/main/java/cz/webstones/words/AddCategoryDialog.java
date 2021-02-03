@@ -18,6 +18,7 @@ public class AddCategoryDialog extends JEscapeableDialog {
     public AddCategoryDialog(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        jTextField1.getDocument().addDocumentListener(new TextFieldFontChangeListener(jTextField1));
         this.setLocationRelativeTo(null);
     }
     

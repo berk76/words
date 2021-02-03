@@ -20,6 +20,8 @@ public class RenameCategoryDialog extends JEscapeableDialog {
     public RenameCategoryDialog(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        jComboBox1.addItemListener(new ComboFontChangeListener(jComboBox1));
+        jTextField1.getDocument().addDocumentListener(new TextFieldFontChangeListener(jTextField1));
         this.setLocationRelativeTo(null);
     }
     

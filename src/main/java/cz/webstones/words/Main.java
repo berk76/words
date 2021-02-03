@@ -91,6 +91,7 @@ public class Main extends javax.swing.JFrame implements IObserver {
         jLabel3.addPropertyChangeListener(new LabelFontChangeListener(jLabel3));
         jTextField1.setText("");
         jTextField1.getDocument().addDocumentListener(new TextFieldFontChangeListener(jTextField1));
+        jComboBox1.addItemListener(new ComboFontChangeListener(jComboBox1));
 
         findDialog.setText("");
 
