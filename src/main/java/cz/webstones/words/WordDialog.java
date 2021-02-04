@@ -4,12 +4,14 @@
  */
 package cz.webstones.words;
 
+import static cz.webstones.words.Service.findFont;
 import cz.webstones.words.dictionary.IObserver;
 import cz.webstones.words.dictionary.WordDto;
 import cz.webstones.words.dictionary.DictionaryException;
 import java.text.SimpleDateFormat;
 import javax.swing.JOptionPane;
 import cz.webstones.words.dictionary.IDictionary;
+import java.awt.Font;
 
 /**
  *
@@ -34,7 +36,6 @@ public class WordDialog extends JEscapeableDialog implements IObserver {
         dict.attach(this);
         jTextField1.getDocument().addDocumentListener(new TextFieldFontChangeListener(jTextField1));
         jTextField2.getDocument().addDocumentListener(new TextFieldFontChangeListener(jTextField2));
-        jComboBox1.addItemListener(new ComboFontChangeListener(jComboBox1));
     }
     
     public void updateObserver() {
@@ -77,6 +78,10 @@ public class WordDialog extends JEscapeableDialog implements IObserver {
         jComboBox1.removeAllItems();
         for (String s: dict.getCategoryList()) {
             jComboBox1.addItem(s);
+            if (jComboBox1.getFont().canDisplayUpTo(s) != -1) {
+                Font f = findFont(s, jComboBox1.getFont());
+                jComboBox1.setFont(f);
+            }
         }
         jComboBox1.setSelectedItem(dict.getCurrentCategory());
     }

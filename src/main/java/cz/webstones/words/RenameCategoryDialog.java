@@ -4,6 +4,8 @@
  */
 package cz.webstones.words;
 
+import static cz.webstones.words.Service.findFont;
+import java.awt.Font;
 import java.util.ArrayList;
 
 /**
@@ -20,7 +22,6 @@ public class RenameCategoryDialog extends JEscapeableDialog {
     public RenameCategoryDialog(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
-        jComboBox1.addItemListener(new ComboFontChangeListener(jComboBox1));
         jTextField1.getDocument().addDocumentListener(new TextFieldFontChangeListener(jTextField1));
         this.setLocationRelativeTo(null);
     }
@@ -37,6 +38,10 @@ public class RenameCategoryDialog extends JEscapeableDialog {
         jComboBox1.removeAllItems();
         for (String s: categoryList) {
             jComboBox1.addItem(s);
+            if (jComboBox1.getFont().canDisplayUpTo(s) != -1) {
+                Font f = findFont(s, jComboBox1.getFont());
+                jComboBox1.setFont(f);
+            }
         }
         jComboBox1.setSelectedItem(selectedItem);
     }

@@ -4,6 +4,7 @@
  */
 package cz.webstones.words;
 
+import static cz.webstones.words.Service.findFont;
 import cz.webstones.words.mp3.AudioFilePlayer;
 import cz.webstones.words.dictionary.IObserver;
 import cz.webstones.words.dictionary.WordDto;
@@ -24,6 +25,7 @@ import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.filechooser.FileView;
 import cz.webstones.words.dictionary.IDictionary;
+import java.awt.Font;
 import java.nio.file.Files;
 
 /**
@@ -91,7 +93,6 @@ public class Main extends javax.swing.JFrame implements IObserver {
         jLabel3.addPropertyChangeListener(new LabelFontChangeListener(jLabel3));
         jTextField1.setText("");
         jTextField1.getDocument().addDocumentListener(new TextFieldFontChangeListener(jTextField1));
-        jComboBox1.addItemListener(new ComboFontChangeListener(jComboBox1));
 
         findDialog.setText("");
 
@@ -242,6 +243,10 @@ public class Main extends javax.swing.JFrame implements IObserver {
 
         for (String s : dict.getCategoryList()) {
             jComboBox1.addItem(s);
+            if (jComboBox1.getFont().canDisplayUpTo(s) != -1) {
+                Font f = findFont(s, jComboBox1.getFont());
+                jComboBox1.setFont(f);
+            }
         }
         jComboBox1.setSelectedItem(dict.getCurrentCategory());
     }
