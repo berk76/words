@@ -45,7 +45,7 @@ import java.util.logging.Logger;
  * @author jarberan
  */
 public class DictionaryImpl implements IDictionary, Serializable {
-    
+    private static final long serialVersionUID = 2405172041950251876L;
     private static final Logger LOGGER = Logger.getLogger(DictionaryImpl.class.getName());
     
     private Setup setup = null;
@@ -53,7 +53,7 @@ public class DictionaryImpl implements IDictionary, Serializable {
     private ArrayList<WordDto> dictFil = new ArrayList<>();
     private ArrayList<String> categoryList = new ArrayList<>();
     private final ArrayList<IObserver> observers = new ArrayList<>();
-    private DictionaryStateEnum subjectState = DictionaryStateEnum.stateNoChabge;
+    private DictionaryStateEnum subjectState = DictionaryStateEnum.NO_CHANGE;
     private int current = 0;
     private String currentCategory;
     private Random rand = new Random();
@@ -161,7 +161,7 @@ public class DictionaryImpl implements IDictionary, Serializable {
         current = -1;
         setCurrnet(0);
 
-        subjectState = DictionaryStateEnum.stateDictionaryLoaded;
+        subjectState = DictionaryStateEnum.DICTIONARY_LOADED;
         notifyAllObservers();
     }
 
@@ -248,7 +248,7 @@ public class DictionaryImpl implements IDictionary, Serializable {
 
         if (dictFil.isEmpty()) {
             current = 0;
-            subjectState = DictionaryStateEnum.stateCurWordChanged;
+            subjectState = DictionaryStateEnum.CUR_WORD_CHANGED;
             notifyAllObservers();
         }
 
@@ -256,7 +256,7 @@ public class DictionaryImpl implements IDictionary, Serializable {
             if (current != i) {
                 current = i;
                 
-                subjectState = DictionaryStateEnum.stateCurWordChanged;
+                subjectState = DictionaryStateEnum.CUR_WORD_CHANGED;
                 notifyAllObservers();
             }
         }
@@ -322,7 +322,7 @@ public class DictionaryImpl implements IDictionary, Serializable {
             setCurrent(w);
         }
         
-        subjectState = DictionaryStateEnum.stateWordAdded;
+        subjectState = DictionaryStateEnum.WORD_ADDED;
         notifyAllObservers();
     }
     
@@ -341,7 +341,7 @@ public class DictionaryImpl implements IDictionary, Serializable {
             setCurrent(w);
         }
 
-        subjectState = DictionaryStateEnum.stateCurWordChanged;
+        subjectState = DictionaryStateEnum.CUR_WORD_CHANGED;
         notifyAllObservers();
     }
 
@@ -380,7 +380,7 @@ public class DictionaryImpl implements IDictionary, Serializable {
         dictFil.remove(w);
         dictAll.remove(w);
         
-        subjectState = DictionaryStateEnum.stateCurWordDeleted;
+        subjectState = DictionaryStateEnum.CUR_WORD_DELETED;
         notifyAllObservers();
     }
     
@@ -483,7 +483,7 @@ public class DictionaryImpl implements IDictionary, Serializable {
         setCurrnet(0);
         
         if (!oldCategory.equals(currentCategory)) {
-            subjectState = DictionaryStateEnum.stateCurCategoryChanged;
+            subjectState = DictionaryStateEnum.CUR_CATEGORY_CHANGED;
             notifyAllObservers();
         }
     }
@@ -508,7 +508,7 @@ public class DictionaryImpl implements IDictionary, Serializable {
         
         sortCategoryList();
         
-        subjectState = DictionaryStateEnum.stateCategoryListChanged;
+        subjectState = DictionaryStateEnum.CATEGORY_LIST_CHANGED;
         notifyAllObservers();
     }
     
@@ -556,7 +556,7 @@ public class DictionaryImpl implements IDictionary, Serializable {
         categoryList.add(category);
         sortCategoryList();
         
-        subjectState = DictionaryStateEnum.stateCategoryListChanged;
+        subjectState = DictionaryStateEnum.CATEGORY_LIST_CHANGED;
         notifyAllObservers();
     }
     
@@ -572,7 +572,7 @@ public class DictionaryImpl implements IDictionary, Serializable {
         
         categoryList.remove(currentCategory);
         
-        subjectState = DictionaryStateEnum.stateCategoryListChanged;
+        subjectState = DictionaryStateEnum.CATEGORY_LIST_CHANGED;
         notifyAllObservers();
         
         setCategory(ALL_CATEGORY);

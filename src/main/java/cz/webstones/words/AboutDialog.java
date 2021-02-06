@@ -98,7 +98,7 @@ public class AboutDialog extends JEscapeableDialog implements IObserver {
     
     @Override
     public void updateObserver() {
-        if (dict.getSubjectState() == DictionaryStateEnum.stateDictionaryLoaded) {
+        if (dict.getSubjectState() == DictionaryStateEnum.DICTIONARY_LOADED) {
             try {
                 setPronunciation(dict.getLanguage());
             } catch (IOException ex) {

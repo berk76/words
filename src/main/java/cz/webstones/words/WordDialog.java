@@ -40,10 +40,10 @@ public class WordDialog extends JEscapeableDialog implements IObserver {
     
     public void updateObserver() {
         switch (dict.getSubjectState()) {
-            case stateCategoryListChanged:
+            case CATEGORY_LIST_CHANGED:
                 updateCategoryCombo();
                 break;
-            case stateCurCategoryChanged:
+            case CUR_CATEGORY_CHANGED:
                 if (!dict.getCurrentCategory().equals(jComboBox1.getSelectedItem().toString())) {
                     jComboBox1.setSelectedItem(dict.getCurrentCategory());
                 }

@@ -49,7 +49,7 @@ public class FindDialog extends JEscapeableDialog implements IObserver {
     
     @Override
     public void updateObserver() {
-        if (dict.getSubjectState() == DictionaryStateEnum.stateCurCategoryChanged) {
+        if (dict.getSubjectState() == DictionaryStateEnum.CUR_CATEGORY_CHANGED) {
             setLabel(dict.getCurrentCategory());
         }
     }

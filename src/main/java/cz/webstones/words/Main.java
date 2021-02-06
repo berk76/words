@@ -9,7 +9,7 @@ import cz.webstones.words.mp3.AudioFilePlayer;
 import cz.webstones.words.dictionary.IObserver;
 import cz.webstones.words.dictionary.WordDto;
 import cz.webstones.words.dictionary.DictionaryException;
-import static cz.webstones.words.dictionary.DictionaryStateEnum.stateCurWordChanged;
+import static cz.webstones.words.dictionary.DictionaryStateEnum.CUR_WORD_CHANGED;
 import cz.webstones.words.dictionary.impl.DictionaryImpl;
 import cz.webstones.words.mp3.Mp3Creator;
 import cz.webstones.words.mp3.Mp3CreatorException;
@@ -128,25 +128,25 @@ public class Main extends javax.swing.JFrame implements IObserver {
     public void updateObserver() {
         switch (dict.getSubjectState()) {
 
-            case stateWordAdded:
-            case stateCurWordChanged:
-            case stateCurWordDeleted:
+            case WORD_ADDED:
+            case CUR_WORD_CHANGED:
+            case CUR_WORD_DELETED:
                 nextRelative(0);
                 break;
 
-            case stateCurCategoryChanged:
+            case CUR_CATEGORY_CHANGED:
                 if (!dict.getCurrentCategory().equals(jComboBox1.getSelectedItem().toString())) {
                     jComboBox1.setSelectedItem(dict.getCurrentCategory());
                 }
                 break;
 
-            case stateCategoryListChanged:
+            case CATEGORY_LIST_CHANGED:
                 disableCategotyChange = true;
                 updateCategoryCombo();
                 disableCategotyChange = false;
                 break;
 
-            case stateDictionaryLoaded:
+            case DICTIONARY_LOADED:
                 try {
                     this.setTitleText(Service.VERSION, dict.getDictionaryName(), dict.getLanguage());
                 } catch (IOException ex) {

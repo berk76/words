@@ -31,22 +31,22 @@ public class ObserverTestHelper implements IObserver {
     @Override
     public void updateObserver() {
         switch (dict.getSubjectState()) {
-            case stateNoChabge:
+            case NO_CHANGE:
                 noChange++;
                 break;
-            case stateCurWordChanged:
+            case CUR_WORD_CHANGED:
                 curWordChanged++;
                 break;
-            case stateCurWordDeleted:
+            case CUR_WORD_DELETED:
                 curWordDeleted++;
                 break;
-            case stateCurCategoryChanged:
+            case CUR_CATEGORY_CHANGED:
                 curCategoryChanged++;
                 break;
-            case stateCategoryListChanged:
+            case CATEGORY_LIST_CHANGED:
                 categoryListChanged++;
                 break;
-            case stateWordAdded:
+            case WORD_ADDED:
                 wordAdded++;
                 break;
             default:

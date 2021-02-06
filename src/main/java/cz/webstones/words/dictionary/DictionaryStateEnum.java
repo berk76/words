@@ -9,11 +9,11 @@ package cz.webstones.words.dictionary;
  * @author jaroslav_b
  */
 public enum DictionaryStateEnum {
-    stateNoChabge,
-    stateCurWordChanged,
-    stateCurWordDeleted,
-    stateCurCategoryChanged,
-    stateCategoryListChanged,
-    stateWordAdded,
-    stateDictionaryLoaded
+    NO_CHANGE,
+    CUR_WORD_CHANGED,
+    CUR_WORD_DELETED,
+    CUR_CATEGORY_CHANGED,
+    CATEGORY_LIST_CHANGED,
+    WORD_ADDED,
+    DICTIONARY_LOADED
 }
