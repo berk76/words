@@ -60,7 +60,7 @@ public class Main extends javax.swing.JFrame implements IObserver {
         super();
         dict = new DictionaryImpl();
         addCatDialog = new AddCategoryDialog(this, true);
-        renameCatDialog = new RenameCategoryDialog(this, true);
+        renameCatDialog = new RenameCategoryDialog(this, true, dict);
         wordDialog = new WordDialog(this, true, addCatDialog, dict);
         aboutDialog = new AboutDialog(this, true, dict);
         findDialog = new FindDialog(this, false, dict);
@@ -877,7 +877,6 @@ public class Main extends javax.swing.JFrame implements IObserver {
     private void jMenuItem5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem5ActionPerformed
         // Rename Category
         renameCatDialog.setNewCategoryText("");
-        renameCatDialog.setCategoryList(dict.getCategoryList(), jComboBox1.getSelectedItem().toString());
         renameCatDialog.setVisible(true);
         if (renameCatDialog.isCommited()) {
             renameCategory(renameCatDialog.getOldCategoryText(), renameCatDialog.getNewCategoryText());
@@ -889,7 +888,6 @@ public class Main extends javax.swing.JFrame implements IObserver {
         WordDto w = dict.getWord();
         String oldWordPath = w.getMp3FilenameEn(dict.getSetup().getFullMp3Path());
         wordDialog.setWord(w);
-        //wordDialog.setForeignWordEditable(false);
         wordDialog.setVisible(true);
         
         try {
@@ -914,7 +912,6 @@ public class Main extends javax.swing.JFrame implements IObserver {
         WordDto w = new WordDto();
         w.setCategory(jComboBox1.getSelectedItem().toString());
         wordDialog.setWord(w);
-        wordDialog.setForeignWordEditable(true);
         wordDialog.setVisible(true);
         
         if (wordDialog.isCommited()) {

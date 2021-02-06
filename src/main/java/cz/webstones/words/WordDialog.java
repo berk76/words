@@ -43,6 +43,11 @@ public class WordDialog extends JEscapeableDialog implements IObserver {
             case stateCategoryListChanged:
                 updateCategoryCombo();
                 break;
+            case stateCurCategoryChanged:
+                if (!dict.getCurrentCategory().equals(jComboBox1.getSelectedItem().toString())) {
+                    jComboBox1.setSelectedItem(dict.getCurrentCategory());
+                }
+                break;
         }
     }
     
@@ -66,12 +71,6 @@ public class WordDialog extends JEscapeableDialog implements IObserver {
         rate = (total == 0) ? 0 : Service.round((double) this.word.getGoodHits() / total, 2);
         jTextField5.setText(String.valueOf(total));
         jTextField6.setText(String.valueOf(rate));
-    }
-    
-    public void setForeignWordEditable(boolean b) {
-        jTextField1.setEditable(b);
-        jTextField1.setEnabled(b);
-        jTextField1.setFocusable(b);
     }
     
     private void updateCategoryCombo() {

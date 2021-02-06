@@ -5,25 +5,42 @@
 package cz.webstones.words;
 
 import static cz.webstones.words.Service.findFont;
+import cz.webstones.words.dictionary.IDictionary;
+import cz.webstones.words.dictionary.IObserver;
 import java.awt.Font;
-import java.util.ArrayList;
 
 /**
  *
  * @author jaroslav_b
  */
-public class RenameCategoryDialog extends JEscapeableDialog {
+public class RenameCategoryDialog extends JEscapeableDialog implements IObserver {
 
     private boolean commited;
+    private IDictionary dict;
     
     /**
      * Creates new form RenameCategoryDialog
      */
-    public RenameCategoryDialog(java.awt.Frame parent, boolean modal) {
+    public RenameCategoryDialog(java.awt.Frame parent, boolean modal, IDictionary dic) {
         super(parent, modal);
         initComponents();
+        dict = dic;
+        dict.attach(this);
         jTextField1.getDocument().addDocumentListener(new TextFieldFontChangeListener(jTextField1));
         this.setLocationRelativeTo(null);
+    }
+    
+    public void updateObserver() {
+        switch (dict.getSubjectState()) {
+            case stateCategoryListChanged:
+                updateCategoryCombo();
+                break;
+            case stateCurCategoryChanged:
+                if (!dict.getCurrentCategory().equals(jComboBox1.getSelectedItem().toString())) {
+                    jComboBox1.setSelectedItem(dict.getCurrentCategory());
+                }
+                break;
+        }
     }
     
     public void setNewCategoryText(String s) {
@@ -34,24 +51,24 @@ public class RenameCategoryDialog extends JEscapeableDialog {
         return jTextField1.getText();
     }
     
-    public void setCategoryList(ArrayList<String> categoryList, String selectedItem) {
-        jComboBox1.removeAllItems();
-        for (String s: categoryList) {
-            jComboBox1.addItem(s);
-            if (jComboBox1.getFont().canDisplayUpTo(s) != -1) {
-                Font f = findFont(s, jComboBox1.getFont());
-                jComboBox1.setFont(f);
-            }
-        }
-        jComboBox1.setSelectedItem(selectedItem);
-    }
-    
     public String getOldCategoryText() {
         return jComboBox1.getSelectedItem().toString();
     }
     
     public boolean isCommited() {
         return commited;
+    }
+    
+    private void updateCategoryCombo() {
+        jComboBox1.removeAllItems();
+        for (String s: dict.getCategoryList()) {
+            jComboBox1.addItem(s);
+            if (jComboBox1.getFont().canDisplayUpTo(s) != -1) {
+                Font f = findFont(s, jComboBox1.getFont());
+                jComboBox1.setFont(f);
+            }
+        }
+        jComboBox1.setSelectedItem(dict.getCurrentCategory());
     }
 
     /**
