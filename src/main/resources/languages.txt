@@ -1,54 +1,50 @@
-af-ZA;Afrikaans
+af;Afrikaans
 sq;Albanian
-ar-AE;Arabic
+ar;Arabic
 hy;Armenian
-bn-BD;Bengali (Bangladesh)
-bn-IN;Bengali (India)
+bn;Bengali
 bs;Bosnian
 my;Burmese (Myanmar)
-ca-ES;Catalan
-cmn-Hant-TW;Chinese
-hr-HR;Croatian
-cs-CZ;Czech
-da-DK;Danish
-nl-NL;Dutch
-en-AU;English (Australia)
-en-GB;English (United Kingdom)
-en-US;English (United States)
+ca;Catalan
+zh-CN;Chinese (simplified)
+zh-TW;Chinese (traditional)
+hr;Croatian
+cs;Czech
+da;Danish
+nl;Dutch
+en;English
 eo;Esperanto
-fil-PH;Filipino
-fi-FI;Finnish
-fr-FR;French
-fr-CA;French (Canada)
-de-DE;German
-el-GR;Greek
-hi-IN;Hindi
-hu-HU;Hungarian
-is-IS;Icelandic
-id-ID;Indonesian
-it-IT;Italian
-ja-JP;Japanese (Japan)
+fil;Filipino
+fi;Finnish
+fr;French
+de;German
+el;Greek
+hi;Hindi
+hu;Hungarian
+is;Icelandic
+id;Indonesian
+it;Italian
+ja;Japanese (Japan)
 km;Khmer
-ko-KR;Korean
+ko;Korean
 la;Latin
 lv;Latvian
 mk;Macedonian
 ne;Nepali
-nb-NO;Norwegian
-pl-PL;Polish
-pt-BR;Portuguese
-ro-RO;Romanian
-ru-RU;Russian
-sr-RS;Serbian
+nb;Norwegian
+pl;Polish
+pt;Portuguese
+ro;Romanian
+ru;Russian
+sr;Serbian
 si;Sinhala
-sk-SK;Slovak
-es-MX;Spanish (Mexico)
-es-ES;Spanish (Spain)
+sk;Slovak
+es;Spanish
 sw;Swahili
-sv-SE;Swedish
+sv;Swedish
 ta;Tamil
-th-TH;Thai
-tr-TR;Turkish
-uk-UA;Ukrainian
-vi-VN;Vietnamese
+th;Thai
+tr;Turkish
+uk;Ukrainian
+vi;Vietnamese
 cy;Welsh

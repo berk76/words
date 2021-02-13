@@ -25,7 +25,7 @@ public class Mp3Creator {
     
     public static void createMp3(String text, String lang, String file) throws Mp3CreatorException {
         try {
-            String value = String.format(DATA, text, lang.substring(0, 2));
+            String value = String.format(DATA, text, lang);
             String payload = String.format(PAYLOAD, URLEncoder.encode(value, "UTF-8"));
             String resp = HttpUtils.sendPost(URL, payload, CONTENT_TYPE);
             resp = resp.replaceFirst("\\)]}'", "");

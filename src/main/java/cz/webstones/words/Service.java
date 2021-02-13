@@ -14,12 +14,12 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
-import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -289,7 +289,7 @@ public class Service {
         return result;
     }
     
-    public static ArrayList<LanguageDto> getLanguageList() throws UnsupportedEncodingException, IOException {
+    public static ArrayList<LanguageDto> getLanguageList() throws IOException {
         ArrayList<LanguageDto> result = new ArrayList<>();
 
         Class cls = Setup.class;
@@ -309,6 +309,22 @@ public class Service {
         }
 
         
+        return result;
+    }
+    
+    public static boolean validateLang(String lang) throws IOException {
+        boolean result = false;
+        
+        if (lang == null)
+            return false;
+        
+        List<LanguageDto> list = getLanguageList();
+        for (LanguageDto l: list) {
+            if (l.getCode().equals(lang)) {
+                result = true;
+                break;
+            }
+        }
         return result;
     }
 }
