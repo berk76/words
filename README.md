@@ -4,7 +4,7 @@
 
 Words is small vocabulary I made for my little schoolgirl. It enables you put in foreign words and sentences, categorize them and download voice pronunciation. 
 
-![Words.png](doc/Words.png)
+![Main window](docs/gfx/Words.png)
   
 ## Features
 
@@ -17,9 +17,8 @@ Vocabulary enables you:
 
 ## How you can get started with Words
 
-Read project [Wiki](https://github.com/berk76/words/wiki) pages for brief instructions.  
-Visit project [Discussions](https://github.com/berk76/words/discussions) where you can ask questions or tell your ideas.  
-Follow us at Twitter: [@WordsVocabulary](https://twitter.com/WordsVocabulary)
+Read project [Web](https://berk76.github.io/words/) pages for brief instructions.  
+Visit project [Discussions](https://github.com/berk76/words/discussions) where you can ask questions or share your ideas.  
 
 ## How to build project
 
