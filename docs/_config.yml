@@ -1,5 +1,4 @@
+remote_theme: pmarsceill/just-the-docs
 title: Words
 description: Voice vocabulary not only for your children
-show_downloads: false
-google_analytics: UA-47477207-1
-theme: jekyll-theme-midnight
+ga_tracking: UA-47477207-1
