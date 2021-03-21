@@ -1,3 +1,9 @@
+---
+layout: default
+title: Program Words (cs)
+nav_order: 2
+---
+
 # Program Words
 
 Když se moje dcera začala ve škole učit angličtinu, tak jsem pro ní vyrobil jednoduchý slovníček, ve kterém si zadává slovíčka a zařazuje si je do různých kategorií. Slovník pro každé slovíčko nebo větu stáhne z Googlu správnou výslovnost. Dcera je tak v učení slovíček zcela soběstačná.

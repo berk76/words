@@ -1,3 +1,9 @@
+---
+layout: default
+title: Program Words (en)
+nav_order: 3
+---
+
 # Program Words
 
 When my daughter started to learn English at school, I made a simple vocabulary for her to enter words and put them in different categories. The dictionary for each word or sentence will download the correct pronunciation from Google. The daughter is thus completely self-sufficient in vocabulary teaching.
