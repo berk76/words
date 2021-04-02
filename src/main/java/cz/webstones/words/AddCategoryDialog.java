@@ -28,8 +28,6 @@ public class AddCategoryDialog extends JEscapeableDialog {
     private boolean commited;
     
     private JTextField txfCategory;
-    private JButton btnCancel;
-    private JButton btnOk;
 
     /**
      * Creates new form AddCategoryDialog
@@ -65,8 +63,8 @@ public class AddCategoryDialog extends JEscapeableDialog {
         javax.swing.JLabel lblCategory;
 
         txfCategory = new javax.swing.JTextField();
-        btnCancel = new javax.swing.JButton();
-        btnOk = new javax.swing.JButton();
+        JButton btnCancel = new javax.swing.JButton();
+        JButton btnOk = new javax.swing.JButton();
         lblCategory = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
