@@ -92,7 +92,7 @@ public class AboutDialog extends JEscapeableDialog implements IObserver {
         }
     }
     
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {
+    private void btnCloseActionPerformed(java.awt.event.ActionEvent evt) {
         this.setVisible(false);
     }
 
@@ -127,6 +127,7 @@ public class AboutDialog extends JEscapeableDialog implements IObserver {
 
         lblWrittenBy.setText("Written by Jaroslav Beran");
 
+        lblWeb.setText("Web:");
         lblWebLink.setText(URL_GITHUB);
         lblWebLink.setForeground(Color.BLUE.darker());
         lblWebLink.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
@@ -155,12 +156,11 @@ public class AboutDialog extends JEscapeableDialog implements IObserver {
         btnClose.setText("Close");
         btnClose.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
+                btnCloseActionPerformed(evt);
             }
         });
 
         lblJvmVendor.setText("JVM Vendor: " + System.getProperty("java.vm.vendor"));
-        lblJvmVendor.setText("jLabel5");
         lblJvmVersion.setText("JVM Version: " + System.getProperty("java.version"));
         lblDictionary.setText("Dictionary:");
         lblLang.setText("Language:");
