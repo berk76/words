@@ -48,8 +48,8 @@ public class AboutDialog extends JEscapeableDialog implements IObserver {
     private javax.swing.JLabel lblJvmVersion;
     private javax.swing.JLabel lblDictionary;
     private javax.swing.JLabel lblLang;
-    private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTextArea jTextArea1;
+    private javax.swing.JScrollPane spLicense;
+    private javax.swing.JTextArea taLicense;
     
     private static final String URL_GITHUB = "https://berk76.github.io/words/";
     private IDictionary dict;
@@ -98,8 +98,8 @@ public class AboutDialog extends JEscapeableDialog implements IObserver {
 
     private void initComponents() {
         lblVersion = new javax.swing.JLabel();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        jTextArea1 = new javax.swing.JTextArea();
+        spLicense = new javax.swing.JScrollPane();
+        taLicense = new javax.swing.JTextArea();
         lblWrittenBy = new javax.swing.JLabel();
         lblWeb = new javax.swing.JLabel();
         btnClose = new javax.swing.JButton();
@@ -116,14 +116,14 @@ public class AboutDialog extends JEscapeableDialog implements IObserver {
         lblVersion.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
         lblVersion.setText(Service.VERSION);
 
-        jTextArea1.setEditable(false);
-        jTextArea1.setColumns(20);
-        jTextArea1.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
-        jTextArea1.setLineWrap(true);
-        jTextArea1.setRows(5);
-        jTextArea1.setText("Words is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 3 of the License, or (at your option) any later version. <http://www.gnu.org/licenses/>");
-        jTextArea1.setWrapStyleWord(true);
-        jScrollPane1.setViewportView(jTextArea1);
+        taLicense.setEditable(false);
+        taLicense.setColumns(20);
+        taLicense.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
+        taLicense.setLineWrap(true);
+        taLicense.setRows(5);
+        taLicense.setText("Words is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 3 of the License, or (at your option) any later version. <http://www.gnu.org/licenses/>");
+        taLicense.setWrapStyleWord(true);
+        spLicense.setViewportView(taLicense);
 
         lblWrittenBy.setText("Written by Jaroslav Beran");
 
@@ -183,7 +183,7 @@ public class AboutDialog extends JEscapeableDialog implements IObserver {
                         .addComponent(lblJvmVersion)
                         .addComponent(lblDictionary)
                         .addComponent(lblLang)
-                        .addComponent(jScrollPane1, GroupLayout.DEFAULT_SIZE, 321, Short.MAX_VALUE)
+                        .addComponent(spLicense, GroupLayout.DEFAULT_SIZE, 321, Short.MAX_VALUE)
                         .addComponent(btnClose, Alignment.TRAILING))
                     .addContainerGap())
         );
@@ -193,7 +193,7 @@ public class AboutDialog extends JEscapeableDialog implements IObserver {
                     .addContainerGap()
                     .addComponent(lblVersion, GroupLayout.PREFERRED_SIZE, 46, GroupLayout.PREFERRED_SIZE)
                     .addPreferredGap(ComponentPlacement.RELATED)
-                    .addComponent(jScrollPane1, GroupLayout.PREFERRED_SIZE, 106, GroupLayout.PREFERRED_SIZE)
+                    .addComponent(spLicense, GroupLayout.PREFERRED_SIZE, 106, GroupLayout.PREFERRED_SIZE)
                     .addGap(18)
                     .addComponent(lblWrittenBy)
                     .addPreferredGap(ComponentPlacement.RELATED)
