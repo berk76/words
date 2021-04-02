@@ -38,18 +38,8 @@ public class AboutDialog extends JEscapeableDialog implements IObserver {
     
     private static final long serialVersionUID = -2183131500093783064L;
     private static final Logger LOGGER = Logger.getLogger(AboutDialog.class.getName());
-    
-    private javax.swing.JButton btnClose;
-    private javax.swing.JLabel lblVersion;
-    private javax.swing.JLabel lblWrittenBy;
-    private javax.swing.JLabel lblWeb;
-    private javax.swing.JLabel lblWebLink;
-    private javax.swing.JLabel lblJvmVendor;
-    private javax.swing.JLabel lblJvmVersion;
     private javax.swing.JLabel lblDictionary;
     private javax.swing.JLabel lblLang;
-    private javax.swing.JScrollPane spLicense;
-    private javax.swing.JTextArea taLicense;
     
     private static final String URL_GITHUB = "https://berk76.github.io/words/";
     private IDictionary dict;
@@ -92,20 +82,20 @@ public class AboutDialog extends JEscapeableDialog implements IObserver {
         }
     }
     
-    private void btnCloseActionPerformed(java.awt.event.ActionEvent evt) {
+    private void btnCloseActionPerformed() {
         this.setVisible(false);
     }
 
     private void initComponents() {
-        lblVersion = new javax.swing.JLabel();
-        spLicense = new javax.swing.JScrollPane();
-        taLicense = new javax.swing.JTextArea();
-        lblWrittenBy = new javax.swing.JLabel();
-        lblWeb = new javax.swing.JLabel();
-        btnClose = new javax.swing.JButton();
-        lblWebLink = new javax.swing.JLabel();
-        lblJvmVendor = new javax.swing.JLabel();
-        lblJvmVersion = new javax.swing.JLabel();
+        javax.swing.JLabel lblVersion = new javax.swing.JLabel();
+        javax.swing.JScrollPane spLicense = new javax.swing.JScrollPane();
+        javax.swing.JTextArea taLicense = new javax.swing.JTextArea();
+        javax.swing.JLabel lblWrittenBy = new javax.swing.JLabel();
+        javax.swing.JLabel lblWeb = new javax.swing.JLabel();
+        javax.swing.JButton btnClose = new javax.swing.JButton();
+        javax.swing.JLabel lblWebLink = new javax.swing.JLabel();
+        javax.swing.JLabel lblJvmVendor = new javax.swing.JLabel();
+        javax.swing.JLabel lblJvmVersion = new javax.swing.JLabel();
         lblDictionary = new javax.swing.JLabel();
         lblLang = new javax.swing.JLabel();
 
@@ -113,12 +103,12 @@ public class AboutDialog extends JEscapeableDialog implements IObserver {
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("About");
 
-        lblVersion.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
+        lblVersion.setFont(Service.createFontLarge());
         lblVersion.setText(Service.VERSION);
 
         taLicense.setEditable(false);
         taLicense.setColumns(20);
-        taLicense.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
+        taLicense.setFont(Service.createFontSmall());
         taLicense.setLineWrap(true);
         taLicense.setRows(5);
         taLicense.setText("Words is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 3 of the License, or (at your option) any later version. <http://www.gnu.org/licenses/>");
@@ -152,13 +142,9 @@ public class AboutDialog extends JEscapeableDialog implements IObserver {
             }
         });
 
-        btnClose.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
+        btnClose.setFont(Service.createFont());
         btnClose.setText("Close");
-        btnClose.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnCloseActionPerformed(evt);
-            }
-        });
+        btnClose.addActionListener(e -> btnCloseActionPerformed());
 
         lblJvmVendor.setText("JVM Vendor: " + System.getProperty("java.vm.vendor"));
         lblJvmVersion.setText("JVM Version: " + System.getProperty("java.version"));
@@ -174,7 +160,7 @@ public class AboutDialog extends JEscapeableDialog implements IObserver {
                         .addComponent(lblVersion, GroupLayout.DEFAULT_SIZE, 321, Short.MAX_VALUE)
                         .addGroup(layout.createSequentialGroup()
                             .addComponent(lblWeb)
-                            .addGap(18)
+                            .addPreferredGap(ComponentPlacement.RELATED)
                             .addComponent(lblWebLink, GroupLayout.DEFAULT_SIZE, 272, Short.MAX_VALUE))
                         .addGroup(layout.createSequentialGroup()
                             .addComponent(lblWrittenBy)
