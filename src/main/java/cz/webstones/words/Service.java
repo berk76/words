@@ -1,7 +1,16 @@
 /*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
+*       Service.java
+*
+*       This file is part of Words project.
+*       https://github.com/berk76/words
+*
+*       Words is free software; you can redistribute it and/or modify
+*       it under the terms of the GNU General Public License as published by
+*       the Free Software Foundation; either version 3 of the License, or
+*       (at your option) any later version. <http://www.gnu.org/licenses/>
+*
+*       Written by Jaroslav Beran <jaroslav.beran@gmail.com>
+*/
 package cz.webstones.words;
 
 import java.awt.Font;
@@ -36,7 +45,7 @@ public class Service {
     public static final String SETUP_FNAME = "setup.properties";
     private static final String HISTORY_FNAME = "history.properties";
     private static final String APP_DATA_DIR = "WordsData";
-
+    private static final String FONT_NAME = "Tahoma";
     
     private static String getDataDir() {
         
@@ -150,7 +159,7 @@ public class Service {
                 props.load(is);
             }
         } else {
-            Class cls = Setup.class;
+            Class<Setup> cls = Setup.class;
             ClassLoader cLoader = cls.getClassLoader();
             try (InputStream is = cLoader.getResourceAsStream("setup.properties")) {
                 props.load(is);
@@ -266,6 +275,18 @@ public class Service {
         }
         return s;
     }
+    
+    public static Font createFontSmall() {
+        return new Font(FONT_NAME, 0, 12);
+    }
+    
+    public static Font createFont() {
+        return new Font(FONT_NAME, 0, 18);
+    }
+    
+    public static Font createFontLarge() {
+        return new Font(FONT_NAME, 0, 24);
+    }
 
     public static Font findFont(String text, Font currentFont) {
         Font result = currentFont;
@@ -292,7 +313,7 @@ public class Service {
     public static ArrayList<LanguageDto> getLanguageList() throws IOException {
         ArrayList<LanguageDto> result = new ArrayList<>();
 
-        Class cls = Setup.class;
+        Class<Setup> cls = Setup.class;
         ClassLoader cLoader = cls.getClassLoader();
         try (InputStream is = cLoader.getResourceAsStream("languages.txt");
                 BufferedReader reader = new BufferedReader(new InputStreamReader(is, StandardCharsets.UTF_8))) {

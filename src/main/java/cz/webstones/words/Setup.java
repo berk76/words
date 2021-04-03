@@ -1,7 +1,16 @@
 /*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
+*       Setup.java
+*
+*       This file is part of Words project.
+*       https://github.com/berk76/words
+*
+*       Words is free software; you can redistribute it and/or modify
+*       it under the terms of the GNU General Public License as published by
+*       the Free Software Foundation; either version 3 of the License, or
+*       (at your option) any later version. <http://www.gnu.org/licenses/>
+*
+*       Written by Jaroslav Beran <jaroslav.beran@gmail.com>
+*/
 package cz.webstones.words;
 
 import java.io.IOException;
@@ -15,6 +24,7 @@ import java.util.logging.Logger;
  */
 public class Setup implements Serializable {
     
+    private static final long serialVersionUID = 3903782274524518684L;
     private static final Logger LOGGER = Logger.getLogger(Setup.class.getName());
     
     private String dataDir;

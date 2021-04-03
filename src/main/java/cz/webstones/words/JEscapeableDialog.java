@@ -1,8 +1,16 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+*       JEscapeableDialog.java
+*
+*       This file is part of Words project.
+*       https://github.com/berk76/words
+*
+*       Words is free software; you can redistribute it and/or modify
+*       it under the terms of the GNU General Public License as published by
+*       the Free Software Foundation; either version 3 of the License, or
+*       (at your option) any later version. <http://www.gnu.org/licenses/>
+*
+*       Written by Jaroslav Beran <jaroslav.beran@gmail.com>
+*/
 package cz.webstones.words;
 
 import java.awt.event.ActionEvent;
@@ -20,6 +28,8 @@ import javax.swing.KeyStroke;
  */
 public class JEscapeableDialog extends JDialog {
     
+    private static final long serialVersionUID = -5027168890392251238L;
+
     public JEscapeableDialog(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
     }
@@ -28,6 +38,8 @@ public class JEscapeableDialog extends JDialog {
         JRootPane rootPane = new JRootPane();
         KeyStroke stroke = KeyStroke.getKeyStroke("ESCAPE");
         Action actionListener = new AbstractAction() {
+            private static final long serialVersionUID = 4451056055225130278L;
+
             public void actionPerformed(ActionEvent actionEvent) {
                 setVisible(false);
             }
@@ -38,5 +50,4 @@ public class JEscapeableDialog extends JDialog {
 
         return rootPane;
     }
-
 }

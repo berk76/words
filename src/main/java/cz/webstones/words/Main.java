@@ -1,7 +1,16 @@
 /*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
+*       Main.java
+*
+*       This file is part of Words project.
+*       https://github.com/berk76/words
+*
+*       Words is free software; you can redistribute it and/or modify
+*       it under the terms of the GNU General Public License as published by
+*       the Free Software Foundation; either version 3 of the License, or
+*       (at your option) any later version. <http://www.gnu.org/licenses/>
+*
+*       Written by Jaroslav Beran <jaroslav.beran@gmail.com>
+*/
 package cz.webstones.words;
 
 import static cz.webstones.words.Service.findFont;
@@ -9,7 +18,6 @@ import cz.webstones.words.mp3.AudioFilePlayer;
 import cz.webstones.words.dictionary.IObserver;
 import cz.webstones.words.dictionary.WordDto;
 import cz.webstones.words.dictionary.DictionaryException;
-import static cz.webstones.words.dictionary.DictionaryStateEnum.CUR_WORD_CHANGED;
 import cz.webstones.words.dictionary.impl.DictionaryImpl;
 import cz.webstones.words.mp3.Mp3Creator;
 import cz.webstones.words.mp3.Mp3CreatorException;
@@ -21,8 +29,17 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.prefs.Preferences;
 import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JFileChooser;
+import javax.swing.JLabel;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
+import javax.swing.JToolBar;
 import javax.swing.filechooser.FileView;
 import cz.webstones.words.dictionary.IDictionary;
 import java.awt.Font;
@@ -34,14 +51,34 @@ import java.nio.file.Files;
  */
 public class Main extends javax.swing.JFrame implements IObserver {
     
+    private static final long serialVersionUID = 5213584438445872718L;
     private static final Logger LOGGER = Logger.getLogger(Main.class.getName());
+    
+    private JLabel lblNativeWordValue;
+    private JLabel lblForeignWordValue;
+    private JLabel lblStatus;
+    private JTextField txfTryToWrite;
+    private JButton btnGood;
+    private JButton btnToolAdd;
+    private JButton btnToolEdit;
+    private JButton btnToolDelete;
+    private JButton btnRewind;
+    private JButton btnWrong;
+    private JButton btnShowAndPlay;
+    private JButton btnBack;
+    private JButton btnForward;
+    private JButton btnToolNew;
+    private JButton btnToolOpen;
+    private JButton btnToolSave;
+    private JButton btnToolSearch;
+    private JComboBox<String> cbbCategory;
 
     private IDictionary dict;
     private AddCategoryDialog addCatDialog;
     private RenameCategoryDialog renameCatDialog;
     private WordDialog wordDialog;
     private AboutDialog aboutDialog;
-    private FindDialog findDialog;
+    private SearchDialog findDialog;
     private LanguageDialog langDialog;
     private ErrorDialog errorDialog;
     private WordExistsDialog wordExistsDialog;
@@ -58,14 +95,16 @@ public class Main extends javax.swing.JFrame implements IObserver {
     public Main() throws DictionaryException {
         
         super();
+        initComponents();
+        setLocationRelativeTo(null);
+        
         dict = new DictionaryImpl();
         addCatDialog = new AddCategoryDialog(this, true);
         renameCatDialog = new RenameCategoryDialog(this, true, dict);
         wordDialog = new WordDialog(this, true, addCatDialog, dict);
         aboutDialog = new AboutDialog(this, true, dict);
-        findDialog = new FindDialog(this, false, dict);
+        findDialog = new SearchDialog(this, false, dict);
         wordExistsDialog = new WordExistsDialog(this, true, dict);
-
         Point p = findDialog.getLocation();
         findDialog.setLocation(p.x + 500, p.y - 100);
 
@@ -81,18 +120,6 @@ public class Main extends javax.swing.JFrame implements IObserver {
         } else {
             onStart();
         }
-
-        initComponents();
-        this.setLocationRelativeTo(null);
-        this.setMinimumSize(this.getSize());
-        setTitleText(Service.VERSION, "", null);
-        jLabel1.setText("");
-        jLabel1.addPropertyChangeListener(new LabelFontChangeListener(jLabel1));
-        jLabel2.setText("");
-        jLabel3.setText("");
-        jLabel3.addPropertyChangeListener(new LabelFontChangeListener(jLabel3));
-        jTextField1.setText("");
-        jTextField1.getDocument().addDocumentListener(new TextFieldFontChangeListener(jTextField1));
 
         findDialog.setText("");
 
@@ -135,8 +162,8 @@ public class Main extends javax.swing.JFrame implements IObserver {
                 break;
 
             case CUR_CATEGORY_CHANGED:
-                if (!dict.getCurrentCategory().equals(jComboBox1.getSelectedItem().toString())) {
-                    jComboBox1.setSelectedItem(dict.getCurrentCategory());
+                if (!dict.getCurrentCategory().equals(cbbCategory.getSelectedItem().toString())) {
+                    cbbCategory.setSelectedItem(dict.getCurrentCategory());
                 }
                 break;
 
@@ -153,6 +180,7 @@ public class Main extends javax.swing.JFrame implements IObserver {
                     errorDialog.showError("Error: Cannot get language.", ex);
                 }
                 break;
+            default:
         }
     }
 
@@ -188,8 +216,8 @@ public class Main extends javax.swing.JFrame implements IObserver {
                 File f = new File(fName);
 
                 if (!f.exists() && mp3DownloadConfirmed) {
-                    jLabel2.setIcon(loadingIcon);
-                    jLabel2.setText("Downloading ...");
+                    lblStatus.setIcon(loadingIcon);
+                    lblStatus.setText("Downloading ...");
 
                     try {
                         Mp3Creator.createMp3(wordToPlay.getEn(), dict.getSetup().getLanguage(), wordToPlay.getMp3FilenameEn(dict.getSetup().getFullMp3Path()));
@@ -200,7 +228,7 @@ public class Main extends javax.swing.JFrame implements IObserver {
 
                     disableControls(false);
                     disableToolbarControls(false);
-                    jLabel2.setIcon(null);
+                    lblStatus.setIcon(null);
                     updateStatus();
                     disableControls(true);
                     disableToolbarControls(true);
@@ -236,19 +264,19 @@ public class Main extends javax.swing.JFrame implements IObserver {
     }
 
     private void updateCategoryCombo() {
-        int n = jComboBox1.getItemCount();
+        int n = cbbCategory.getItemCount();
         for (int i = 1; i < n; i++) {
-            jComboBox1.removeItemAt(n - i);
+            cbbCategory.removeItemAt(n - i);
         }
 
         for (String s : dict.getCategoryList()) {
-            jComboBox1.addItem(s);
-            if (jComboBox1.getFont().canDisplayUpTo(s) != -1) {
-                Font f = findFont(s, jComboBox1.getFont());
-                jComboBox1.setFont(f);
+            cbbCategory.addItem(s);
+            if (cbbCategory.getFont().canDisplayUpTo(s) != -1) {
+                Font f = findFont(s, cbbCategory.getFont());
+                cbbCategory.setFont(f);
             }
         }
-        jComboBox1.setSelectedItem(dict.getCurrentCategory());
+        cbbCategory.setSelectedItem(dict.getCurrentCategory());
     }
 
     private void loadDirectory(String dictPath) throws IOException {
@@ -270,11 +298,11 @@ public class Main extends javax.swing.JFrame implements IObserver {
 
     private void nextAbsolute(int i) {
             if (dict.size() == 0) {
-            this.jLabel1.setText("<category is empty>");
-            this.jLabel3.setText("");
-            this.jLabel2.setText("0 / 0 words");
+            this.lblNativeWordValue.setText("<category is empty>");
+            this.lblForeignWordValue.setText("");
+            this.lblStatus.setText("0 / 0 words");
             disableControls(true);
-            jComboBox1.setEnabled(true);
+            cbbCategory.setEnabled(true);
             return;
         }
         disableControls(false);
@@ -291,14 +319,14 @@ public class Main extends javax.swing.JFrame implements IObserver {
 
         WordDto w = dict.getWord();
 
-        this.jLabel1.setText(w.getCz());
+        this.lblNativeWordValue.setText(w.getCz());
         if (findDialog.isShowing()) {
-            this.jLabel3.setText(w.getEn());
+            this.lblForeignWordValue.setText(w.getEn());
         } else {
-            this.jLabel3.setText("");
+            this.lblForeignWordValue.setText("");
         }
-        this.jTextField1.setText("");
-        this.jTextField1.grabFocus();
+        this.txfTryToWrite.setText("");
+        this.txfTryToWrite.grabFocus();
 
         updateStatus();
         disableGoodWrong(true);
@@ -314,519 +342,49 @@ public class Main extends javax.swing.JFrame implements IObserver {
 
     private void updateStatus() {
         if (controlsEnabled) {
-            this.jLabel2.setText(String.valueOf(dict.getCurrnet() + 1) + " / " + String.valueOf(dict.size()) + " words");
+            lblStatus.setText(String.format("%d / %s words", dict.getCurrnet() + 1, dict.size()));
         }
     }
 
     private void disableControls(boolean b) {
         controlsEnabled = !b;
-        jButton1.setEnabled(!b);
-        jButton2.setEnabled(!b);
-        jButton3.setEnabled(!b);
-        jButton4.setEnabled(!b);
-        jButton5.setEnabled(!b);
-        jButton14.setEnabled(!b);
-        jComboBox1.setEnabled(!b);
-        this.revalidate();
+        btnGood.setEnabled(!b);
+        btnWrong.setEnabled(!b);
+        btnShowAndPlay.setEnabled(!b);
+        btnBack.setEnabled(!b);
+        btnForward.setEnabled(!b);
+        btnRewind.setEnabled(!b);
+        cbbCategory.setEnabled(!b);
+        revalidate();
     }
     
     private void disableToolbarControls(boolean b) {
-        jButton6.setEnabled(!b);
-        jButton7.setEnabled(!b);
-        jButton8.setEnabled(!b);
-        jButton9.setEnabled(!b);
-        jButton10.setEnabled(!b);
-        jButton11.setEnabled(!b);
-        jButton12.setEnabled(!b);
+        btnToolNew.setEnabled(!b);
+        btnToolOpen.setEnabled(!b);
+        btnToolSave.setEnabled(!b);
+        btnToolSearch.setEnabled(!b);
+        btnToolAdd.setEnabled(!b);
+        btnToolEdit.setEnabled(!b);
+        btnToolDelete.setEnabled(!b);
     }
 
     private void disableGoodWrong(boolean b) {
-        jButton1.setEnabled(!b);
-        jButton2.setEnabled(!b);
+        btnGood.setEnabled(!b);
+        btnWrong.setEnabled(!b);
     }
 
     private boolean compareTexts() {
-        if (jTextField1.getText().trim().isEmpty()) {
+        if (txfTryToWrite.getText().trim().isEmpty()) {
             return true;
         }
-        if (jTextField1.getText().trim().equals(jLabel3.getText().trim())) {
+        if (txfTryToWrite.getText().trim().equals(lblForeignWordValue.getText().trim())) {
             return true;
         }
         JOptionPane.showMessageDialog(this, "Texts don't match. Correct it or delete it.");
         return false;
     }
-
-    /**
-     * This method is called from within the constructor to initialize the form.
-     * WARNING: Do NOT modify this code. The content of this method is always
-     * regenerated by the Form Editor.
-     */
-    @SuppressWarnings("unchecked")
-    // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
-    private void initComponents() {
-
-        jPanel1 = new javax.swing.JPanel();
-        jLabel1 = new javax.swing.JLabel();
-        jTextField1 = new javax.swing.JTextField();
-        jLabel2 = new javax.swing.JLabel();
-        jButton1 = new javax.swing.JButton();
-        jButton2 = new javax.swing.JButton();
-        jButton3 = new javax.swing.JButton();
-        jComboBox1 = new javax.swing.JComboBox();
-        jLabel3 = new javax.swing.JLabel();
-        jButton4 = new javax.swing.JButton();
-        jButton5 = new javax.swing.JButton();
-        jLabel4 = new javax.swing.JLabel();
-        jLabel5 = new javax.swing.JLabel();
-        jLabel6 = new javax.swing.JLabel();
-        jLabel7 = new javax.swing.JLabel();
-        jButton14 = new javax.swing.JButton();
-        jToolBar1 = new javax.swing.JToolBar();
-        jButton6 = new javax.swing.JButton();
-        jButton7 = new javax.swing.JButton();
-        jButton8 = new javax.swing.JButton();
-        jButton9 = new javax.swing.JButton();
-        jButton10 = new javax.swing.JButton();
-        jButton11 = new javax.swing.JButton();
-        jButton12 = new javax.swing.JButton();
-        jMenuBar1 = new javax.swing.JMenuBar();
-        jMenu3 = new javax.swing.JMenu();
-        jMenuItem10 = new javax.swing.JMenuItem();
-        jMenuItem12 = new javax.swing.JMenuItem();
-        jMenuItem2 = new javax.swing.JMenuItem();
-        jMenu1 = new javax.swing.JMenu();
-        jMenuItem1 = new javax.swing.JMenuItem();
-        jMenuItem7 = new javax.swing.JMenuItem();
-        jMenuItem3 = new javax.swing.JMenuItem();
-        jMenuItem8 = new javax.swing.JMenuItem();
-        jMenu2 = new javax.swing.JMenu();
-        jMenuItem4 = new javax.swing.JMenuItem();
-        jMenuItem5 = new javax.swing.JMenuItem();
-        jMenuItem9 = new javax.swing.JMenuItem();
-        jMenu4 = new javax.swing.JMenu();
-        jMenuItem6 = new javax.swing.JMenuItem();
-
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        addWindowListener(new java.awt.event.WindowAdapter() {
-            public void windowClosed(java.awt.event.WindowEvent evt) {
-                formWindowClosed(evt);
-            }
-            public void windowClosing(java.awt.event.WindowEvent evt) {
-                formWindowClosing(evt);
-            }
-        });
-
-        jLabel1.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
-        jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel1.setText("jLabel1");
-        jLabel1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
-
-        jTextField1.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
-        jTextField1.setHorizontalAlignment(javax.swing.JTextField.CENTER);
-        jTextField1.setText("jTextField1");
-
-        jLabel2.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
-        jLabel2.setText("jLabel2");
-
-        jButton1.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
-        jButton1.setForeground(new java.awt.Color(51, 153, 0));
-        jButton1.setText("Good");
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
-            }
-        });
-
-        jButton2.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
-        jButton2.setForeground(new java.awt.Color(204, 0, 51));
-        jButton2.setText("Wrong");
-        jButton2.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton2ActionPerformed(evt);
-            }
-        });
-
-        jButton3.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
-        jButton3.setText("Show & Play");
-        jButton3.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton3ActionPerformed(evt);
-            }
-        });
-
-        jComboBox1.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
-        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "All" }));
-        jComboBox1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jComboBox1ActionPerformed(evt);
-            }
-        });
-
-        jLabel3.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
-        jLabel3.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel3.setText("jLabel3");
-        jLabel3.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
-
-        jButton4.setToolTipText("Back");
-        jButton4.setLabel("<");
-        jButton4.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton4ActionPerformed(evt);
-            }
-        });
-
-        jButton5.setToolTipText("Next");
-        jButton5.setLabel(">");
-        jButton5.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton5ActionPerformed(evt);
-            }
-        });
-
-        jLabel4.setText("Native word");
-
-        jLabel5.setText("Foreign word");
-
-        jLabel6.setText("Try to write it down");
-
-        jLabel7.setText("Choose category");
-
-        jButton14.setText("|<");
-        jButton14.setToolTipText("Rewind");
-        jButton14.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton14ActionPerformed(evt);
-            }
-        });
-
-        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
-        jPanel1.setLayout(jPanel1Layout);
-        jPanel1Layout.setHorizontalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jTextField1, javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jLabel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(jButton3)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButton1)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButton2)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 40, Short.MAX_VALUE)
-                        .addComponent(jButton14)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButton4)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButton5))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel4)
-                            .addComponent(jLabel5)
-                            .addComponent(jLabel6)
-                            .addComponent(jLabel7)
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, 267, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(jLabel2)))
-                        .addGap(0, 0, Short.MAX_VALUE)))
-                .addContainerGap())
-        );
-        jPanel1Layout.setVerticalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addComponent(jLabel4)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jLabel5)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jLabel6)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jLabel7)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel2))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jButton4)
-                    .addComponent(jButton5)
-                    .addComponent(jButton14))
-                .addContainerGap())
-        );
-
-        jToolBar1.setFloatable(false);
-        jToolBar1.setRollover(true);
-
-        jButton6.setIcon(new javax.swing.ImageIcon(getClass().getResource("/page.png"))); // NOI18N
-        jButton6.setToolTipText("New dictionary");
-        jButton6.setFocusable(false);
-        jButton6.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        jButton6.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        jButton6.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton6ActionPerformed(evt);
-            }
-        });
-        jToolBar1.add(jButton6);
-
-        jButton7.setIcon(new javax.swing.ImageIcon(getClass().getResource("/folder.png"))); // NOI18N
-        jButton7.setToolTipText("Open dictionary");
-        jButton7.setFocusable(false);
-        jButton7.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        jButton7.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        jButton7.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton7ActionPerformed(evt);
-            }
-        });
-        jToolBar1.add(jButton7);
-
-        jButton8.setIcon(new javax.swing.ImageIcon(getClass().getResource("/disk.png"))); // NOI18N
-        jButton8.setToolTipText("Save dictionary");
-        jButton8.setFocusable(false);
-        jButton8.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        jButton8.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        jButton8.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton8ActionPerformed(evt);
-            }
-        });
-        jToolBar1.add(jButton8);
-
-        jButton9.setIcon(new javax.swing.ImageIcon(getClass().getResource("/find.png"))); // NOI18N
-        jButton9.setToolTipText("Find word");
-        jButton9.setFocusable(false);
-        jButton9.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        jButton9.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        jButton9.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton9ActionPerformed(evt);
-            }
-        });
-        jToolBar1.add(jButton9);
-
-        jButton10.setIcon(new javax.swing.ImageIcon(getClass().getResource("/application_add.png"))); // NOI18N
-        jButton10.setToolTipText("Add word");
-        jButton10.setFocusable(false);
-        jButton10.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        jButton10.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        jButton10.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton10ActionPerformed(evt);
-            }
-        });
-        jToolBar1.add(jButton10);
-
-        jButton11.setIcon(new javax.swing.ImageIcon(getClass().getResource("/application_edit.png"))); // NOI18N
-        jButton11.setToolTipText("Edit word");
-        jButton11.setFocusable(false);
-        jButton11.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        jButton11.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        jButton11.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton11ActionPerformed(evt);
-            }
-        });
-        jToolBar1.add(jButton11);
-
-        jButton12.setIcon(new javax.swing.ImageIcon(getClass().getResource("/application_delete.png"))); // NOI18N
-        jButton12.setToolTipText("Delete word");
-        jButton12.setFocusable(false);
-        jButton12.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        jButton12.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        jButton12.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton12ActionPerformed(evt);
-            }
-        });
-        jToolBar1.add(jButton12);
-
-        jMenuBar1.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
-
-        jMenu3.setText("Dictionary");
-        jMenu3.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
-
-        jMenuItem10.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_N, java.awt.event.InputEvent.CTRL_DOWN_MASK));
-        jMenuItem10.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
-        jMenuItem10.setText("New...");
-        jMenuItem10.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jMenuItem10ActionPerformed(evt);
-            }
-        });
-        jMenu3.add(jMenuItem10);
-
-        jMenuItem12.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_O, java.awt.event.InputEvent.CTRL_DOWN_MASK));
-        jMenuItem12.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
-        jMenuItem12.setText("Open...");
-        jMenuItem12.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jMenuItem12ActionPerformed(evt);
-            }
-        });
-        jMenu3.add(jMenuItem12);
-
-        jMenuItem2.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_S, java.awt.event.InputEvent.CTRL_DOWN_MASK));
-        jMenuItem2.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
-        jMenuItem2.setText("Save");
-        jMenuItem2.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jMenuItem2ActionPerformed(evt);
-            }
-        });
-        jMenu3.add(jMenuItem2);
-
-        jMenuBar1.add(jMenu3);
-
-        jMenu1.setText("Word");
-        jMenu1.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
-
-        jMenuItem1.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F, java.awt.event.InputEvent.CTRL_DOWN_MASK));
-        jMenuItem1.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
-        jMenuItem1.setText("Find...");
-        jMenuItem1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jMenuItem1ActionPerformed(evt);
-            }
-        });
-        jMenu1.add(jMenuItem1);
-
-        jMenuItem7.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_D, java.awt.event.InputEvent.CTRL_DOWN_MASK));
-        jMenuItem7.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
-        jMenuItem7.setText("Add...");
-        jMenuItem7.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jMenuItem7ActionPerformed(evt);
-            }
-        });
-        jMenu1.add(jMenuItem7);
-
-        jMenuItem3.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_E, java.awt.event.InputEvent.CTRL_DOWN_MASK));
-        jMenuItem3.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
-        jMenuItem3.setText("Edit...");
-        jMenuItem3.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jMenuItem3ActionPerformed(evt);
-            }
-        });
-        jMenu1.add(jMenuItem3);
-
-        jMenuItem8.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
-        jMenuItem8.setText("Delete");
-        jMenuItem8.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jMenuItem8ActionPerformed(evt);
-            }
-        });
-        jMenu1.add(jMenuItem8);
-
-        jMenuBar1.add(jMenu1);
-
-        jMenu2.setText("Category");
-        jMenu2.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
-
-        jMenuItem4.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
-        jMenuItem4.setText("Add...");
-        jMenuItem4.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jMenuItem4ActionPerformed(evt);
-            }
-        });
-        jMenu2.add(jMenuItem4);
-
-        jMenuItem5.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
-        jMenuItem5.setText("Rename...");
-        jMenuItem5.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jMenuItem5ActionPerformed(evt);
-            }
-        });
-        jMenu2.add(jMenuItem5);
-
-        jMenuItem9.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
-        jMenuItem9.setText("Delete");
-        jMenuItem9.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jMenuItem9ActionPerformed(evt);
-            }
-        });
-        jMenu2.add(jMenuItem9);
-
-        jMenuBar1.add(jMenu2);
-
-        jMenu4.setText("Help");
-        jMenu4.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
-
-        jMenuItem6.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
-        jMenuItem6.setText("About...");
-        jMenuItem6.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jMenuItem6ActionPerformed(evt);
-            }
-        });
-        jMenu4.add(jMenuItem6);
-
-        jMenuBar1.add(jMenu4);
-
-        setJMenuBar(jMenuBar1);
-
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
-        getContentPane().setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addComponent(jToolBar1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-        );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addComponent(jToolBar1, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
-
-        pack();
-    }// </editor-fold>//GEN-END:initComponents
-
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        // Button Good
-        if (compareTexts()) {
-            dict.getWord().incGoodHits();
-            dict.getWord().setLastGoodHit(new Date());
-            nextRelative(1);
-        }
-    }//GEN-LAST:event_jButton1ActionPerformed
-
-    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-        // Button Wrong
-        if (compareTexts()) {
-            dict.getWord().incWrongHits();
-            dict.getWord().setLastWrongHit(new Date());
-            nextRelative(1);
-        }
-    }//GEN-LAST:event_jButton2ActionPerformed
-
-    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
-        // Button Show&Play
-        this.jLabel3.setText(dict.getWord().getEn());
-        play(dict.getWord());
-    }//GEN-LAST:event_jButton3ActionPerformed
-
-    private void formWindowClosed(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosed
-    }//GEN-LAST:event_formWindowClosed
-
-    private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
+    
+    private void formWindowClosing() {
         try {
             saveDirectory();
             Service.saveHistory(dict.getSetup().getDataDir());
@@ -835,56 +393,9 @@ public class Main extends javax.swing.JFrame implements IObserver {
         } finally {
             onFinish();
         }        
-    }//GEN-LAST:event_formWindowClosing
-
-    private void jComboBox1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBox1ActionPerformed
-        if (!disableCategotyChange) {
-            if (!dict.getCurrentCategory().equals(jComboBox1.getSelectedItem().toString())) {
-                dict.setCategory(jComboBox1.getSelectedItem().toString());
-            }
-        }
-    }//GEN-LAST:event_jComboBox1ActionPerformed
-
-    private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
-        nextRelative(-1);
-    }//GEN-LAST:event_jButton4ActionPerformed
-
-    private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
-        nextRelative(1);
-    }//GEN-LAST:event_jButton5ActionPerformed
-
-    private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
-        showFindDialog();
-    }//GEN-LAST:event_jMenuItem1ActionPerformed
-
-    private void jMenuItem6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem6ActionPerformed
-        aboutDialog.setVisible(true);
-    }//GEN-LAST:event_jMenuItem6ActionPerformed
-
-    private void jMenuItem3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem3ActionPerformed
-        editWord();
-    }//GEN-LAST:event_jMenuItem3ActionPerformed
-
-    private void jMenuItem4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem4ActionPerformed
-        // Add Category
-        addCatDialog.setCategoryText("");
-        addCatDialog.setVisible(true);
-        if (addCatDialog.isCommited()) {
-            addCategory(addCatDialog.getCategoryText());
-        }
-    }//GEN-LAST:event_jMenuItem4ActionPerformed
-
-    private void jMenuItem5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem5ActionPerformed
-        // Rename Category
-        renameCatDialog.setNewCategoryText("");
-        renameCatDialog.setVisible(true);
-        if (renameCatDialog.isCommited()) {
-            renameCategory(renameCatDialog.getOldCategoryText(), renameCatDialog.getNewCategoryText());
-        }
-    }//GEN-LAST:event_jMenuItem5ActionPerformed
+    }
 
     private void editWord() {
-        // Edit Word
         WordDto w = dict.getWord();
         String oldWordPath = w.getMp3FilenameEn(dict.getSetup().getFullMp3Path());
         wordDialog.setWord(w);
@@ -908,9 +419,8 @@ public class Main extends javax.swing.JFrame implements IObserver {
     }
     
     private void addWord() {
-        // Add Word
         WordDto w = new WordDto();
-        w.setCategory(jComboBox1.getSelectedItem().toString());
+        w.setCategory(cbbCategory.getSelectedItem().toString());
         wordDialog.setWord(w);
         wordDialog.setVisible(true);
         
@@ -948,40 +458,19 @@ public class Main extends javax.swing.JFrame implements IObserver {
             
             dict.setCategory(w.getCategory());
             dict.setCurrent(w);
-            this.jLabel3.setText(w.getEn());
+            this.lblForeignWordValue.setText(w.getEn());
             
             play(w);
         }
     }
     
     private void deleteWord() {
-        // Delete Word
         int dialogResult = JOptionPane.showConfirmDialog(this, "Do you want to delete word: " + dict.getWord().getCz() + "?", "Question", JOptionPane.YES_NO_OPTION);
         if (dialogResult == JOptionPane.YES_OPTION) {
             dict.deleteCurrentWord();
         }
     }
     
-    private void jMenuItem7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem7ActionPerformed
-        addWord();
-    }//GEN-LAST:event_jMenuItem7ActionPerformed
-
-    private void jMenuItem8ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem8ActionPerformed
-        deleteWord();
-    }//GEN-LAST:event_jMenuItem8ActionPerformed
-
-    private void jMenuItem9ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem9ActionPerformed
-        // Delete Category
-        int dialogResult = JOptionPane.showConfirmDialog(this, "Do you want to delete category: " + dict.getCurrentCategory() + "?", "Question", JOptionPane.YES_NO_OPTION);
-        if (dialogResult == JOptionPane.YES_OPTION) {
-            try {
-                dict.deleteCurrentCategory();
-            } catch (DictionaryException ex) {
-                JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-            }
-        }
-    }//GEN-LAST:event_jMenuItem9ActionPerformed
-
     private String getPathToDataDir() {
         String result = dict.getSetup().getDataDir();
         int trimPos = result.lastIndexOf(File.separator);
@@ -1023,7 +512,6 @@ public class Main extends javax.swing.JFrame implements IObserver {
     }
     
     private void openDictionary() {
-        // Open Dictionary
         JFileChooser fileChooser = new JFileChooser(getPathToDataDir());
         fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
         fileChooser.setDialogTitle("Open dictionary");
@@ -1049,7 +537,6 @@ public class Main extends javax.swing.JFrame implements IObserver {
     }
     
     private void saveDictionary() {
-        // Save Dictionary
         try {
             saveDirectory();
             JOptionPane.showMessageDialog(this, "Dictionary saved.", "Info", JOptionPane.INFORMATION_MESSAGE);
@@ -1057,60 +544,503 @@ public class Main extends javax.swing.JFrame implements IObserver {
             errorDialog.showError("Error: Cannot save dictionary.", ex);
         }
     }
-    
-    private void jMenuItem12ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem12ActionPerformed
-        openDictionary();
-    }//GEN-LAST:event_jMenuItem12ActionPerformed
-    
-    private void jMenuItem10ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem10ActionPerformed
-        newDictionary();
-    }//GEN-LAST:event_jMenuItem10ActionPerformed
 
-    private void jMenuItem2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem2ActionPerformed
-        saveDictionary();
-    }//GEN-LAST:event_jMenuItem2ActionPerformed
+    private void initComponents() {
+        
+        JLabel lblNativeWord;
+        JLabel lblForeignWord;
+        JLabel lblTryToWrite;
+        JLabel lblCategory;
+        JMenu menWord;
+        JMenu menCategory;
+        JMenu menDictionary;
+        JMenu menHelp;
+        JMenuBar mbMenu;
+        JMenuItem meiWordSearch;
+        JMenuItem meiNew;
+        JMenuItem meiOpen;
+        JMenuItem meiSave;
+        JMenuItem meiWordEdit;
+        JMenuItem meiCatAdd;
+        JMenuItem meiCatRename;
+        JMenuItem meiAbout;
+        JMenuItem meiWordAdd;
+        JMenuItem meiWordDelete;
+        JMenuItem meiCatDelete;
+        JPanel jPanel1;
+        JToolBar jToolBar1;
 
-    private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
-        newDictionary();
-    }//GEN-LAST:event_jButton6ActionPerformed
+        jPanel1 = new JPanel();
+        lblNativeWordValue = new JLabel();
+        txfTryToWrite = new JTextField();
+        lblStatus = new JLabel();
+        btnGood = new JButton();
+        btnWrong = new JButton();
+        btnShowAndPlay = new JButton();
+        cbbCategory = new JComboBox<>();
+        lblForeignWordValue = new JLabel();
+        btnBack = new JButton();
+        btnForward = new JButton();
+        lblNativeWord = new JLabel();
+        lblForeignWord = new JLabel();
+        lblTryToWrite = new JLabel();
+        lblCategory = new JLabel();
+        btnRewind = new JButton();
+        jToolBar1 = new JToolBar();
+        btnToolNew = new JButton();
+        btnToolOpen = new JButton();
+        btnToolSave = new JButton();
+        btnToolSearch = new JButton();
+        btnToolAdd = new JButton();
+        btnToolEdit = new JButton();
+        btnToolDelete = new JButton();
+        mbMenu = new JMenuBar();
+        menDictionary = new JMenu();
+        meiNew = new JMenuItem();
+        meiOpen = new JMenuItem();
+        meiSave = new JMenuItem();
+        menWord = new JMenu();
+        meiWordSearch = new JMenuItem();
+        meiWordAdd = new JMenuItem();
+        meiWordEdit = new JMenuItem();
+        meiWordDelete = new JMenuItem();
+        menCategory = new JMenu();
+        meiCatAdd = new JMenuItem();
+        meiCatRename = new JMenuItem();
+        meiCatDelete = new JMenuItem();
+        menHelp = new JMenu();
+        meiAbout = new JMenuItem();
 
-    private void jButton7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton7ActionPerformed
-        openDictionary();
-    }//GEN-LAST:event_jButton7ActionPerformed
+        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowClosed(java.awt.event.WindowEvent evt) {
+                // no action required
+            }
+            public void windowClosing(java.awt.event.WindowEvent evt) {
+                formWindowClosing();
+            }
+        });
+        setMinimumSize(this.getSize());
+        setTitleText(Service.VERSION, "", null);
 
-    private void jButton8ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton8ActionPerformed
-        saveDictionary();
-    }//GEN-LAST:event_jButton8ActionPerformed
+        lblNativeWordValue.setFont(Service.createFontLarge());
+        lblNativeWordValue.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        lblNativeWordValue.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+        lblNativeWordValue.setText("");
+        lblNativeWordValue.addPropertyChangeListener(new LabelFontChangeListener(lblNativeWordValue));
 
-    private void jButton9ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton9ActionPerformed
+        txfTryToWrite.setFont(Service.createFontLarge());
+        txfTryToWrite.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        txfTryToWrite.setText("");
+        txfTryToWrite.getDocument().addDocumentListener(new TextFieldFontChangeListener(txfTryToWrite));
+
+        lblStatus.setFont(Service.createFont());
+        lblStatus.setText("");
+
+        btnGood.setFont(Service.createFont());
+        btnGood.setForeground(new java.awt.Color(51, 153, 0));
+        btnGood.setText("Good");
+        btnGood.addActionListener(e -> btnGoodActionPerformed());
+
+        btnWrong.setFont(Service.createFont());
+        btnWrong.setForeground(new java.awt.Color(204, 0, 51));
+        btnWrong.setText("Wrong");
+        btnWrong.addActionListener(e -> btnWrongActionPerformed());
+
+        btnShowAndPlay.setFont(Service.createFont());
+        btnShowAndPlay.setText("Show & Play");
+        btnShowAndPlay.addActionListener(e -> btnShowAndPlayActionPerformed());
+
+        cbbCategory.setFont(Service.createFont());
+        cbbCategory.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "All" }));
+        cbbCategory.addActionListener(e -> cbbActionPerformed());
+
+        lblForeignWordValue.setFont(Service.createFontLarge());
+        lblForeignWordValue.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        lblForeignWordValue.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+        lblForeignWordValue.setText("");
+        lblForeignWordValue.addPropertyChangeListener(new LabelFontChangeListener(lblForeignWordValue));
+
+        btnBack.setToolTipText("Back");
+        btnBack.setText("<");
+        btnBack.addActionListener(e -> btnBackActionPerformed());
+
+        btnForward.setToolTipText("Next");
+        btnForward.setText(">");
+        btnForward.addActionListener(e -> btnForwardActionPerformed());
+
+        lblNativeWord.setText("Native word");
+
+        lblForeignWord.setText("Foreign word");
+
+        lblTryToWrite.setText("Try to write it down");
+
+        lblCategory.setText("Choose category");
+
+        btnRewind.setText("|<");
+        btnRewind.setToolTipText("Rewind");
+        btnRewind.addActionListener(e -> btnRewindActionPerformed());
+
+        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(lblNativeWordValue, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(txfTryToWrite, javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(lblForeignWordValue, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(btnShowAndPlay)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btnGood)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btnWrong)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 40, Short.MAX_VALUE)
+                        .addComponent(btnRewind)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btnBack)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btnForward))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(lblNativeWord)
+                            .addComponent(lblForeignWord)
+                            .addComponent(lblTryToWrite)
+                            .addComponent(lblCategory)
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addComponent(cbbCategory, javax.swing.GroupLayout.PREFERRED_SIZE, 267, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(lblStatus)))
+                        .addGap(0, 0, Short.MAX_VALUE)))
+                .addContainerGap())
+        );
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addComponent(lblNativeWord)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(lblNativeWordValue, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(lblForeignWord)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(lblForeignWordValue, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(lblTryToWrite)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(txfTryToWrite, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(lblCategory)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(cbbCategory, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(lblStatus))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btnShowAndPlay, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnGood, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnWrong, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(btnBack)
+                    .addComponent(btnForward)
+                    .addComponent(btnRewind))
+                .addContainerGap())
+        );
+
+        jToolBar1.setFloatable(false);
+        jToolBar1.setRollover(true);
+
+        btnToolNew.setIcon(new javax.swing.ImageIcon(getClass().getResource("/page.png")));
+        btnToolNew.setToolTipText("New dictionary");
+        btnToolNew.setFocusable(false);
+        btnToolNew.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        btnToolNew.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        btnToolNew.addActionListener(e -> btnToolNewActionPerformed());
+        jToolBar1.add(btnToolNew);
+
+        btnToolOpen.setIcon(new javax.swing.ImageIcon(getClass().getResource("/folder.png")));
+        btnToolOpen.setToolTipText("Open dictionary");
+        btnToolOpen.setFocusable(false);
+        btnToolOpen.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        btnToolOpen.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        btnToolOpen.addActionListener(e -> btnToolOpenActionPerformed());
+        jToolBar1.add(btnToolOpen);
+
+        btnToolSave.setIcon(new javax.swing.ImageIcon(getClass().getResource("/disk.png")));
+        btnToolSave.setToolTipText("Save dictionary");
+        btnToolSave.setFocusable(false);
+        btnToolSave.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        btnToolSave.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        btnToolSave.addActionListener(e -> btnToolSaveActionPerformed());
+        jToolBar1.add(btnToolSave);
+
+        btnToolSearch.setIcon(new javax.swing.ImageIcon(getClass().getResource("/find.png")));
+        btnToolSearch.setToolTipText("Find word");
+        btnToolSearch.setFocusable(false);
+        btnToolSearch.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        btnToolSearch.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        btnToolSearch.addActionListener(e -> btnToolSearchActionPerformed());
+        jToolBar1.add(btnToolSearch);
+
+        btnToolAdd.setIcon(new javax.swing.ImageIcon(getClass().getResource("/application_add.png")));
+        btnToolAdd.setToolTipText("Add word");
+        btnToolAdd.setFocusable(false);
+        btnToolAdd.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        btnToolAdd.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        btnToolAdd.addActionListener(e -> btnToolAddActionPerformed());
+        jToolBar1.add(btnToolAdd);
+
+        btnToolEdit.setIcon(new javax.swing.ImageIcon(getClass().getResource("/application_edit.png")));
+        btnToolEdit.setToolTipText("Edit word");
+        btnToolEdit.setFocusable(false);
+        btnToolEdit.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        btnToolEdit.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        btnToolEdit.addActionListener(e -> btnToolEditActionPerformed());
+        jToolBar1.add(btnToolEdit);
+
+        btnToolDelete.setIcon(new javax.swing.ImageIcon(getClass().getResource("/application_delete.png")));
+        btnToolDelete.setToolTipText("Delete word");
+        btnToolDelete.setFocusable(false);
+        btnToolDelete.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        btnToolDelete.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        btnToolDelete.addActionListener(e -> btnToolDeleteActionPerformed());
+        jToolBar1.add(btnToolDelete);
+
+        mbMenu.setFont(Service.createFont());
+
+        menDictionary.setText("Dictionary");
+        menDictionary.setFont(Service.createFont());
+
+        meiNew.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_N, java.awt.event.InputEvent.CTRL_DOWN_MASK));
+        meiNew.setFont(Service.createFont());
+        meiNew.setText("New...");
+        meiNew.addActionListener(e -> meiNewActionPerformed());
+        menDictionary.add(meiNew);
+
+        meiOpen.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_O, java.awt.event.InputEvent.CTRL_DOWN_MASK));
+        meiOpen.setFont(Service.createFont());
+        meiOpen.setText("Open...");
+        meiOpen.addActionListener(e -> meiOpenActionPerformed());
+        menDictionary.add(meiOpen);
+
+        meiSave.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_S, java.awt.event.InputEvent.CTRL_DOWN_MASK));
+        meiSave.setFont(Service.createFont());
+        meiSave.setText("Save");
+        meiSave.addActionListener(e -> meiSaveActionPerformed());
+        menDictionary.add(meiSave);
+
+        mbMenu.add(menDictionary);
+
+        menWord.setText("Word");
+        menWord.setFont(Service.createFont());
+
+        meiWordSearch.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F, java.awt.event.InputEvent.CTRL_DOWN_MASK));
+        meiWordSearch.setFont(Service.createFont());
+        meiWordSearch.setText("Find...");
+        meiWordSearch.addActionListener(e -> meiWordSearchActionPerformed());
+        menWord.add(meiWordSearch);
+
+        meiWordAdd.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_D, java.awt.event.InputEvent.CTRL_DOWN_MASK));
+        meiWordAdd.setFont(Service.createFont());
+        meiWordAdd.setText("Add...");
+        meiWordAdd.addActionListener(e -> meiWordAddActionPerformed());
+        menWord.add(meiWordAdd);
+
+        meiWordEdit.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_E, java.awt.event.InputEvent.CTRL_DOWN_MASK));
+        meiWordEdit.setFont(Service.createFont());
+        meiWordEdit.setText("Edit...");
+        meiWordEdit.addActionListener(e -> meiWordEditActionPerformed());
+        menWord.add(meiWordEdit);
+
+        meiWordDelete.setFont(Service.createFont());
+        meiWordDelete.setText("Delete");
+        meiWordDelete.addActionListener(e -> meiWordDeleteActionPerformed());
+        menWord.add(meiWordDelete);
+
+        mbMenu.add(menWord);
+
+        menCategory.setText("Category");
+        menCategory.setFont(Service.createFont());
+
+        meiCatAdd.setFont(Service.createFont());
+        meiCatAdd.setText("Add...");
+        meiCatAdd.addActionListener(e -> meiCatAddActionPerformed());
+        menCategory.add(meiCatAdd);
+
+        meiCatRename.setFont(Service.createFont());
+        meiCatRename.setText("Rename...");
+        meiCatRename.addActionListener(e -> meiCatRenameActionPerformed());
+        menCategory.add(meiCatRename);
+
+        meiCatDelete.setFont(Service.createFont());
+        meiCatDelete.setText("Delete");
+        meiCatDelete.addActionListener(e -> meiCatDeleteActionPerformed());
+        menCategory.add(meiCatDelete);
+
+        mbMenu.add(menCategory);
+
+        menHelp.setText("Help");
+        menHelp.setFont(Service.createFont());
+
+        meiAbout.setFont(Service.createFont());
+        meiAbout.setText("About...");
+        meiAbout.addActionListener(e -> meiAboutActionPerformed());
+        menHelp.add(meiAbout);
+
+        mbMenu.add(menHelp);
+
+        setJMenuBar(mbMenu);
+
+        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
+        getContentPane().setLayout(layout);
+        layout.setHorizontalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(jToolBar1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+        );
+        layout.setVerticalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(layout.createSequentialGroup()
+                .addComponent(jToolBar1, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+
+        pack();
+    }
+
+    private void btnGoodActionPerformed() {
+        if (compareTexts()) {
+            dict.getWord().incGoodHits();
+            dict.getWord().setLastGoodHit(new Date());
+            nextRelative(1);
+        }
+    }
+
+    private void btnWrongActionPerformed() {
+        if (compareTexts()) {
+            dict.getWord().incWrongHits();
+            dict.getWord().setLastWrongHit(new Date());
+            nextRelative(1);
+        }
+    }
+
+    private void btnShowAndPlayActionPerformed() {
+        this.lblForeignWordValue.setText(dict.getWord().getEn());
+        play(dict.getWord());
+    }
+
+    private void cbbActionPerformed() {
+        if (!disableCategotyChange) {
+            if (!dict.getCurrentCategory().equals(cbbCategory.getSelectedItem().toString())) {
+                dict.setCategory(cbbCategory.getSelectedItem().toString());
+            }
+        }
+    }
+
+    private void btnBackActionPerformed() {
+        nextRelative(-1);
+    }
+
+    private void btnForwardActionPerformed() {
+        nextRelative(1);
+    }
+
+    private void meiWordSearchActionPerformed() {
         showFindDialog();
-    }//GEN-LAST:event_jButton9ActionPerformed
+    }
 
-    private void jButton10ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton10ActionPerformed
-        addWord();
-    }//GEN-LAST:event_jButton10ActionPerformed
+    private void meiAboutActionPerformed() {
+        aboutDialog.setVisible(true);
+    }
 
-    private void jButton11ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton11ActionPerformed
+    private void meiWordEditActionPerformed() {
         editWord();
-    }//GEN-LAST:event_jButton11ActionPerformed
+    }
 
-    private void jButton12ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton12ActionPerformed
+    private void meiCatAddActionPerformed() {
+        addCatDialog.setCategoryText("");
+        addCatDialog.setVisible(true);
+        if (addCatDialog.isCommited()) {
+            addCategory(addCatDialog.getCategoryText());
+        }
+    }
+
+    private void meiCatRenameActionPerformed() {
+        renameCatDialog.setNewCategoryText("");
+        renameCatDialog.setVisible(true);
+        if (renameCatDialog.isCommited()) {
+            renameCategory(renameCatDialog.getOldCategoryText(), renameCatDialog.getNewCategoryText());
+        }
+    }
+    
+    private void meiWordAddActionPerformed() {
+        addWord();
+    }
+
+    private void meiWordDeleteActionPerformed() {
         deleteWord();
-    }//GEN-LAST:event_jButton12ActionPerformed
+    }
 
-    private void jButton14ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton14ActionPerformed
+    private void meiCatDeleteActionPerformed() {
+        int dialogResult = JOptionPane.showConfirmDialog(this, "Do you want to delete category: " + dict.getCurrentCategory() + "?", "Question", JOptionPane.YES_NO_OPTION);
+        if (dialogResult == JOptionPane.YES_OPTION) {
+            try {
+                dict.deleteCurrentCategory();
+            } catch (DictionaryException ex) {
+                JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        }
+    }
+    
+    private void meiOpenActionPerformed() {
+        openDictionary();
+    }
+    
+    private void meiNewActionPerformed() {
+        newDictionary();
+    }
+
+    private void meiSaveActionPerformed() {
+        saveDictionary();
+    }
+
+    private void btnToolNewActionPerformed() {
+        newDictionary();
+    }
+
+    private void btnToolOpenActionPerformed() {
+        openDictionary();
+    }
+
+    private void btnToolSaveActionPerformed() {
+        saveDictionary();
+    }
+
+    private void btnToolSearchActionPerformed() {
+        showFindDialog();
+    }
+
+    private void btnToolAddActionPerformed() {
+        addWord();
+    }
+
+    private void btnToolEditActionPerformed() {
+        editWord();
+    }
+
+    private void btnToolDeleteActionPerformed() {
+        deleteWord();
+    }
+
+    private void btnRewindActionPerformed() {
         nextAbsolute(0);
-    }//GEN-LAST:event_jButton14ActionPerformed
+    }
 
     /**
      * @param args the command line arguments
      */
     public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
         try {
             for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
                 if ("Nimbus".equals(info.getName())) {
@@ -1127,7 +1057,6 @@ public class Main extends javax.swing.JFrame implements IObserver {
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
             java.util.logging.Logger.getLogger(Main.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
-        //</editor-fold>
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
@@ -1140,46 +1069,4 @@ public class Main extends javax.swing.JFrame implements IObserver {
             }
         });
     }
-    // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton10;
-    private javax.swing.JButton jButton11;
-    private javax.swing.JButton jButton12;
-    private javax.swing.JButton jButton14;
-    private javax.swing.JButton jButton2;
-    private javax.swing.JButton jButton3;
-    private javax.swing.JButton jButton4;
-    private javax.swing.JButton jButton5;
-    private javax.swing.JButton jButton6;
-    private javax.swing.JButton jButton7;
-    private javax.swing.JButton jButton8;
-    private javax.swing.JButton jButton9;
-    private javax.swing.JComboBox jComboBox1;
-    private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel jLabel3;
-    private javax.swing.JLabel jLabel4;
-    private javax.swing.JLabel jLabel5;
-    private javax.swing.JLabel jLabel6;
-    private javax.swing.JLabel jLabel7;
-    private javax.swing.JMenu jMenu1;
-    private javax.swing.JMenu jMenu2;
-    private javax.swing.JMenu jMenu3;
-    private javax.swing.JMenu jMenu4;
-    private javax.swing.JMenuBar jMenuBar1;
-    private javax.swing.JMenuItem jMenuItem1;
-    private javax.swing.JMenuItem jMenuItem10;
-    private javax.swing.JMenuItem jMenuItem12;
-    private javax.swing.JMenuItem jMenuItem2;
-    private javax.swing.JMenuItem jMenuItem3;
-    private javax.swing.JMenuItem jMenuItem4;
-    private javax.swing.JMenuItem jMenuItem5;
-    private javax.swing.JMenuItem jMenuItem6;
-    private javax.swing.JMenuItem jMenuItem7;
-    private javax.swing.JMenuItem jMenuItem8;
-    private javax.swing.JMenuItem jMenuItem9;
-    private javax.swing.JPanel jPanel1;
-    private javax.swing.JTextField jTextField1;
-    private javax.swing.JToolBar jToolBar1;
-    // End of variables declaration//GEN-END:variables
 }

@@ -7,6 +7,7 @@ target/
 
 # NetBeans
 nb-configuration.xml
+nbactions.xml
 
 # Eclipse
 bin/

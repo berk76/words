@@ -1,13 +1,23 @@
 /*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
+*       IDictionary.java
+*
+*       This file is part of Words project.
+*       https://github.com/berk76/words
+*
+*       Words is free software; you can redistribute it and/or modify
+*       it under the terms of the GNU General Public License as published by
+*       the Free Software Foundation; either version 3 of the License, or
+*       (at your option) any later version. <http://www.gnu.org/licenses/>
+*
+*       Written by Jaroslav Beran <jaroslav.beran@gmail.com>
+*/
 package cz.webstones.words.dictionary;
 
 import cz.webstones.words.LanguageDto;
 import cz.webstones.words.Setup;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
 import java.util.List;
 import java.util.ArrayList;
@@ -16,7 +26,7 @@ import java.util.ArrayList;
  *
  * @author jaroslav_b
  */
-public interface IDictionary {
+public interface IDictionary extends Serializable {
     
     public static final String ALL_CATEGORY = "All";
     
