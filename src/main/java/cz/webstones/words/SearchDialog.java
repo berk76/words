@@ -122,6 +122,7 @@ public class SearchDialog extends JEscapeableDialog implements IObserver {
         
         txfSearch.setFont(Service.createFont());
         txfSearch.addKeyListener(new java.awt.event.KeyAdapter() {
+            @Override
             public void keyPressed(java.awt.event.KeyEvent evt) {
                 enterKeyPressed(evt);
             }

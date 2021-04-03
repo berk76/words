@@ -8,6 +8,7 @@ import cz.webstones.words.LanguageDto;
 import cz.webstones.words.Setup;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
 import java.util.List;
 import java.util.ArrayList;
@@ -16,7 +17,7 @@ import java.util.ArrayList;
  *
  * @author jaroslav_b
  */
-public interface IDictionary {
+public interface IDictionary extends Serializable {
     
     public static final String ALL_CATEGORY = "All";
     
