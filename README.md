@@ -13,7 +13,7 @@ Vocabulary enables you:
 * Organize words and sentences in categories.
 * Vocabulary automatically downloads voice pronunciation.
 * It supports many languages.
-* Application tests little schoolboy/schoolgirl and creates statistics for each particular word. Base on this statistics it sorts words in each category.
+* Application tests student and creates statistics for each particular word. Base on this statistics it sorts words in each category.
 
 ## How you can get started with Words
 
@@ -29,7 +29,7 @@ Visit project [Discussions](https://github.com/berk76/words/discussions) where y
  1. Create new directory somewhere on your disc. For example `WordsEn` and copy Words.jar in it. 
  1. Run Words application `java -jar Words.jar`
 
- ## Contributing
+## Contributing
 
 All contributions are welcome. :blue_heart:. Please read [CONTRIBUTING.md](.github/CONTRIBUTING.md). :octocat:.
  
