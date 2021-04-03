@@ -165,7 +165,7 @@ public class SearchDialog extends JEscapeableDialog implements IObserver {
                 .addGroup(layout.createSequentialGroup()
                     .addContainerGap()
                     .addGroup(layout.createParallelGroup(Alignment.LEADING)
-                        .addComponent(txfSearch, 350, 350, 350)
+                        .addComponent(txfSearch, Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, 350, Short.MAX_VALUE)
                         .addGroup(layout.createSequentialGroup()
                             .addGroup(layout.createParallelGroup(Alignment.TRAILING)
                                 .addGroup(layout.createSequentialGroup()

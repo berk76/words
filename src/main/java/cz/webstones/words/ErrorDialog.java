@@ -23,6 +23,8 @@ import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
+import javax.swing.GroupLayout.Alignment;
+import javax.swing.GroupLayout;
 
 /**
  *
@@ -93,32 +95,32 @@ public class ErrorDialog extends JEscapeableDialog {
         btnClose.addActionListener(e -> btnCloseActionPerformed());
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
-        getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(spTrace, javax.swing.GroupLayout.DEFAULT_SIZE, 621, Short.MAX_VALUE)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(lblError)
-                        .addGap(0, 0, Short.MAX_VALUE))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(btnClose)))
-                .addContainerGap())
+            layout.createParallelGroup(Alignment.LEADING)
+                .addGroup(layout.createSequentialGroup()
+                    .addContainerGap()
+                    .addGroup(layout.createParallelGroup(Alignment.TRAILING)
+                        .addComponent(spTrace, GroupLayout.DEFAULT_SIZE, 621, Short.MAX_VALUE)
+                        .addGroup(layout.createSequentialGroup()
+                            .addComponent(lblError)
+                            .addGap(0, 565, Short.MAX_VALUE))
+                        .addGroup(layout.createSequentialGroup()
+                            .addGap(0, 546, Short.MAX_VALUE)
+                            .addComponent(btnClose)))
+                    .addContainerGap())
         );
         layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(lblError)
-                .addGap(18, 18, 18)
-                .addComponent(spTrace, javax.swing.GroupLayout.PREFERRED_SIZE, 169, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, Short.MAX_VALUE)
-                .addComponent(btnClose)
-                .addContainerGap())
+            layout.createParallelGroup(Alignment.LEADING)
+                .addGroup(layout.createSequentialGroup()
+                    .addContainerGap()
+                    .addComponent(lblError)
+                    .addGap(18)
+                    .addComponent(spTrace, GroupLayout.DEFAULT_SIZE, 169, Short.MAX_VALUE)
+                    .addGap(18)
+                    .addComponent(btnClose)
+                    .addContainerGap())
         );
+        getContentPane().setLayout(layout);
 
         pack();
     }    
