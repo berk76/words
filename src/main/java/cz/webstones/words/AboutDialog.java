@@ -18,6 +18,7 @@ import cz.webstones.words.dictionary.IObserver;
 import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.Desktop;
+import java.awt.Frame;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.IOException;
@@ -27,6 +28,10 @@ import cz.webstones.words.dictionary.IDictionary;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.GroupLayout.Alignment;
+import javax.swing.JButton;
+import javax.swing.JLabel;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
 import javax.swing.GroupLayout;
 import javax.swing.LayoutStyle.ComponentPlacement;
 
@@ -38,8 +43,8 @@ public class AboutDialog extends JEscapeableDialog implements IObserver {
     
     private static final long serialVersionUID = -2183131500093783064L;
     private static final Logger LOGGER = Logger.getLogger(AboutDialog.class.getName());
-    private javax.swing.JLabel lblDictionary;
-    private javax.swing.JLabel lblLang;
+    private JLabel lblDictionary;
+    private JLabel lblLang;
     
     private static final String URL_GITHUB = "https://berk76.github.io/words/";
     private IDictionary dict;
@@ -48,7 +53,7 @@ public class AboutDialog extends JEscapeableDialog implements IObserver {
     /**
      * Creates new form AboutDialog
      */
-    public AboutDialog(java.awt.Frame parent, boolean modal, IDictionary dict) {
+    public AboutDialog(Frame parent, boolean modal, IDictionary dict) {
         super(parent, modal);
         initComponents();
         
@@ -87,17 +92,17 @@ public class AboutDialog extends JEscapeableDialog implements IObserver {
     }
 
     private void initComponents() {
-        javax.swing.JLabel lblVersion = new javax.swing.JLabel();
-        javax.swing.JScrollPane spLicense = new javax.swing.JScrollPane();
-        javax.swing.JTextArea taLicense = new javax.swing.JTextArea();
-        javax.swing.JLabel lblWrittenBy = new javax.swing.JLabel();
-        javax.swing.JLabel lblWeb = new javax.swing.JLabel();
-        javax.swing.JButton btnClose = new javax.swing.JButton();
-        javax.swing.JLabel lblWebLink = new javax.swing.JLabel();
-        javax.swing.JLabel lblJvmVendor = new javax.swing.JLabel();
-        javax.swing.JLabel lblJvmVersion = new javax.swing.JLabel();
-        lblDictionary = new javax.swing.JLabel();
-        lblLang = new javax.swing.JLabel();
+        JLabel lblVersion = new JLabel();
+        JScrollPane spLicense = new JScrollPane();
+        JTextArea taLicense = new JTextArea();
+        JLabel lblWrittenBy = new JLabel();
+        JLabel lblWeb = new JLabel();
+        JButton btnClose = new JButton();
+        JLabel lblWebLink = new JLabel();
+        JLabel lblJvmVendor = new JLabel();
+        JLabel lblJvmVersion = new JLabel();
+        lblDictionary = new JLabel();
+        lblLang = new JLabel();
 
         setLocationRelativeTo(null);
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);

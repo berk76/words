@@ -41,7 +41,7 @@ public class Main extends javax.swing.JFrame implements IObserver {
     private RenameCategoryDialog renameCatDialog;
     private WordDialog wordDialog;
     private AboutDialog aboutDialog;
-    private FindDialog findDialog;
+    private SearchDialog findDialog;
     private LanguageDialog langDialog;
     private ErrorDialog errorDialog;
     private WordExistsDialog wordExistsDialog;
@@ -63,7 +63,7 @@ public class Main extends javax.swing.JFrame implements IObserver {
         renameCatDialog = new RenameCategoryDialog(this, true, dict);
         wordDialog = new WordDialog(this, true, addCatDialog, dict);
         aboutDialog = new AboutDialog(this, true, dict);
-        findDialog = new FindDialog(this, false, dict);
+        findDialog = new SearchDialog(this, false, dict);
         wordExistsDialog = new WordExistsDialog(this, true, dict);
 
         Point p = findDialog.getLocation();
