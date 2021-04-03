@@ -55,6 +55,7 @@ public class WordDialog extends JEscapeableDialog implements IObserver {
     public WordDialog(java.awt.Frame parent, boolean modal, AddCategoryDialog d, IDictionary dic) {
         super(parent, modal);
         initComponents();
+        setMinimumSize(getSize());
         setLocationRelativeTo(null);
         
         addCatDialog = d;

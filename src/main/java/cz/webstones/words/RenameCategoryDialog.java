@@ -43,6 +43,7 @@ public class RenameCategoryDialog extends JEscapeableDialog implements IObserver
     public RenameCategoryDialog(java.awt.Frame parent, boolean modal, IDictionary dic) {
         super(parent, modal);
         initComponents();
+        setMinimumSize(getSize());
         setLocationRelativeTo(null);
         
         dict = dic;

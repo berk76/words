@@ -48,6 +48,7 @@ public class SearchDialog extends JEscapeableDialog implements IObserver {
     public SearchDialog(java.awt.Frame parent, boolean modal, IDictionary d) {
         super(parent, modal);
         initComponents();
+        setMinimumSize(getSize());
         setLocationRelativeTo(null);
         
         dict = d;

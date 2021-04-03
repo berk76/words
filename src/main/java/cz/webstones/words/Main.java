@@ -96,6 +96,7 @@ public class Main extends javax.swing.JFrame implements IObserver {
         
         super();
         initComponents();
+        setMinimumSize(getSize());
         setLocationRelativeTo(null);
         
         dict = new DictionaryImpl();
@@ -620,7 +621,6 @@ public class Main extends javax.swing.JFrame implements IObserver {
                 formWindowClosing();
             }
         });
-        setMinimumSize(this.getSize());
         setTitleText(Service.VERSION, "", null);
 
         lblNativeWordValue.setFont(Service.createFontLarge());

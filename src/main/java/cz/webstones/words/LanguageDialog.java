@@ -37,6 +37,7 @@ public class LanguageDialog extends javax.swing.JDialog {
     public LanguageDialog(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        setMinimumSize(getSize());
         setLocationRelativeTo(null);
         
         cbbSelectLang.removeAllItems();

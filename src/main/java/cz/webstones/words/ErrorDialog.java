@@ -42,6 +42,7 @@ public class ErrorDialog extends JEscapeableDialog {
     public ErrorDialog(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        setMinimumSize(getSize());
         this.setLocationRelativeTo(null);
     }
     

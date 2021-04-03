@@ -56,6 +56,7 @@ public class AboutDialog extends JEscapeableDialog implements IObserver {
     public AboutDialog(Frame parent, boolean modal, IDictionary dict) {
         super(parent, modal);
         initComponents();
+        setMinimumSize(getSize());
         setLocationRelativeTo(null);
         
         this.dict = dict;

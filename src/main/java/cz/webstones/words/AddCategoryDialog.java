@@ -35,6 +35,7 @@ public class AddCategoryDialog extends JEscapeableDialog {
     public AddCategoryDialog(Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        setMinimumSize(getSize());
         this.setLocationRelativeTo(null);
     }
     

@@ -47,6 +47,7 @@ public class WordExistsDialog extends JEscapeableDialog {
     public WordExistsDialog(java.awt.Frame parent, boolean modal, IDictionary dictionary) {
         super(parent, modal);
         initComponents();
+        setMinimumSize(getSize());
         setLocationRelativeTo(null);
         
         this.dict = dictionary;
