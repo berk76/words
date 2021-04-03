@@ -119,6 +119,7 @@ public class SearchDialog extends JEscapeableDialog implements IObserver {
         setLocationRelativeTo(null);
 
         lblSearch.setFont(Service.createFont());
+        lblSearch.setText("lblSearch");
         
         txfSearch.setFont(Service.createFont());
         txfSearch.addKeyListener(new java.awt.event.KeyAdapter() {

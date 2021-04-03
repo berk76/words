@@ -75,7 +75,7 @@ public class LanguageDialog extends javax.swing.JDialog {
         JLabel lblSelectLang;
 
         lblSelectLang = new JLabel();
-        cbbSelectLang = new JComboBox<String>();
+        cbbSelectLang = new JComboBox<>();
         btnSelect = new JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
@@ -86,7 +86,7 @@ public class LanguageDialog extends javax.swing.JDialog {
         lblSelectLang.setText("Select language for pronunciation");
 
         cbbSelectLang.setFont(Service.createFont());
-        cbbSelectLang.setModel(new javax.swing.DefaultComboBoxModel<String>());
+        cbbSelectLang.setModel(new javax.swing.DefaultComboBoxModel<>());
 
         btnSelect.setFont(Service.createFont());
         btnSelect.setText("Select");
