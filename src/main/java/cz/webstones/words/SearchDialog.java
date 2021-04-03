@@ -48,6 +48,8 @@ public class SearchDialog extends JEscapeableDialog implements IObserver {
     public SearchDialog(java.awt.Frame parent, boolean modal, IDictionary d) {
         super(parent, modal);
         initComponents();
+        setLocationRelativeTo(null);
+        
         dict = d;
         dict.attach(this);
         setLabel(d.getCurrentCategory());
@@ -116,7 +118,6 @@ public class SearchDialog extends JEscapeableDialog implements IObserver {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Search");
-        setLocationRelativeTo(null);
 
         lblSearch.setFont(Service.createFont());
         lblSearch.setText("lblSearch");

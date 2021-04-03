@@ -43,6 +43,8 @@ public class RenameCategoryDialog extends JEscapeableDialog implements IObserver
     public RenameCategoryDialog(java.awt.Frame parent, boolean modal, IDictionary dic) {
         super(parent, modal);
         initComponents();
+        setLocationRelativeTo(null);
+        
         dict = dic;
         dict.attach(this);
     }
@@ -114,7 +116,6 @@ public class RenameCategoryDialog extends JEscapeableDialog implements IObserver
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Rename Category");
-        setLocationRelativeTo(null);
 
         cbbCategory.setFont(Service.createFont());
         cbbCategory.setModel(new javax.swing.DefaultComboBoxModel<>());

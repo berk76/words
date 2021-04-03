@@ -56,6 +56,7 @@ public class AboutDialog extends JEscapeableDialog implements IObserver {
     public AboutDialog(Frame parent, boolean modal, IDictionary dict) {
         super(parent, modal);
         initComponents();
+        setLocationRelativeTo(null);
         
         this.dict = dict;
         dict.attach(this);
@@ -104,7 +105,6 @@ public class AboutDialog extends JEscapeableDialog implements IObserver {
         lblDictionary = new JLabel();
         lblLang = new JLabel();
 
-        setLocationRelativeTo(null);
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("About");
 

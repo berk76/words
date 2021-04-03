@@ -35,6 +35,7 @@ public class AddCategoryDialog extends JEscapeableDialog {
     public AddCategoryDialog(Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        this.setLocationRelativeTo(null);
     }
     
     public void setCategoryText(String s) {
@@ -69,7 +70,6 @@ public class AddCategoryDialog extends JEscapeableDialog {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Add Category");
-        this.setLocationRelativeTo(null);
 
         txfCategory.setFont(Service.createFont());
         txfCategory.getDocument().addDocumentListener(new TextFieldFontChangeListener(txfCategory));

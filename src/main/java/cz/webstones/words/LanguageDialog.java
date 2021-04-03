@@ -37,6 +37,7 @@ public class LanguageDialog extends javax.swing.JDialog {
     public LanguageDialog(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        setLocationRelativeTo(null);
         
         cbbSelectLang.removeAllItems();
         try {
@@ -80,7 +81,6 @@ public class LanguageDialog extends javax.swing.JDialog {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Language");
-        setLocationRelativeTo(null);
 
         lblSelectLang.setFont(Service.createFont());
         lblSelectLang.setText("Select language for pronunciation");

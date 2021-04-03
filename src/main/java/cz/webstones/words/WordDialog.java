@@ -55,6 +55,7 @@ public class WordDialog extends JEscapeableDialog implements IObserver {
     public WordDialog(java.awt.Frame parent, boolean modal, AddCategoryDialog d, IDictionary dic) {
         super(parent, modal);
         initComponents();
+        setLocationRelativeTo(null);
         
         addCatDialog = d;
         dict = dic;
@@ -207,7 +208,6 @@ public class WordDialog extends JEscapeableDialog implements IObserver {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Edit word");
-        setLocationRelativeTo(null);
 
         lblForeignWord.setFont(Service.createFont());
         lblForeignWord.setText("Foreign word");

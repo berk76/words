@@ -47,6 +47,7 @@ public class WordExistsDialog extends JEscapeableDialog {
     public WordExistsDialog(java.awt.Frame parent, boolean modal, IDictionary dictionary) {
         super(parent, modal);
         initComponents();
+        setLocationRelativeTo(null);
         
         this.dict = dictionary;
         
@@ -142,7 +143,6 @@ public class WordExistsDialog extends JEscapeableDialog {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Word already exists");        
-        setLocationRelativeTo(null);
 
         lblAlreadyExists.setFont(Service.createFont());
         lblAlreadyExists.setText("Word already exists");

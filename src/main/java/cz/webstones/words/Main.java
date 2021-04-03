@@ -96,6 +96,7 @@ public class Main extends javax.swing.JFrame implements IObserver {
         
         super();
         initComponents();
+        setLocationRelativeTo(null);
         
         dict = new DictionaryImpl();
         addCatDialog = new AddCategoryDialog(this, true);
@@ -341,7 +342,7 @@ public class Main extends javax.swing.JFrame implements IObserver {
 
     private void updateStatus() {
         if (controlsEnabled) {
-            lblStatus.setText(String.valueOf(dict.getCurrnet() + 1) + " / " + String.valueOf(dict.size()) + " words");
+            lblStatus.setText(String.format("%d / %s words", dict.getCurrnet() + 1, dict.size()));
         }
     }
 
@@ -383,7 +384,7 @@ public class Main extends javax.swing.JFrame implements IObserver {
         return false;
     }
     
-    private void formWindowClosing(java.awt.event.WindowEvent evt) {
+    private void formWindowClosing() {
         try {
             saveDirectory();
             Service.saveHistory(dict.getSetup().getDataDir());
@@ -613,15 +614,14 @@ public class Main extends javax.swing.JFrame implements IObserver {
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         addWindowListener(new java.awt.event.WindowAdapter() {
             public void windowClosed(java.awt.event.WindowEvent evt) {
-                
+                // no action required
             }
             public void windowClosing(java.awt.event.WindowEvent evt) {
-                formWindowClosing(evt);
+                formWindowClosing();
             }
         });
         setMinimumSize(this.getSize());
         setTitleText(Service.VERSION, "", null);
-        setLocationRelativeTo(null);
 
         lblNativeWordValue.setFont(Service.createFontLarge());
         lblNativeWordValue.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
@@ -630,7 +630,7 @@ public class Main extends javax.swing.JFrame implements IObserver {
         lblNativeWordValue.addPropertyChangeListener(new LabelFontChangeListener(lblNativeWordValue));
 
         txfTryToWrite.setFont(Service.createFontLarge());
-        txfTryToWrite.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        txfTryToWrite.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         txfTryToWrite.setText("");
         txfTryToWrite.getDocument().addDocumentListener(new TextFieldFontChangeListener(txfTryToWrite));
 
