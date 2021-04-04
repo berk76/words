@@ -15,18 +15,9 @@ package cz.webstones.words;
 
 import cz.webstones.words.dictionary.DictionaryStateEnum;
 import cz.webstones.words.dictionary.IObserver;
-import java.awt.Color;
-import java.awt.Cursor;
-import java.awt.Desktop;
 import java.awt.Frame;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 import java.io.IOException;
-import java.net.URI;
-import java.net.URISyntaxException;
 import cz.webstones.words.dictionary.IDictionary;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.GroupLayout.Alignment;
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -42,7 +33,6 @@ import javax.swing.LayoutStyle.ComponentPlacement;
 public class AboutDialog extends JEscapeableDialog implements IObserver {
     
     private static final long serialVersionUID = -2183131500093783064L;
-    private static final Logger LOGGER = Logger.getLogger(AboutDialog.class.getName());
     private JLabel lblDictionary;
     private JLabel lblLang;
     
@@ -100,7 +90,7 @@ public class AboutDialog extends JEscapeableDialog implements IObserver {
         JLabel lblWrittenBy = new JLabel();
         JLabel lblWeb = new JLabel();
         JButton btnClose = new JButton();
-        JLabel lblWebLink = new JLabel();
+        JLink lblWebLink = new JLink();
         JLabel lblJvmVendor = new JLabel();
         JLabel lblJvmVersion = new JLabel();
         lblDictionary = new JLabel();
@@ -125,28 +115,7 @@ public class AboutDialog extends JEscapeableDialog implements IObserver {
 
         lblWeb.setText("Web:");
         lblWebLink.setText(URL_GITHUB);
-        lblWebLink.setForeground(Color.BLUE.darker());
-        lblWebLink.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-        lblWebLink.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                try {
-                    Desktop.getDesktop().browse(new URI(URL_GITHUB));
-                } catch (IOException | URISyntaxException e1) {
-                    LOGGER.log(Level.SEVERE, null, e1);
-                }
-            }
-
-            @Override
-            public void mouseEntered(MouseEvent e) {
-                // the mouse has entered the label
-            }
-
-            @Override
-            public void mouseExited(MouseEvent e) {
-                // the mouse has exited the label
-            }
-        });
+        lblWebLink.setLink(URL_GITHUB);
 
         btnClose.setFont(Service.createFont());
         btnClose.setText("Close");
