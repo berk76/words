@@ -112,6 +112,11 @@ public class Main extends javax.swing.JFrame implements IObserver {
         langDialog = new LanguageDialog(this, true);
         errorDialog = new ErrorDialog(this, true);
 
+        checkIfAlreadyRunning();
+        initDictionary();
+    }
+    
+    private void checkIfAlreadyRunning() {
         if (isRunning()) {
             String txt = "You should not run this application in more instances, otherwise you may lost some changes in your dictionary.\nDo you want to run it anyway?";
             int dialogResult = JOptionPane.showConfirmDialog(this, txt, "Question", JOptionPane.YES_NO_OPTION);
@@ -120,18 +125,6 @@ public class Main extends javax.swing.JFrame implements IObserver {
             }
         } else {
             onStart();
-        }
-
-        findDialog.setText("");
-
-        try {
-            dict.attach(this);
-            String dictPath = Service.getHistory();
-            loadDirectory(dictPath);
-        } catch (Exception ex) {
-            errorDialog.showError("Error: Cannot init and load dictionary.", ex);
-            onFinish();
-            System.exit(-1);
         }
     }
 
@@ -152,10 +145,22 @@ public class Main extends javax.swing.JFrame implements IObserver {
         prefs = Preferences.userRoot().node(this.getClass().getName());
         return prefs.get("RUNNING", null) != null ? Boolean.valueOf(prefs.get("RUNNING", null)) : false;
     }
+    
+    private void initDictionary() {
+        try {
+            dict.attach(this);
+            String dictPath = Service.getHistory();
+            loadDirectory(dictPath);
+        } catch (Exception ex) {
+            errorDialog.showError("Error: Cannot init and load dictionary.", ex);
+            onFinish();
+            System.exit(-1);
+        }
+    }
 
     public void updateObserver() {
-        switch (dict.getSubjectState()) {
 
+        switch (dict.getSubjectState()) {
             case WORD_ADDED:
             case CUR_WORD_CHANGED:
             case CUR_WORD_DELETED:
