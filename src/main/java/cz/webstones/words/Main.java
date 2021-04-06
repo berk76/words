@@ -44,6 +44,7 @@ import javax.swing.filechooser.FileView;
 import cz.webstones.words.dictionary.IDictionary;
 import java.awt.Font;
 import java.nio.file.Files;
+import javax.swing.JToggleButton;
 
 /**
  *
@@ -62,6 +63,7 @@ public class Main extends javax.swing.JFrame implements IObserver {
     private JButton btnToolAdd;
     private JButton btnToolEdit;
     private JButton btnToolDelete;
+    private JToggleButton tbtToolDirection;
     private JButton btnRewind;
     private JButton btnWrong;
     private JButton btnShowAndPlay;
@@ -93,7 +95,7 @@ public class Main extends javax.swing.JFrame implements IObserver {
     private boolean disableCategotyChange = false;
     private boolean controlsEnabled = true;
     private boolean mp3DownloadConfirmed = true;
-    private Direction dictDirection = Direction.SHOW_FOREIGN; 
+    private Direction dictDirection = Direction.SHOW_NATIVE; 
     
     /**
      * Creates new form Main
@@ -616,6 +618,7 @@ public class Main extends javax.swing.JFrame implements IObserver {
         btnToolAdd = new JButton();
         btnToolEdit = new JButton();
         btnToolDelete = new JButton();
+        tbtToolDirection = new JToggleButton();
         mbMenu = new JMenuBar();
         menDictionary = new JMenu();
         meiNew = new JMenuItem();
@@ -826,6 +829,11 @@ public class Main extends javax.swing.JFrame implements IObserver {
         btnToolDelete.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         btnToolDelete.addActionListener(e -> btnToolDeleteActionPerformed());
         jToolBar1.add(btnToolDelete);
+        
+        tbtToolDirection.setText("Show foreign");
+        tbtToolDirection.setToolTipText("Direction");
+        tbtToolDirection.addActionListener(e -> tbtToolDirectionActionPerformed());
+        jToolBar1.add(tbtToolDirection);
 
         mbMenu.setFont(Service.createFont());
 
@@ -1076,6 +1084,20 @@ public class Main extends javax.swing.JFrame implements IObserver {
 
     private void btnToolDeleteActionPerformed() {
         deleteWord();
+    }
+    
+    private void tbtToolDirectionActionPerformed() {
+        if (tbtToolDirection.isSelected()) {
+            dictDirection = Direction.SHOW_FOREIGN;
+            tbtToolDirection.setText("Show native");
+            nextRelative(0);
+            play(dict.getWord());
+        } else {
+            dictDirection = Direction.SHOW_NATIVE;
+            tbtToolDirection.setText("Show foreign");
+            nextRelative(0);
+        }
+        
     }
 
     /**
