@@ -55,6 +55,9 @@ public class Main extends javax.swing.JFrame implements IObserver {
     private static final long serialVersionUID = 5213584438445872718L;
     private static final Logger LOGGER = Logger.getLogger(Main.class.getName());
     
+    private final String BTN_SHOW = "Show";
+    private final String BTN_SHOW_AND_PLAY = "Show & Play";
+    
     private JLabel lblNativeWordValue;
     private JLabel lblForeignWordValue;
     private JLabel lblStatus;
@@ -672,7 +675,7 @@ public class Main extends javax.swing.JFrame implements IObserver {
         btnWrong.addActionListener(e -> btnWrongActionPerformed());
 
         btnShowAndPlay.setFont(Service.createFont());
-        btnShowAndPlay.setText("Show & Play");
+        btnShowAndPlay.setText(BTN_SHOW_AND_PLAY);
         btnShowAndPlay.addActionListener(e -> btnShowAndPlayActionPerformed());
 
         cbbCategory.setFont(Service.createFont());
@@ -1090,11 +1093,13 @@ public class Main extends javax.swing.JFrame implements IObserver {
         if (tbtToolDirection.isSelected()) {
             dictDirection = Direction.SHOW_FOREIGN;
             tbtToolDirection.setText("Show native");
+            btnShowAndPlay.setText(BTN_SHOW);
             nextRelative(0);
             play(dict.getWord());
         } else {
             dictDirection = Direction.SHOW_NATIVE;
             tbtToolDirection.setText("Show foreign");
+            btnShowAndPlay.setText(BTN_SHOW_AND_PLAY);
             nextRelative(0);
         }
         
