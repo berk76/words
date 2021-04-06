@@ -83,12 +83,18 @@ public class Main extends javax.swing.JFrame implements IObserver {
     private ErrorDialog errorDialog;
     private WordExistsDialog wordExistsDialog;
 
-    private boolean disableCategotyChange = false;
+    private enum Direction {
+        SHOW_NATIVE,
+        SHOW_FOREIGN
+    }
+    
     private ImageIcon loadingIcon = new ImageIcon(this.getClass().getClassLoader().getResource("ajax-loader.gif"));
     protected WordDto wordToPlay = null;
+    private boolean disableCategotyChange = false;
     private boolean controlsEnabled = true;
     private boolean mp3DownloadConfirmed = true;
-
+    private Direction dictDirection = Direction.SHOW_FOREIGN; 
+    
     /**
      * Creates new form Main
      */
@@ -250,7 +256,9 @@ public class Main extends javax.swing.JFrame implements IObserver {
 
                 disableControls(false);
                 disableToolbarControls(false);
-
+                if (dictDirection == Direction.SHOW_FOREIGN) {
+                    disableGoodWrong(true);
+                }
             }
         }).start();
     }
@@ -303,7 +311,7 @@ public class Main extends javax.swing.JFrame implements IObserver {
     }
 
     private void nextAbsolute(int i) {
-            if (dict.size() == 0) {
+        if (dict.size() == 0) {
             this.lblNativeWordValue.setText("<category is empty>");
             this.lblForeignWordValue.setText("");
             this.lblStatus.setText("0 / 0 words");
@@ -325,12 +333,20 @@ public class Main extends javax.swing.JFrame implements IObserver {
 
         WordDto w = dict.getWord();
 
-        this.lblNativeWordValue.setText(w.getCz());
-        if (findDialog.isShowing()) {
-            this.lblForeignWordValue.setText(w.getEn());
-        } else {
+        if (!findDialog.isShowing()) {
+            this.lblNativeWordValue.setText("");
             this.lblForeignWordValue.setText("");
+            
+            if (dictDirection == Direction.SHOW_NATIVE) {
+                this.lblNativeWordValue.setText(w.getCz());
+            } else {
+                this.lblForeignWordValue.setText(w.getEn());
+            }
+        } else {
+            this.lblNativeWordValue.setText(w.getCz());
+            this.lblForeignWordValue.setText(w.getEn());
         }
+        
         this.txfTryToWrite.setText("");
         this.txfTryToWrite.grabFocus();
 
@@ -919,6 +935,9 @@ public class Main extends javax.swing.JFrame implements IObserver {
             dict.getWord().incGoodHits();
             dict.getWord().setLastGoodHit(new Date());
             nextRelative(1);
+            if (dictDirection == Direction.SHOW_FOREIGN) {
+                play(dict.getWord());
+            }
         }
     }
 
@@ -927,12 +946,20 @@ public class Main extends javax.swing.JFrame implements IObserver {
             dict.getWord().incWrongHits();
             dict.getWord().setLastWrongHit(new Date());
             nextRelative(1);
+            if (dictDirection == Direction.SHOW_FOREIGN) {
+                play(dict.getWord());
+            }
         }
     }
 
     private void btnShowAndPlayActionPerformed() {
-        this.lblForeignWordValue.setText(dict.getWord().getEn());
-        play(dict.getWord());
+        if (dictDirection == Direction.SHOW_NATIVE) {
+            lblForeignWordValue.setText(dict.getWord().getEn());
+            play(dict.getWord());
+        } else {
+            lblNativeWordValue.setText(dict.getWord().getCz());
+            disableGoodWrong(false);
+        }
     }
 
     private void cbbActionPerformed() {
@@ -945,10 +972,23 @@ public class Main extends javax.swing.JFrame implements IObserver {
 
     private void btnBackActionPerformed() {
         nextRelative(-1);
+        if (dictDirection == Direction.SHOW_FOREIGN) {
+            play(dict.getWord());
+        }
     }
 
     private void btnForwardActionPerformed() {
         nextRelative(1);
+        if (dictDirection == Direction.SHOW_FOREIGN) {
+            play(dict.getWord());
+        }
+    }
+    
+    private void btnRewindActionPerformed() {
+        nextAbsolute(0);
+        if (dictDirection == Direction.SHOW_FOREIGN) {
+            play(dict.getWord());
+        }
     }
 
     private void meiWordSearchActionPerformed() {
@@ -1036,10 +1076,6 @@ public class Main extends javax.swing.JFrame implements IObserver {
 
     private void btnToolDeleteActionPerformed() {
         deleteWord();
-    }
-
-    private void btnRewindActionPerformed() {
-        nextAbsolute(0);
     }
 
     /**
