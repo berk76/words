@@ -836,7 +836,7 @@ public class Main extends javax.swing.JFrame implements IObserver {
         btnToolDelete.addActionListener(e -> btnToolDeleteActionPerformed());
         jToolBar1.add(btnToolDelete);
         
-        tbtToolDirection.setText("Show foreign");
+        tbtToolDirection.setIcon(new javax.swing.ImageIcon(getClass().getResource("/arrow_refresh.png")));
         tbtToolDirection.setToolTipText("Direction");
         tbtToolDirection.addActionListener(e -> tbtToolDirectionActionPerformed());
         jToolBar1.add(tbtToolDirection);
@@ -1095,13 +1095,11 @@ public class Main extends javax.swing.JFrame implements IObserver {
     private void tbtToolDirectionActionPerformed() {
         if (tbtToolDirection.isSelected()) {
             dictDirection = Direction.SHOW_FOREIGN;
-            tbtToolDirection.setText("Show native");
             btnShowAndPlay.setText(BTN_SHOW);
             nextRelative(0);
             play(dict.getWord());
         } else {
             dictDirection = Direction.SHOW_NATIVE;
-            tbtToolDirection.setText("Show foreign");
             btnShowAndPlay.setText(BTN_SHOW_AND_PLAY);
             nextRelative(0);
         }
