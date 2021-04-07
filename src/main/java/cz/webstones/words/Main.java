@@ -404,7 +404,10 @@ public class Main extends javax.swing.JFrame implements IObserver {
         if (txfTryToWrite.getText().trim().isEmpty()) {
             return true;
         }
-        if (txfTryToWrite.getText().trim().equals(lblForeignWordValue.getText().trim())) {
+        if ((dictDirection == Direction.SHOW_NATIVE) && txfTryToWrite.getText().trim().equals(lblForeignWordValue.getText().trim())) {
+            return true;
+        }
+        if ((dictDirection == Direction.SHOW_FOREIGN) && txfTryToWrite.getText().trim().equals(lblNativeWordValue.getText().trim())) {
             return true;
         }
         JOptionPane.showMessageDialog(this, "Texts don't match. Correct it or delete it.");
