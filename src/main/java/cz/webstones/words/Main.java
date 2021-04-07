@@ -44,6 +44,7 @@ import javax.swing.filechooser.FileView;
 import cz.webstones.words.dictionary.IDictionary;
 import java.awt.Font;
 import java.nio.file.Files;
+import javax.swing.JToggleButton;
 
 /**
  *
@@ -54,6 +55,9 @@ public class Main extends javax.swing.JFrame implements IObserver {
     private static final long serialVersionUID = 5213584438445872718L;
     private static final Logger LOGGER = Logger.getLogger(Main.class.getName());
     
+    private final String BTN_SHOW = "Show";
+    private final String BTN_SHOW_AND_PLAY = "Show & Play";
+    
     private JLabel lblNativeWordValue;
     private JLabel lblForeignWordValue;
     private JLabel lblStatus;
@@ -62,6 +66,7 @@ public class Main extends javax.swing.JFrame implements IObserver {
     private JButton btnToolAdd;
     private JButton btnToolEdit;
     private JButton btnToolDelete;
+    private JToggleButton tbtToolDirection;
     private JButton btnRewind;
     private JButton btnWrong;
     private JButton btnShowAndPlay;
@@ -83,12 +88,18 @@ public class Main extends javax.swing.JFrame implements IObserver {
     private ErrorDialog errorDialog;
     private WordExistsDialog wordExistsDialog;
 
-    private boolean disableCategotyChange = false;
+    private enum Direction {
+        SHOW_NATIVE,
+        SHOW_FOREIGN
+    }
+    
     private ImageIcon loadingIcon = new ImageIcon(this.getClass().getClassLoader().getResource("ajax-loader.gif"));
     protected WordDto wordToPlay = null;
+    private boolean disableCategotyChange = false;
     private boolean controlsEnabled = true;
     private boolean mp3DownloadConfirmed = true;
-
+    private Direction dictDirection = Direction.SHOW_NATIVE; 
+    
     /**
      * Creates new form Main
      */
@@ -250,7 +261,9 @@ public class Main extends javax.swing.JFrame implements IObserver {
 
                 disableControls(false);
                 disableToolbarControls(false);
-
+                if (dictDirection == Direction.SHOW_FOREIGN) {
+                    disableGoodWrong(true);
+                }
             }
         }).start();
     }
@@ -303,7 +316,7 @@ public class Main extends javax.swing.JFrame implements IObserver {
     }
 
     private void nextAbsolute(int i) {
-            if (dict.size() == 0) {
+        if (dict.size() == 0) {
             this.lblNativeWordValue.setText("<category is empty>");
             this.lblForeignWordValue.setText("");
             this.lblStatus.setText("0 / 0 words");
@@ -325,12 +338,20 @@ public class Main extends javax.swing.JFrame implements IObserver {
 
         WordDto w = dict.getWord();
 
-        this.lblNativeWordValue.setText(w.getCz());
-        if (findDialog.isShowing()) {
-            this.lblForeignWordValue.setText(w.getEn());
-        } else {
+        if (!findDialog.isShowing()) {
+            this.lblNativeWordValue.setText("");
             this.lblForeignWordValue.setText("");
+            
+            if (dictDirection == Direction.SHOW_NATIVE) {
+                this.lblNativeWordValue.setText(w.getCz());
+            } else {
+                this.lblForeignWordValue.setText(w.getEn());
+            }
+        } else {
+            this.lblNativeWordValue.setText(w.getCz());
+            this.lblForeignWordValue.setText(w.getEn());
         }
+        
         this.txfTryToWrite.setText("");
         this.txfTryToWrite.grabFocus();
 
@@ -372,6 +393,7 @@ public class Main extends javax.swing.JFrame implements IObserver {
         btnToolAdd.setEnabled(!b);
         btnToolEdit.setEnabled(!b);
         btnToolDelete.setEnabled(!b);
+        tbtToolDirection.setEnabled(!b);
     }
 
     private void disableGoodWrong(boolean b) {
@@ -383,7 +405,10 @@ public class Main extends javax.swing.JFrame implements IObserver {
         if (txfTryToWrite.getText().trim().isEmpty()) {
             return true;
         }
-        if (txfTryToWrite.getText().trim().equals(lblForeignWordValue.getText().trim())) {
+        if ((dictDirection == Direction.SHOW_NATIVE) && txfTryToWrite.getText().trim().equals(lblForeignWordValue.getText().trim())) {
+            return true;
+        }
+        if ((dictDirection == Direction.SHOW_FOREIGN) && txfTryToWrite.getText().trim().equals(lblNativeWordValue.getText().trim())) {
             return true;
         }
         JOptionPane.showMessageDialog(this, "Texts don't match. Correct it or delete it.");
@@ -600,6 +625,7 @@ public class Main extends javax.swing.JFrame implements IObserver {
         btnToolAdd = new JButton();
         btnToolEdit = new JButton();
         btnToolDelete = new JButton();
+        tbtToolDirection = new JToggleButton();
         mbMenu = new JMenuBar();
         menDictionary = new JMenu();
         meiNew = new JMenuItem();
@@ -653,7 +679,7 @@ public class Main extends javax.swing.JFrame implements IObserver {
         btnWrong.addActionListener(e -> btnWrongActionPerformed());
 
         btnShowAndPlay.setFont(Service.createFont());
-        btnShowAndPlay.setText("Show & Play");
+        btnShowAndPlay.setText(BTN_SHOW_AND_PLAY);
         btnShowAndPlay.addActionListener(e -> btnShowAndPlayActionPerformed());
 
         cbbCategory.setFont(Service.createFont());
@@ -810,6 +836,11 @@ public class Main extends javax.swing.JFrame implements IObserver {
         btnToolDelete.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         btnToolDelete.addActionListener(e -> btnToolDeleteActionPerformed());
         jToolBar1.add(btnToolDelete);
+        
+        tbtToolDirection.setIcon(new javax.swing.ImageIcon(getClass().getResource("/arrow_refresh.png")));
+        tbtToolDirection.setToolTipText("Direction");
+        tbtToolDirection.addActionListener(e -> tbtToolDirectionActionPerformed());
+        jToolBar1.add(tbtToolDirection);
 
         mbMenu.setFont(Service.createFont());
 
@@ -919,6 +950,9 @@ public class Main extends javax.swing.JFrame implements IObserver {
             dict.getWord().incGoodHits();
             dict.getWord().setLastGoodHit(new Date());
             nextRelative(1);
+            if (dictDirection == Direction.SHOW_FOREIGN) {
+                play(dict.getWord());
+            }
         }
     }
 
@@ -927,12 +961,20 @@ public class Main extends javax.swing.JFrame implements IObserver {
             dict.getWord().incWrongHits();
             dict.getWord().setLastWrongHit(new Date());
             nextRelative(1);
+            if (dictDirection == Direction.SHOW_FOREIGN) {
+                play(dict.getWord());
+            }
         }
     }
 
     private void btnShowAndPlayActionPerformed() {
-        this.lblForeignWordValue.setText(dict.getWord().getEn());
-        play(dict.getWord());
+        if (dictDirection == Direction.SHOW_NATIVE) {
+            lblForeignWordValue.setText(dict.getWord().getEn());
+            play(dict.getWord());
+        } else {
+            lblNativeWordValue.setText(dict.getWord().getCz());
+            disableGoodWrong(false);
+        }
     }
 
     private void cbbActionPerformed() {
@@ -945,10 +987,23 @@ public class Main extends javax.swing.JFrame implements IObserver {
 
     private void btnBackActionPerformed() {
         nextRelative(-1);
+        if (dictDirection == Direction.SHOW_FOREIGN) {
+            play(dict.getWord());
+        }
     }
 
     private void btnForwardActionPerformed() {
         nextRelative(1);
+        if (dictDirection == Direction.SHOW_FOREIGN) {
+            play(dict.getWord());
+        }
+    }
+    
+    private void btnRewindActionPerformed() {
+        nextAbsolute(0);
+        if (dictDirection == Direction.SHOW_FOREIGN) {
+            play(dict.getWord());
+        }
     }
 
     private void meiWordSearchActionPerformed() {
@@ -1037,9 +1092,19 @@ public class Main extends javax.swing.JFrame implements IObserver {
     private void btnToolDeleteActionPerformed() {
         deleteWord();
     }
-
-    private void btnRewindActionPerformed() {
-        nextAbsolute(0);
+    
+    private void tbtToolDirectionActionPerformed() {
+        if (tbtToolDirection.isSelected()) {
+            dictDirection = Direction.SHOW_FOREIGN;
+            btnShowAndPlay.setText(BTN_SHOW);
+            nextRelative(0);
+            play(dict.getWord());
+        } else {
+            dictDirection = Direction.SHOW_NATIVE;
+            btnShowAndPlay.setText(BTN_SHOW_AND_PLAY);
+            nextRelative(0);
+        }
+        
     }
 
     /**
