@@ -393,6 +393,7 @@ public class Main extends javax.swing.JFrame implements IObserver {
         btnToolAdd.setEnabled(!b);
         btnToolEdit.setEnabled(!b);
         btnToolDelete.setEnabled(!b);
+        tbtToolDirection.setEnabled(!b);
     }
 
     private void disableGoodWrong(boolean b) {
