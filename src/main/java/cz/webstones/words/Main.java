@@ -704,7 +704,7 @@ public class Main extends javax.swing.JFrame implements IObserver {
 
         lblForeignWord.setText("Foreign word");
 
-        lblTryToWrite.setText("Try to write it down");
+        lblTryToWrite.setText("Write it");
 
         lblCategory.setText("Choose category");
 
