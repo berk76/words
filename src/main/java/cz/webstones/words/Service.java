@@ -41,7 +41,7 @@ public class Service {
     
     private static final Logger LOGGER = Logger.getLogger(Service.class.getName());
 
-    public static final String VERSION = "Words 1.13.0 snapshot";
+    public static final String VERSION = "Words 1.13.0";
     public static final String SETUP_FNAME = "setup.properties";
     private static final String HISTORY_FNAME = "history.properties";
     private static final String APP_DATA_DIR = "WordsData";
