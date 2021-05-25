@@ -22,11 +22,11 @@ import org.junit.jupiter.api.Test;
  *
  * @author jaroslav_b
  */
-public class ServiceTest {
+class ServiceTest {
     
     @Test
     @DisplayName("Setup")
-    public void testSetup() throws IOException {
+    void testSetup() throws IOException {
         Setup s = Service.getSetup(false, "Data");
         assertEquals("Data", s.getDataDir(), "Data dir");
         assertEquals("MP3", s.getMp3Dir(), "MP3 dir");
@@ -41,7 +41,7 @@ public class ServiceTest {
     
     @Test
     @DisplayName("Sanity data string (removal of separator)")
-    public void testCleanAndAddSeparator() throws IOException {
+    void testCleanAndAddSeparator() throws IOException {
         assertEquals("Ahoj;", Service.cleanAndAddSeparator(" Ah;oj ", ";"), "Bad string 1");
         assertEquals("Ahoj;", Service.cleanAndAddSeparator("Ahoj ;", ";"), "Bad string 2");
         assertEquals("Ahoj;", Service.cleanAndAddSeparator(" ;Ahoj", ";"), "Bad string 3");

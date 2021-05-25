@@ -24,11 +24,11 @@ import org.junit.jupiter.api.Test;
  *
  * @author jaroslav_b
  */
-public class DictionaryTest {
+class DictionaryTest {
     
     @Test
     @DisplayName("Words (add, filter, delete, unfilter, delete last)")
-    public void testWords() throws IOException, DictionaryException {
+    void testWords() throws IOException, DictionaryException {
         IDictionary d = new DictionaryImpl();
         String dictPath = Service.getHistory();
         d.loadDictionary(Service.getSetup(true, dictPath));
@@ -151,7 +151,7 @@ public class DictionaryTest {
     
     @Test
     @DisplayName("Categories (add, rename)")
-    public void testCategories() throws DictionaryException {
+    void testCategories() throws DictionaryException {
         IDictionary d = new DictionaryImpl();
         ObserverTestHelper o = new ObserverTestHelper(d);
         d.attach(o);
@@ -209,7 +209,7 @@ public class DictionaryTest {
     
     @Test
     @DisplayName("Search case sensitive")
-    public void testSearchCSensitive() throws DictionaryException {    
+    void testSearchCSensitive() throws DictionaryException {    
         IDictionary d = new DictionaryImpl();
         
         d.addCategory("TestCat1");
@@ -240,7 +240,7 @@ public class DictionaryTest {
     
     @Test
     @DisplayName("Search case insensitive")
-    public void testSearchCInSensitive() throws DictionaryException {    
+    void testSearchCInSensitive() throws DictionaryException {    
         IDictionary d = new DictionaryImpl();
         
         d.addCategory("TestCat1");
@@ -281,7 +281,7 @@ public class DictionaryTest {
     
     @Test
     @DisplayName("Search exact match")
-    public void testSearchExactMatch() throws DictionaryException {    
+    void testSearchExactMatch() throws DictionaryException {    
         IDictionary d = new DictionaryImpl();
         
         d.addCategory("TestCat1");
@@ -321,7 +321,7 @@ public class DictionaryTest {
 
     @Test
     @DisplayName("Search not exact match")
-    public void testSearchNotExactMatch() throws DictionaryException {    
+    void testSearchNotExactMatch() throws DictionaryException {    
         IDictionary d = new DictionaryImpl();
         
         d.addCategory("TestCat1");
