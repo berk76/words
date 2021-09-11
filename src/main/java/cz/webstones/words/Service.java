@@ -26,7 +26,6 @@ import java.io.OutputStream;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
@@ -44,27 +43,14 @@ public class Service {
     public static final String VERSION = "Words 1.14.0 snapshot";
     public static final String SETUP_FNAME = "setup.properties";
     private static final String HISTORY_FNAME = "history.properties";
-    private static final String APP_DATA_DIR = "WordsData";
+    private static final String APP_DATA_DIR = ".words_data";
     private static final String FONT_NAME = "Tahoma";
     
+    
     private static String getDataDir() {
-        
-        //Is current dir writable?
-        String result = System.getProperty("user.dir");
-        File f = new File(result + File.separator + APP_DATA_DIR + "test.txt");
-        try {
-            if (!f.createNewFile()) {
-                LOGGER.log(Level.WARNING, "Cannot create file {}", f);
-            }
-            Files.delete(f.toPath());
-            return result;
-        } catch (IOException ex) {
-            LOGGER.log(Level.SEVERE, null, ex);
-        }
-
-        //If not use local app data dir
-        result = System.getenv("LOCALAPPDATA") + File.separator + APP_DATA_DIR;
-        f = new File(result);
+        String home = (System.getenv("HOME") != null) ? System.getenv("HOME") : System.getenv("HOMEPATH");
+        String result = home + File.separator + APP_DATA_DIR;
+        File f = new File(result);
         if (!f.exists()) {
             if (!f.mkdir()) {
                 LOGGER.log(Level.WARNING, "Cannot create directory {}", f);
