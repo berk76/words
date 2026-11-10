@@ -1,0 +1,14 @@
+# Config for Dependabot updates. See Documentation here:
+# https://docs.github.com/en/code-security/dependabot/dependabot-version-updates/configuration-options-for-the-dependabot.yml-file
+
+version: 2
+updates:
+  # Update GitHub actions in workflows
+  - package-ecosystem: 'github-actions'
+    directory: '/'
+    # Every weekday
+    schedule:
+      interval: 'weekly'
+    # Cooldown new versions for security reasons
+    cooldown:
+      default-days: 7
